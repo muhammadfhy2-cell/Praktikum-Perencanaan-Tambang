@@ -1,109 +1,364 @@
-{% extends "praktikum/base.html" %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-{% block content %}
+    <title>Dashboard Peserta</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+        }
+
+        .navbar {
+            background: #111827;
+            color: white;
+            padding: 18px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logout {
+            color: white;
+            text-decoration: none;
+            padding: 8px 14px;
+            border: 1px solid rgba(255,255,255,.3);
+            border-radius: 8px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 35px auto;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h1 {
+            margin-bottom: 5px;
+        }
+
+        .welcome p {
+            color: #6b7280;
+        }
+
+        .profile {
+            background: white;
+            padding: 22px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,.05);
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .profile-item {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .profile-item small {
+            display: block;
+            color: #6b7280;
+            margin-bottom: 5px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat {
+            background: white;
+            padding: 22px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,.05);
+        }
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #6b7280;
+        }
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,.05);
+        }
+
+        .section h2 {
+            margin-top: 0;
+        }
+
+        .task {
+            border: 1px solid #e5e7eb;
+            padding: 17px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .task-title {
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        .task-meta {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 13px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f9fafb;
+        }
+
+        .status {
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .menunggu {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .acc {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .revisi {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 9px;
+        }
+
+        button {
+            background: #111827;
+            color: white;
+            border: 0;
+            padding: 12px 20px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .message {
+            padding: 13px;
+            background: #dcfce7;
+            color: #166534;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        @media(max-width: 800px) {
+            .profile-grid,
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width: 500px) {
+            .profile-grid,
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 18px;
+            }
+
+            table {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="brand">
+        Praktikum Perencanaan Tambang
+    </div>
+
+    <a href="{% url 'logout_peserta' %}" class="logout">
+        Logout
+    </a>
+
+</nav>
 
 <div class="container">
 
-    <h1>Dashboard Peserta</h1>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
-    <div class="profile-card">
-
-        <h2>{{ peserta.nama }}</h2>
-
+    <div class="welcome">
+        <h1>Dashboard Peserta</h1>
         <p>
-            NIM: {{ peserta.nim }}
+            Selamat datang, <strong>{{ peserta.nama }}</strong>
         </p>
-
-        <p>
-            Kelompok:
-            {% if peserta.kelompok %}
-                {{ peserta.kelompok.nama }}
-            {% else %}
-                Belum ditentukan
-            {% endif %}
-        </p>
-
-        <p>
-            Status:
-            {{ peserta.get_jabatan_display }}
-        </p>
-
     </div>
 
+    <div class="profile">
 
-    <hr>
+        <h2>Profil Peserta</h2>
 
+        <div class="profile-grid">
 
-    <h2>Tugas Pendahuluan</h2>
+            <div class="profile-item">
+                <small>Nama</small>
+                <strong>{{ peserta.nama }}</strong>
+            </div>
 
-    {% for item in tugas %}
+            <div class="profile-item">
+                <small>NIM</small>
+                <strong>{{ peserta.nim|default:"-" }}</strong>
+            </div>
 
-        <div class="card">
+            <div class="profile-item">
+                <small>Kelompok</small>
+                <strong>
+                    {% if peserta.kelompok %}
+                        {{ peserta.kelompok.nama }}
+                    {% else %}
+                        Belum ditentukan
+                    {% endif %}
+                </strong>
+            </div>
 
-            <h3>
-                {{ item.judul }}
-            </h3>
-
-            <p>
-                {{ item.acara.nama }}
-            </p>
-
-            {% if item.deadline %}
-                <p>
-                    Deadline:
-                    {{ item.deadline|date:"d F Y H:i" }}
-                </p>
-            {% endif %}
-
-            <div>
-                {{ item.soal|linebreaks }}
+            <div class="profile-item">
+                <small>Status</small>
+                <strong>{{ peserta.get_jabatan_display }}</strong>
             </div>
 
         </div>
 
-    {% empty %}
-
-        <p>
-            Belum ada tugas.
-        </p>
-
-    {% endfor %}
+    </div>
 
 
-    <hr>
+    <div class="stats">
+
+        <div class="stat">
+            <div class="stat-number">
+                {{ total_laporan }}
+            </div>
+            <div class="stat-label">
+                Total Laporan
+            </div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-number">
+                {{ laporan_menunggu }}
+            </div>
+            <div class="stat-label">
+                Menunggu Pemeriksaan
+            </div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-number">
+                {{ laporan_acc }}
+            </div>
+            <div class="stat-label">
+                Laporan ACC
+            </div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-number">
+                {{ laporan_revisi }}
+            </div>
+            <div class="stat-label">
+                Perlu Revisi
+            </div>
+        </div>
+
+    </div>
 
 
-    <h2>Upload Laporan Mingguan</h2>
+    <div class="section">
 
-    <form
-        method="post"
-        action="{% url 'upload_laporan' %}"
-        enctype="multipart/form-data"
-    >
+        <h2>Upload Laporan Mingguan</h2>
 
-        {% csrf_token %}
+        <form
+            method="POST"
+            action="{% url 'upload_laporan' %}"
+            enctype="multipart/form-data"
+        >
 
-        <div>
+            {% csrf_token %}
 
             <label>Judul Laporan</label>
 
             <input
                 type="text"
                 name="judul"
+                placeholder="Contoh: Laporan Mingguan 01"
                 required
             >
-
-        </div>
-
-
-        <div>
 
             <label>Acara / Minggu</label>
 
-            <select
-                name="acara"
-                required
-            >
+            <select name="acara" required>
 
                 <option value="">
                     -- Pilih Acara --
@@ -113,16 +368,14 @@
 
                     <option value="{{ item.id }}">
                         {{ item.nama }}
+                        {% if item.sub_acara %}
+                            - {{ item.sub_acara }}
+                        {% endif %}
                     </option>
 
                 {% endfor %}
 
             </select>
-
-        </div>
-
-
-        <div>
 
             <label>File Laporan</label>
 
@@ -132,94 +385,139 @@
                 required
             >
 
-        </div>
+            <button type="submit">
+                Upload Laporan
+            </button>
+
+        </form>
+
+    </div>
 
 
-        <button type="submit">
-            Upload Laporan
-        </button>
+    <div class="section">
 
-    </form>
+        <h2>Tugas Pendahuluan</h2>
 
+        {% for item in tugas %}
 
-    <hr>
+            <div class="task">
 
-
-    <h2>Riwayat Laporan</h2>
-
-    <table>
-
-        <thead>
-
-            <tr>
-
-                <th>Judul</th>
-
-                <th>Acara</th>
-
-                <th>Status</th>
-
-                <th>Catatan</th>
-
-                <th>Tanggal</th>
-
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            {% for item in laporan %}
-
-            <tr>
-
-                <td>
+                <div class="task-title">
                     {{ item.judul }}
-                </td>
+                </div>
 
-                <td>
+                <div class="task-meta">
+
+                    Acara:
                     {{ item.acara.nama }}
-                </td>
 
-                <td>
-                    {{ item.get_status_display }}
-                </td>
+                    {% if item.deadline %}
+                        <br>
+                        Deadline:
+                        {{ item.deadline|date:"d M Y H:i" }}
+                    {% endif %}
 
-                <td>
-                    {{ item.catatan_admin|default:"-" }}
-                </td>
+                </div>
 
-                <td>
-                    {{ item.uploaded_at|date:"d/m/Y H:i" }}
-                </td>
+                <p>
+                    {{ item.soal|linebreaksbr }}
+                </p>
 
-            </tr>
+                {% if item.file %}
+                    <a href="{{ item.file.url }}" target="_blank">
+                        Download File Tugas
+                    </a>
+                {% endif %}
 
-            {% empty %}
+            </div>
 
-            <tr>
+        {% empty %}
 
-                <td colspan="5">
-                    Belum ada laporan.
-                </td>
+            <p>Belum ada tugas pendahuluan.</p>
 
-            </tr>
+        {% endfor %}
 
-            {% endfor %}
-
-        </tbody>
-
-    </table>
+    </div>
 
 
-    <p>
+    <div class="section">
 
-        <a href="{% url 'logout_peserta' %}">
-            Logout
-        </a>
+        <h2>Riwayat Laporan Mingguan</h2>
 
-    </p>
+        {% if laporan %}
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Judul</th>
+                    <th>Acara</th>
+                    <th>Status</th>
+                    <th>Catatan Admin</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for item in laporan %}
+
+                <tr>
+
+                    <td>
+                        <strong>{{ item.judul }}</strong>
+                    </td>
+
+                    <td>
+                        {{ item.acara.nama }}
+                    </td>
+
+                    <td>
+
+                        {% if item.status == "acc" %}
+
+                            <span class="status acc">
+                                ACC
+                            </span>
+
+                        {% elif item.status == "revisi" %}
+
+                            <span class="status revisi">
+                                REVISI
+                            </span>
+
+                        {% else %}
+
+                            <span class="status menunggu">
+                                MENUNGGU
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        {{ item.catatan_admin|default:"-" }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+            <p>
+                Belum ada laporan yang diupload.
+            </p>
+
+        {% endif %}
+
+    </div>
 
 </div>
 
-{% endblock %}
+</body>
+</html>
