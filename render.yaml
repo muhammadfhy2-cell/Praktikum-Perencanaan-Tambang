@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: praktikum-perencanaan-tambang
+    runtime: python
+    buildCommand: ./build.sh
+    startCommand: gunicorn core.wsgi:application
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "praktikum-perencanaan-tambang.onrender.com"
+      - key: CSRF_TRUSTED_ORIGINS
+        value: "https://praktikum-perencanaan-tambang.onrender.com"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: praktikum-perencanaan-tambang-db
+          property: connectionString
+
+databases:
+  - name: praktikum-perencanaan-tambang-db
+    databaseName: praktikum_perencanaan_tambang
+    user: praktikum_admin

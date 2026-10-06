@@ -1,0 +1,29 @@
+{% extends 'praktikum/base.html' %}
+{% block content %}
+<div class="container py-5">
+  <div class="mb-4">
+    <h1>Personel Praktikum</h1>
+    <p>Struktur pengelola Praktikum Perencanaan Tambang.</p>
+  </div>
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm"><div class="card-body">
+        <h5>Penanggung Jawab Praktikum</h5>
+        {% for x in penanggung_jawab %}<p class="mb-2"><strong>{{ x.nama }}</strong>{% if x.kontak %}<br><small>{{ x.kontak }}</small>{% endif %}</p>{% empty %}<p class="text-muted">Belum ada data.</p>{% endfor %}
+      </div></div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm"><div class="card-body">
+        <h5>Koordinator Asisten Dosen</h5>
+        {% for x in koordinator %}<p class="mb-2"><strong>{{ x.nama }}</strong>{% if x.kontak %}<br><small>{{ x.kontak }}</small>{% endif %}</p>{% empty %}<p class="text-muted">Belum ada data.</p>{% endfor %}
+      </div></div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm"><div class="card-body">
+        <h5>Asisten Dosen</h5>
+        {% for x in asisten %}<p class="mb-2"><strong>{{ x.nama }}</strong>{% if x.kontak %}<br><small>{{ x.kontak }}</small>{% endif %}</p>{% empty %}<p class="text-muted">Belum ada data.</p>{% endfor %}
+      </div></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

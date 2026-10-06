@@ -1,0 +1,1 @@
+{% extends 'praktikum/base.html' %}{% block content %}<div class="container py-5"><h1>Pengumuman</h1>{% for x in items %}<article class="card p-4 mb-3"><small>{{ x.dibuat|date:'d F Y H:i' }}</small><h3>{{ x.judul }}</h3><div style="white-space:pre-line">{{ x.isi }}</div></article>{% empty %}<p>Belum ada pengumuman.</p>{% endfor %}</div>{% endblock %}
