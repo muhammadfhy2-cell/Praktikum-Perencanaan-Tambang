@@ -1,1 +1,235 @@
-{% load static %}<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{ setting.nama_praktikum }}</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" href="{% static 'praktikum/style.css' %}"></head><body><nav class="navbar navbar-expand-lg bg-dark navbar-dark"><div class="container"><a class="navbar-brand fw-bold" href="/">PRAKTIKUM PERENCANAAN TAMBANG</a><div class="navbar-nav ms-auto"><a class="nav-link" href="/">Beranda</a><a class="nav-link" href="/kelompok/">Kelompok</a> <a class="nav-link d-inline-block" href="{% url 'personel' %}">Personel</a><a class="nav-link" href="/jadwal/">Jadwal</a><a class="nav-link" href="/materi/">Materi</a><a class="nav-link" href="/absensi/">Absensi</a><a class="nav-link" href="/tata-tertib/">Tata Tertib</a></div></div></nav><main>{% block content %}{% endblock %}</main><footer class="bg-dark text-white mt-5 py-4"><div class="container"><b>Praktikum Perencanaan Tambang</b><br><small>{{ setting.periode }} · Portal informasi praktikum</small></div></footer></body></html>
+```html
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+        {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+        {% endblock %}
+    </title>
+
+    <meta name="description"
+          content="{{ setting.deskripsi|default:'Sistem Informasi Praktikum Perencanaan Tambang' }}">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+        body {
+            background: #f5f7fa;
+            color: #212529;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: .3px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #111827, #374151);
+            color: white;
+            border-radius: 0 0 28px 28px;
+            padding: 70px 0;
+        }
+
+        .hero h1 {
+            font-weight: 800;
+            font-size: clamp(2rem, 5vw, 4rem);
+        }
+
+        .hero p {
+            max-width: 800px;
+            color: #d1d5db;
+        }
+
+        .section-title {
+            font-weight: 800;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,.06);
+        }
+
+        .progress {
+            height: 8px;
+            border-radius: 10px;
+        }
+
+        footer {
+            background: #111827;
+            color: #d1d5db;
+            margin-top: 60px;
+        }
+
+        .nav-link {
+            font-weight: 500;
+        }
+
+        .nav-link.active {
+            font-weight: 700;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
+    <div class="container">
+
+        <a class="navbar-brand"
+           href="{% url 'home' %}">
+            {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+        </a>
+
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarMain">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">
+                        Beranda
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'personel' %}">
+                        Personel
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'kelompok' %}">
+                        Kelompok
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'jadwal' %}">
+                        Jadwal
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'materi' %}">
+                        Materi
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'absensi' %}">
+                        Absensi
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'pengumuman' %}">
+                        Pengumuman
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'tata_tertib' %}">
+                        Tata Tertib
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+
+{% block content %}
+{% endblock %}
+
+
+<footer class="py-5">
+    <div class="container">
+
+        <div class="row g-4">
+
+            <div class="col-md-7">
+
+                <h5 class="fw-bold">
+                    {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+                </h5>
+
+                <p class="mb-0">
+                    {{ setting.deskripsi|default:"Sistem Informasi Praktikum Perencanaan Tambang." }}
+                </p>
+
+            </div>
+
+            <div class="col-md-5">
+
+                <h6 class="fw-bold">
+                    Informasi
+                </h6>
+
+                {% if setting.periode %}
+                    <p class="mb-1">
+                        Periode: {{ setting.periode }}
+                    </p>
+                {% endif %}
+
+                {% if setting.dosen_pengampu %}
+                    <p class="mb-1">
+                        Dosen Pengampu: {{ setting.dosen_pengampu }}
+                    </p>
+                {% endif %}
+
+                {% if setting.kontak %}
+                    <p class="mb-0">
+                        Kontak: {{ setting.kontak }}
+                    </p>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <hr class="my-4">
+
+        <div class="d-flex justify-content-between flex-wrap gap-2">
+
+            <small>
+                © {% now "Y" %}
+                {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+            </small>
+
+            <small>
+                Sistem Informasi Praktikum
+            </small>
+
+        </div>
+
+    </div>
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>
+```
