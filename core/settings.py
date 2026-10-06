@@ -14,7 +14,10 @@ ALLOWED_HOSTS = [
     ).split(',')
     if h.strip()
 ]
-CSRF_TRUSTED_ORIGINS = [h.strip() for h in os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',') if h.strip()]
+CSRF_TRUSTED_ORIGINS = [
+    "https://praktikumperencanaantambang.velixir.run",
+    "http://praktikumperencanaantambang.velixir.run",
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin','django.contrib.auth','django.contrib.contenttypes',
