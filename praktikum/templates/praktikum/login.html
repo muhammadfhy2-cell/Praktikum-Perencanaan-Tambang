@@ -1,57 +1,182 @@
-{% extends "praktikum/base.html" %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-{% block content %}
+    <title>Login Peserta - Praktikum Perencanaan Tambang</title>
 
-<div class="container">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1f2937;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 18px;
+            padding: 35px;
+            box-shadow: 0 15px 40px rgba(0,0,0,.08);
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            background: #111827;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin: 10px 0 28px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #111827;
+        }
+
+        button {
+            width: 100%;
+            border: 0;
+            padding: 14px;
+            border-radius: 10px;
+            background: #111827;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: .9;
+        }
+
+        .alert {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-container">
 
     <div class="login-card">
 
+        <div class="logo">
+            PT
+        </div>
+
         <h1>Login Peserta</h1>
 
-        <p>
+        <div class="subtitle">
             Praktikum Perencanaan Tambang
-        </p>
+        </div>
 
         {% if messages %}
             {% for message in messages %}
-                <div class="message">
+                <div class="alert">
                     {{ message }}
                 </div>
             {% endfor %}
         {% endif %}
 
-        <form method="post">
+        <form method="POST">
 
             {% csrf_token %}
 
-            <div>
-                <label>Username</label>
+            <label>Username</label>
 
-                <input
-                    type="text"
-                    name="username"
-                    required
-                >
-            </div>
+            <input
+                type="text"
+                name="username"
+                placeholder="Masukkan username"
+                required
+                autofocus
+            >
 
-            <div>
-                <label>Password</label>
+            <label>Password</label>
 
-                <input
-                    type="password"
-                    name="password"
-                    required
-                >
-            </div>
+            <input
+                type="password"
+                name="password"
+                placeholder="Masukkan password"
+                required
+            >
 
             <button type="submit">
-                Login
+                Masuk ke Dashboard
             </button>
 
         </form>
+
+        <a href="/" class="back">
+            ← Kembali ke Website
+        </a>
 
     </div>
 
 </div>
 
-{% endblock %}
+</body>
+</html>
