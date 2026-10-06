@@ -1,4 +1,7 @@
-from django.shortcuts import render
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .models import (
     Setting,
@@ -10,10 +13,13 @@ from .models import (
     Absensi,
     Pengumuman,
     TataTertib,
+    TugasPendahuluan,
+    LaporanMingguan,
 )
 
 
 def context_base():
+
     setting = Setting.objects.first()
 
     return {
@@ -38,10 +44,17 @@ def context_base():
     }
 
 
+# ==========================================================
+# PUBLIC
+# ==========================================================
+
+
 def home(request):
+
     c = context_base()
 
     c.update({
+
         "pengumuman": (
             Pengumuman.objects
             .filter(aktif=True)
@@ -53,12 +66,12 @@ def home(request):
             .all()[:6]
         ),
 
-        # PERBAIKAN:
-        # mentor adalah ManyToManyField,
-        # sehingga harus menggunakan prefetch_related
         "kelompok": (
             Kelompok.objects
-            .prefetch_related("mentor", "peserta")
+            .prefetch_related(
+                "mentor",
+                "peserta"
+            )
             .all()
         ),
 
@@ -77,13 +90,15 @@ def home(request):
 
 
 def kelompok(request):
+
     c = context_base()
 
-    # PERBAIKAN:
-    # select_related("mentor") -> prefetch_related("mentor")
     c["kelompok"] = (
         Kelompok.objects
-        .prefetch_related("mentor", "peserta")
+        .prefetch_related(
+            "mentor",
+            "peserta"
+        )
         .all()
     )
 
@@ -95,6 +110,7 @@ def kelompok(request):
 
 
 def personel(request):
+
     c = context_base()
 
     return render(
@@ -105,9 +121,14 @@ def personel(request):
 
 
 def jadwal(request):
+
     c = context_base()
 
-    c["acara"] = Acara.objects.all()
+    c["acara"] = (
+        Acara.objects
+        .prefetch_related("pembawa_acara")
+        .all()
+    )
 
     return render(
         request,
@@ -117,6 +138,7 @@ def jadwal(request):
 
 
 def materi(request):
+
     c = context_base()
 
     c["materi"] = (
@@ -133,6 +155,7 @@ def materi(request):
 
 
 def absensi(request):
+
     c = context_base()
 
     rows = []
@@ -143,14 +166,14 @@ def absensi(request):
         .select_related("kelompok")
     )
 
-    for p in peserta_data:
+    for peserta in peserta_data:
 
         total = Absensi.objects.filter(
-            peserta=p
+            peserta=peserta
         ).count()
 
         hadir = Absensi.objects.filter(
-            peserta=p,
+            peserta=peserta,
             status="H"
         ).count()
 
@@ -161,7 +184,7 @@ def absensi(request):
         )
 
         rows.append({
-            "peserta": p,
+            "peserta": peserta,
             "total": total,
             "hadir": hadir,
             "pct": pct,
@@ -177,12 +200,16 @@ def absensi(request):
 
 
 def tata_tertib(request):
+
     c = context_base()
 
     c["items"] = (
         TataTertib.objects
         .filter(aktif=True)
-        .order_by("urutan", "id")
+        .order_by(
+            "urutan",
+            "id"
+        )
     )
 
     return render(
@@ -193,6 +220,7 @@ def tata_tertib(request):
 
 
 def pengumuman(request):
+
     c = context_base()
 
     c["items"] = (
@@ -205,4 +233,300 @@ def pengumuman(request):
         request,
         "praktikum/pengumuman.html",
         c
+    )
+
+
+def tugas_pendahuluan(request):
+
+    c = context_base()
+
+    c["tugas"] = (
+        TugasPendahuluan.objects
+        .filter(aktif=True)
+        .select_related("acara")
+        .order_by("-dibuat")
+    )
+
+    return render(
+        request,
+        "praktikum/tugas_pendahuluan.html",
+        c
+    )
+
+
+# ==========================================================
+# PESERTA LOGIN
+# ==========================================================
+
+
+def login_peserta(request):
+
+    if request.user.is_authenticated:
+
+        return redirect(
+            "dashboard_peserta"
+        )
+
+    if request.method == "POST":
+
+        username = request.POST.get(
+            "username",
+            ""
+        ).strip()
+
+        password = request.POST.get(
+            "password",
+            ""
+        )
+
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
+
+        if user is not None:
+
+            try:
+                peserta = user.profil_peserta
+
+                if not peserta.aktif:
+
+                    messages.error(
+                        request,
+                        "Akun peserta tidak aktif."
+                    )
+
+                    return redirect(
+                        "login_peserta"
+                    )
+
+            except Peserta.DoesNotExist:
+
+                messages.error(
+                    request,
+                    "Akun ini belum terhubung dengan data peserta."
+                )
+
+                return redirect(
+                    "login_peserta"
+                )
+
+            login(
+                request,
+                user
+            )
+
+            return redirect(
+                "dashboard_peserta"
+            )
+
+        messages.error(
+            request,
+            "Username atau password salah."
+        )
+
+    c = context_base()
+
+    return render(
+        request,
+        "praktikum/login.html",
+        c
+    )
+
+
+def logout_peserta(request):
+
+    logout(request)
+
+    return redirect(
+        "login_peserta"
+    )
+
+
+# ==========================================================
+# DASHBOARD PESERTA
+# ==========================================================
+
+
+@login_required(login_url="/login/")
+def dashboard_peserta(request):
+
+    try:
+
+        peserta = (
+            Peserta.objects
+            .select_related(
+                "kelompok"
+            )
+            .get(akun=request.user)
+        )
+
+    except Peserta.DoesNotExist:
+
+        logout(request)
+
+        messages.error(
+            request,
+            "Profil peserta tidak ditemukan."
+        )
+
+        return redirect(
+            "login_peserta"
+        )
+
+    laporan = (
+        LaporanMingguan.objects
+        .filter(
+            peserta=peserta
+        )
+        .select_related(
+            "acara",
+            "kelompok"
+        )
+    )
+
+    tugas = (
+        TugasPendahuluan.objects
+        .filter(aktif=True)
+        .select_related("acara")
+        .order_by("-dibuat")
+    )
+
+    c = context_base()
+
+    c.update({
+
+        "peserta": peserta,
+
+        "laporan": laporan,
+
+        "tugas": tugas,
+
+        "acara": Acara.objects.all(),
+
+    })
+
+    return render(
+        request,
+        "praktikum/dashboard_peserta.html",
+        c
+    )
+
+
+# ==========================================================
+# UPLOAD LAPORAN
+# ==========================================================
+
+
+@login_required(login_url="/login/")
+def upload_laporan(request):
+
+    try:
+
+        peserta = Peserta.objects.get(
+            akun=request.user
+        )
+
+    except Peserta.DoesNotExist:
+
+        messages.error(
+            request,
+            "Profil peserta tidak ditemukan."
+        )
+
+        return redirect(
+            "dashboard_peserta"
+        )
+
+    if request.method != "POST":
+
+        return redirect(
+            "dashboard_peserta"
+        )
+
+    judul = request.POST.get(
+        "judul",
+        ""
+    ).strip()
+
+    acara_id = request.POST.get(
+        "acara"
+    )
+
+    file = request.FILES.get(
+        "file"
+    )
+
+    if not judul:
+
+        messages.error(
+            request,
+            "Judul laporan wajib diisi."
+        )
+
+        return redirect(
+            "dashboard_peserta"
+        )
+
+    if not acara_id:
+
+        messages.error(
+            request,
+            "Acara wajib dipilih."
+        )
+
+        return redirect(
+            "dashboard_peserta"
+        )
+
+    if not file:
+
+        messages.error(
+            request,
+            "File laporan wajib diunggah."
+        )
+
+        return redirect(
+            "dashboard_peserta"
+        )
+
+    acara = get_object_or_404(
+        Acara,
+        id=acara_id
+    )
+
+    if not peserta.kelompok:
+
+        messages.error(
+            request,
+            "Peserta belum memiliki kelompok."
+        )
+
+        return redirect(
+            "dashboard_peserta"
+        )
+
+    LaporanMingguan.objects.create(
+
+        peserta=peserta,
+
+        kelompok=peserta.kelompok,
+
+        acara=acara,
+
+        judul=judul,
+
+        file=file,
+
+        status="menunggu",
+    )
+
+    messages.success(
+        request,
+        "Laporan berhasil diunggah dan menunggu pemeriksaan."
+    )
+
+    return redirect(
+        "dashboard_peserta"
     )
