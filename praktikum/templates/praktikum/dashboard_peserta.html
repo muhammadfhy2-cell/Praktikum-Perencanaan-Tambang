@@ -1,0 +1,225 @@
+{% extends "praktikum/base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <h1>Dashboard Peserta</h1>
+
+    <div class="profile-card">
+
+        <h2>{{ peserta.nama }}</h2>
+
+        <p>
+            NIM: {{ peserta.nim }}
+        </p>
+
+        <p>
+            Kelompok:
+            {% if peserta.kelompok %}
+                {{ peserta.kelompok.nama }}
+            {% else %}
+                Belum ditentukan
+            {% endif %}
+        </p>
+
+        <p>
+            Status:
+            {{ peserta.get_jabatan_display }}
+        </p>
+
+    </div>
+
+
+    <hr>
+
+
+    <h2>Tugas Pendahuluan</h2>
+
+    {% for item in tugas %}
+
+        <div class="card">
+
+            <h3>
+                {{ item.judul }}
+            </h3>
+
+            <p>
+                {{ item.acara.nama }}
+            </p>
+
+            {% if item.deadline %}
+                <p>
+                    Deadline:
+                    {{ item.deadline|date:"d F Y H:i" }}
+                </p>
+            {% endif %}
+
+            <div>
+                {{ item.soal|linebreaks }}
+            </div>
+
+        </div>
+
+    {% empty %}
+
+        <p>
+            Belum ada tugas.
+        </p>
+
+    {% endfor %}
+
+
+    <hr>
+
+
+    <h2>Upload Laporan Mingguan</h2>
+
+    <form
+        method="post"
+        action="{% url 'upload_laporan' %}"
+        enctype="multipart/form-data"
+    >
+
+        {% csrf_token %}
+
+        <div>
+
+            <label>Judul Laporan</label>
+
+            <input
+                type="text"
+                name="judul"
+                required
+            >
+
+        </div>
+
+
+        <div>
+
+            <label>Acara / Minggu</label>
+
+            <select
+                name="acara"
+                required
+            >
+
+                <option value="">
+                    -- Pilih Acara --
+                </option>
+
+                {% for item in acara %}
+
+                    <option value="{{ item.id }}">
+                        {{ item.nama }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <div>
+
+            <label>File Laporan</label>
+
+            <input
+                type="file"
+                name="file"
+                required
+            >
+
+        </div>
+
+
+        <button type="submit">
+            Upload Laporan
+        </button>
+
+    </form>
+
+
+    <hr>
+
+
+    <h2>Riwayat Laporan</h2>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Judul</th>
+
+                <th>Acara</th>
+
+                <th>Status</th>
+
+                <th>Catatan</th>
+
+                <th>Tanggal</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for item in laporan %}
+
+            <tr>
+
+                <td>
+                    {{ item.judul }}
+                </td>
+
+                <td>
+                    {{ item.acara.nama }}
+                </td>
+
+                <td>
+                    {{ item.get_status_display }}
+                </td>
+
+                <td>
+                    {{ item.catatan_admin|default:"-" }}
+                </td>
+
+                <td>
+                    {{ item.uploaded_at|date:"d/m/Y H:i" }}
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="5">
+                    Belum ada laporan.
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+
+    <p>
+
+        <a href="{% url 'logout_peserta' %}">
+            Logout
+        </a>
+
+    </p>
+
+</div>
+
+{% endblock %}
