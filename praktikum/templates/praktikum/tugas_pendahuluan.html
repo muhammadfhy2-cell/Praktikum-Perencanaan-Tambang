@@ -1,0 +1,51 @@
+{% extends "praktikum/base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <h1>Tugas Pendahuluan</h1>
+
+    {% for item in tugas %}
+
+    <div class="card">
+
+        <h2>{{ item.judul }}</h2>
+
+        <p>
+            <strong>Acara:</strong>
+            {{ item.acara.nama }}
+        </p>
+
+        {% if item.deadline %}
+        <p>
+            <strong>Deadline:</strong>
+            {{ item.deadline|date:"d F Y H:i" }}
+        </p>
+        {% endif %}
+
+        <div>
+            {{ item.soal|linebreaks }}
+        </div>
+
+        {% if item.file %}
+        <p>
+            <a href="{{ item.file.url }}" target="_blank">
+                Download File Tugas
+            </a>
+        </p>
+        {% endif %}
+
+    </div>
+
+    {% empty %}
+
+    <p>
+        Belum ada tugas pendahuluan.
+    </p>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}
