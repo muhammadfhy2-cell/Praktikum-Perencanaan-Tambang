@@ -1,1 +1,1 @@
-web: gunicorn core.wsgi:application
+web: sh entrypoint.sh
