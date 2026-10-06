@@ -1,0 +1,57 @@
+{% extends "praktikum/base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="login-card">
+
+        <h1>Login Peserta</h1>
+
+        <p>
+            Praktikum Perencanaan Tambang
+        </p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div>
+                <label>Username</label>
+
+                <input
+                    type="text"
+                    name="username"
+                    required
+                >
+            </div>
+
+            <div>
+                <label>Password</label>
+
+                <input
+                    type="password"
+                    name="password"
+                    required
+                >
+            </div>
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
