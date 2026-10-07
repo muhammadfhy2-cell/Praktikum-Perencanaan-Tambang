@@ -1,4 +1,3 @@
-```python
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
@@ -296,5 +295,80 @@ def dashboard_kelompok(request):
         )
         .order_by(
             "jabatan",
-            "nama"
-```
+            "nama",
+        )
+    )
+
+    # --------------------------------------------------------
+    # Progress per acara
+    # --------------------------------------------------------
+
+    progress_acara = (
+        kelompok.progress_acara
+        .select_related("acara")
+        .order_by(
+            "acara__urutan",
+            "acara__tanggal_mulai",
+        )
+    )
+
+    # --------------------------------------------------------
+    # Hitung progress keseluruhan
+    #
+    # Prioritas:
+    # 1. Jika ada ProgressAcara → rata-rata progress.
+    # 2. Jika belum ada → gunakan field Kelompok.progress.
+    # --------------------------------------------------------
+
+    progress_list = [
+        item.nilai_progress
+        for item in progress_acara
+    ]
+
+    if progress_list:
+
+        progress_persen = round(
+            sum(progress_list) / len(progress_list)
+        )
+
+    else:
+
+        progress_persen = kelompok.progress_persen
+
+    # --------------------------------------------------------
+    # Event / acara yang sudah memiliki progress
+    # --------------------------------------------------------
+
+    jumlah_event = progress_acara.count()
+
+    # --------------------------------------------------------
+    # Context dashboard
+    # --------------------------------------------------------
+
+    context = {
+        "kelompok": kelompok,
+
+        "mentor": mentor,
+
+        "anggota": anggota,
+
+        "progress_acara": progress_acara,
+
+        "progress_persen": progress_persen,
+
+        "jumlah_event": jumlah_event,
+
+        "jumlah_anggota": anggota.count(),
+
+        "username": (
+            kelompok.akun_login.username
+            if kelompok.akun_login
+            else ""
+        ),
+    }
+
+    return render(
+        request,
+        "absensi/dashboard_kelompok.html",
+        context,
+    )
