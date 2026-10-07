@@ -11,10 +11,25 @@
     >
 
     <title>
-        Kelompok Praktikum
+        Kelompok Praktikum — Mine Planning
     </title>
 
     <style>
+
+        :root {
+            --mine-dark: #182019;
+            --mine-dark-2: #263228;
+            --mine-green: #314a35;
+            --mine-green-light: #58715a;
+            --laterite: #c98528;
+            --laterite-light: #e5b35c;
+            --cream: #fbfaf6;
+            --sand: #f3eee3;
+            --white: #ffffff;
+            --text: #20251f;
+            --muted: #6d746d;
+            --border: #e1ddd3;
+        }
 
         * {
             box-sizing: border-box;
@@ -26,272 +41,861 @@
                 Arial,
                 Helvetica,
                 sans-serif;
-            background: #f5f7fa;
-            color: #111827;
+            background: var(--cream);
+            color: var(--text);
         }
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        .topbar {
+            background: var(--mine-dark);
+            color: white;
+            padding: 18px 0;
+            border-bottom: 4px solid var(--laterite);
+        }
+
+        .topbar-inner {
+            max-width: 1400px;
+            margin: auto;
+            padding: 0 25px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: var(--laterite);
+            border-radius: 12px;
+
+            font-size: 23px;
+        }
+
+        .brand-title {
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: .03em;
+        }
+
+        .brand-subtitle {
+            font-size: 11px;
+            color: rgba(255,255,255,.6);
+            margin-top: 2px;
+        }
+
+        .period {
+            padding: 8px 13px;
+            border-radius: 999px;
+
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.14);
+
+            font-size: 12px;
+            color: #f1d49e;
+            font-weight: 700;
+        }
+
+        /* =========================================
+           MAIN
+        ========================================= */
 
         .container {
             max-width: 1400px;
-            margin: 45px auto;
-            padding: 0 25px;
+            margin: auto;
+            padding: 60px 25px;
+        }
+
+        .page-kicker {
+            color: var(--laterite);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
         }
 
         h1 {
-            font-size: 46px;
-            margin: 0 0 8px;
+            font-size: 44px;
+            margin: 0;
+            color: var(--mine-dark);
+            font-weight: 800;
         }
 
         .subtitle {
-            font-size: 20px;
-            color: #4b5563;
-            margin-bottom: 35px;
+            font-size: 17px;
+            color: var(--muted);
+            margin-top: 12px;
+            margin-bottom: 40px;
+            max-width: 760px;
+            line-height: 1.7;
         }
 
-        .group-card {
+        /* =========================================
+           SUMMARY
+        ========================================= */
+
+        .summary {
+            display: grid;
+            grid-template-columns:
+                repeat(
+                    3,
+                    minmax(0, 1fr)
+                );
+
+            gap: 18px;
+            margin-bottom: 40px;
+        }
+
+        .summary-card {
             background: white;
-            border: 1px solid #d9dee5;
-            border-radius: 12px;
-            margin-bottom: 25px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 22px;
+
+            position: relative;
             overflow: hidden;
         }
 
-        .group-header {
-            padding: 25px;
-            border-bottom: 1px solid #e5e7eb;
+        .summary-card::before {
+            content: "";
+            position: absolute;
+
+            left: 0;
+            top: 0;
+            bottom: 0;
+
+            width: 5px;
+            background: var(--laterite);
         }
 
-        .group-name {
+        .summary-icon {
             font-size: 25px;
-            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .summary-number {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--mine-dark);
+        }
+
+        .summary-label {
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* =========================================
+           GROUP CARD
+        ========================================= */
+
+        .group-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            margin-bottom: 28px;
+            overflow: hidden;
+
+            box-shadow:
+                0 8px 28px rgba(25,35,27,.05);
+        }
+
+        .group-header {
+            padding: 26px 28px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--mine-dark),
+                    var(--mine-green)
+                );
+
+            color: white;
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        .group-header::after {
+            content: "";
+            position: absolute;
+
+            width: 260px;
+            height: 260px;
+
+            right: -120px;
+            top: -150px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(201,133,40,.15);
+        }
+
+        .group-header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .group-label {
+            display: inline-block;
+
+            padding: 5px 10px;
+
+            background:
+                rgba(255,255,255,.10);
+
+            border:
+                1px solid rgba(255,255,255,.15);
+
+            border-radius: 6px;
+
+            color: #f0d29a;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: .08em;
+
             margin-bottom: 12px;
         }
 
-        .mentor {
-            font-size: 16px;
-            color: #374151;
+        .group-name {
+            font-size: 27px;
+            font-weight: 800;
+            margin-bottom: 10px;
         }
 
+        .mentor {
+            font-size: 14px;
+            color: rgba(255,255,255,.75);
+        }
+
+        .mentor strong {
+            color: white;
+        }
+
+        /* =========================================
+           CONTENT
+        ========================================= */
+
         .content {
-            padding: 25px;
+            padding: 28px;
         }
 
         .section-title {
-            font-size: 19px;
-            font-weight: 700;
-            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 800;
+
+            color: var(--mine-dark);
+
+            margin-bottom: 17px;
         }
 
         .participant-list {
             display: grid;
+
             grid-template-columns:
                 repeat(
                     auto-fit,
-                    minmax(260px, 1fr)
+                    minmax(250px, 1fr)
                 );
-            gap: 12px;
+
+            gap: 14px;
         }
 
         .participant {
-            background: #f8fafc;
-            border: 1px solid #e5e7eb;
-            border-radius: 9px;
-            padding: 15px;
+            background: #faf9f5;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 12px;
+
+            padding: 17px;
+
+            transition: .2s ease;
+        }
+
+        .participant:hover {
+            transform: translateY(-3px);
+
+            border-color:
+                rgba(201,133,40,.5);
+
+            box-shadow:
+                0 8px 20px rgba(25,35,27,.06);
         }
 
         .participant-name {
-            font-size: 17px;
-            font-weight: 700;
+            font-size: 16px;
+            font-weight: 800;
+
+            color: var(--mine-dark);
         }
 
         .participant-info {
-            margin-top: 6px;
-            color: #6b7280;
-            font-size: 14px;
-            line-height: 1.6;
+            margin-top: 7px;
+
+            color: var(--muted);
+
+            font-size: 13px;
+
+            line-height: 1.7;
+        }
+
+        .participant-status {
+            display: inline-block;
+
+            margin-top: 7px;
+
+            padding: 4px 8px;
+
+            border-radius: 6px;
+
+            background:
+                rgba(49,74,53,.10);
+
+            color: var(--mine-green);
+
+            font-size: 11px;
+
+            font-weight: 700;
         }
 
         .empty {
-            color: #6b7280;
+            color: var(--muted);
             font-style: italic;
+
+            padding: 15px;
         }
 
+        /* =========================================
+           PROGRESS
+        ========================================= */
+
         .progress-wrapper {
-            margin-top: 25px;
+            margin-top: 30px;
+
+            padding-top: 25px;
+
+            border-top:
+                1px solid var(--border);
+        }
+
+        .progress-header {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 9px;
+        }
+
+        .progress-title {
+            font-weight: 800;
+            color: var(--mine-dark);
+        }
+
+        .progress-value {
+            color: var(--laterite);
+
+            font-weight: 800;
         }
 
         .progress-bar {
-            height: 10px;
-            background: #e5e7eb;
-            border-radius: 10px;
+            height: 11px;
+
+            background:
+                #e7e3d9;
+
+            border-radius: 99px;
+
             overflow: hidden;
-            margin-top: 8px;
         }
 
         .progress-fill {
             height: 100%;
-            background: #111827;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--mine-green),
+                    var(--laterite)
+                );
+
+            border-radius: 99px;
+
+            transition: width .4s ease;
         }
 
         .progress-text {
             margin-top: 7px;
-            font-size: 14px;
-            color: #6b7280;
+
+            font-size: 12px;
+
+            color: var(--muted);
         }
 
+        /* =========================================
+           CATATAN
+        ========================================= */
+
         .catatan {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8fafc;
-            border-radius: 8px;
+            margin-top: 22px;
+
+            padding: 17px;
+
+            background:
+                rgba(201,133,40,.08);
+
+            border-left:
+                4px solid var(--laterite);
+
+            border-radius: 9px;
+
+            color: var(--text);
+
+            line-height: 1.7;
+        }
+
+        .catatan strong {
+            color: var(--mine-dark);
+        }
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        .footer {
+            background: var(--mine-dark);
+
+            color:
+                rgba(255,255,255,.65);
+
+            padding: 25px;
+
+            text-align: center;
+
+            font-size: 12px;
+        }
+
+        .footer strong {
+            color: white;
+        }
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 850px) {
+
+            .summary {
+                grid-template-columns:
+                    1fr;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+
+            .topbar-inner {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .container {
+                padding:
+                    40px 18px;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+
+            .subtitle {
+                font-size: 15px;
+            }
+
+            .group-header,
+            .content {
+                padding: 20px;
+            }
+
+            .group-name {
+                font-size: 23px;
+            }
+
         }
 
     </style>
 
 </head>
 
+
 <body>
 
-<div class="container">
 
-    <h1>
-        Kelompok Praktikum
-    </h1>
+<!-- =========================================================
+     TOP BAR
+========================================================= -->
 
-    <div class="subtitle">
-        Informasi kelompok, mentor, peserta,
-        dan progres pengerjaan.
-    </div>
+<header class="topbar">
 
+    <div class="topbar-inner">
 
-    {% for kelompok_item in kelompok %}
+        <div class="brand">
 
-    <div class="group-card">
-
-        <div class="group-header">
-
-            <div class="group-name">
-                {{ kelompok_item.nama }}
+            <div class="brand-icon">
+                ⛏️
             </div>
 
-            <div class="mentor">
+            <div>
 
-                <strong>
-                    Asisten Pembimbing / Mentor:
-                </strong>
+                <div class="brand-title">
+                    MINE PLANNING PRACTICUM
+                </div>
 
-                {% for mentor in kelompok_item.mentor.all %}
+                <div class="brand-subtitle">
+                    Nickel Laterite • Mining Engineering
+                </div>
 
-                    {{ mentor.nama }}
+            </div>
 
-                    {% if not forloop.last %}
-                        ,
-                    {% endif %}
+        </div>
 
-                {% empty %}
+        <div class="period">
+            KELOMPOK PRAKTIKUM
+        </div>
 
-                    Belum ditentukan
+    </div>
 
-                {% endfor %}
+</header>
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main>
+
+    <div class="container">
+
+        <div class="page-kicker">
+            ⛏ Mine Planning Team
+        </div>
+
+        <h1>
+            Kelompok Praktikum
+        </h1>
+
+        <div class="subtitle">
+
+            Informasi kelompok, mentor, peserta,
+            dan progres pengerjaan praktikum
+            perencanaan tambang nikel.
+
+        </div>
+
+
+        <!-- =================================================
+             SUMMARY
+        ================================================== -->
+
+        <div class="summary">
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    👷
+                </div>
+
+                <div class="summary-number">
+                    {{ kelompok|length }}
+                </div>
+
+                <div class="summary-label">
+                    Kelompok Praktikum
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    🦺
+                </div>
+
+                <div class="summary-number">
+
+                    {% with total=0 %}
+
+                        {{ kelompok|length }}
+
+                    {% endwith %}
+
+                </div>
+
+                <div class="summary-label">
+                    Tim Mine Planning
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    📊
+                </div>
+
+                <div class="summary-number">
+                    {{ kelompok|length }}
+                </div>
+
+                <div class="summary-label">
+                    Monitoring Kelompok
+                </div>
 
             </div>
 
         </div>
 
 
-        <div class="content">
+        <!-- =================================================
+             GROUPS
+        ================================================== -->
 
-            <div class="section-title">
-                Peserta Kelompok
-            </div>
+        {% for kelompok_item in kelompok %}
 
+        <div class="group-card">
 
-            <div class="participant-list">
+            <!-- HEADER -->
 
-                {% for peserta in kelompok_item.peserta.all %}
+            <div class="group-header">
 
-                    <div class="participant">
+                <div class="group-header-content">
 
-                        <div class="participant-name">
-                            {{ peserta.nama }}
-                        </div>
+                    <div class="group-label">
+                        ⛏ Mine Planning Group
+                    </div>
 
-                        <div class="participant-info">
+                    <div class="group-name">
+                        {{ kelompok_item.nama }}
+                    </div>
 
-                            {% if peserta.nim %}
-                                NIM:
-                                {{ peserta.nim }}
-                                <br>
+                    <div class="mentor">
+
+                        <strong>
+                            Asisten Pembimbing / Mentor:
+                        </strong>
+
+                        {% for mentor in kelompok_item.mentor.all %}
+
+                            {{ mentor.nama }}
+
+                            {% if not forloop.last %}
+                                ,
                             {% endif %}
 
-                            Status:
-                            {{ peserta.get_jabatan_display }}
+                        {% empty %}
 
+                            Belum ditentukan
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONTENT -->
+
+            <div class="content">
+
+                <div class="section-title">
+                    👷 Peserta Kelompok
+                </div>
+
+
+                <div class="participant-list">
+
+                    {% for peserta in kelompok_item.peserta.all %}
+
+                        <div class="participant">
+
+                            <div class="participant-name">
+
+                                {{ peserta.nama }}
+
+                            </div>
+
+
+                            <div class="participant-info">
+
+                                {% if peserta.nim %}
+
+                                    NIM:
+                                    {{ peserta.nim }}
+
+                                    <br>
+
+                                {% endif %}
+
+                                <span class="participant-status">
+
+                                    {{ peserta.get_jabatan_display }}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    {% empty %}
+
+                        <div class="empty">
+
+                            Belum ada peserta
+                            pada kelompok ini.
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- PROGRESS -->
+
+                <div class="progress-wrapper">
+
+                    <div class="progress-header">
+
+                        <div class="progress-title">
+                            📊 Progress Pengerjaan
+                        </div>
+
+                        <div class="progress-value">
+                            {{ kelompok_item.progress }}%
                         </div>
 
                     </div>
 
-                {% empty %}
 
-                    <div class="empty">
-                        Belum ada peserta
-                        pada kelompok ini.
+                    <div class="progress-bar">
+
+                        <div
+                            class="progress-fill"
+                            style="
+                                width:
+                                {{ kelompok_item.progress }}%;
+                            "
+                        ></div>
+
                     </div>
 
-                {% endfor %}
+
+                    <div class="progress-text">
+
+                        Progress kegiatan kelompok
+                        dalam praktikum.
+
+                    </div>
+
+                </div>
+
+
+                <!-- CATATAN -->
+
+                {% if kelompok_item.catatan %}
+
+                    <div class="catatan">
+
+                        <strong>
+                            📝 Catatan Kelompok
+                        </strong>
+
+                        <br><br>
+
+                        {{ kelompok_item.catatan }}
+
+                    </div>
+
+                {% endif %}
 
             </div>
-
-
-            <div class="progress-wrapper">
-
-                <strong>
-                    Progress Pengerjaan
-                </strong>
-
-                <div class="progress-bar">
-
-                    <div
-                        class="progress-fill"
-                        style="
-                            width:
-                            {{ kelompok_item.progress }}%;
-                        "
-                    ></div>
-
-                </div>
-
-                <div class="progress-text">
-
-                    {{ kelompok_item.progress }}%
-
-                </div>
-
-            </div>
-
-
-            {% if kelompok_item.catatan %}
-
-                <div class="catatan">
-
-                    <strong>
-                        Catatan:
-                    </strong>
-
-                    <br><br>
-
-                    {{ kelompok_item.catatan }}
-
-                </div>
-
-            {% endif %}
 
         </div>
 
+        {% empty %}
+
+            <div class="group-card">
+
+                <div class="content">
+
+                    <div class="empty">
+
+                        Belum ada data kelompok
+                        yang tersedia.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
     </div>
 
-    {% endfor %}
+</main>
 
-</div>
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="footer">
+
+    <strong>
+        ⛏ Mine Planning Practicum
+    </strong>
+
+    &nbsp;•&nbsp;
+
+    Nickel Laterite Mining
+
+    &nbsp;•&nbsp;
+
+    Mining Engineering
+
+</footer>
+
 
 </body>
 
