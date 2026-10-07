@@ -1,392 +1,537 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Dashboard Peserta</title>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Dashboard Peserta
+    </title>
 
     <style>
+
         * {
             box-sizing: border-box;
         }
 
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            color: #1f2937;
-        }
-
-        .navbar {
-            background: #111827;
-            color: white;
-            padding: 18px 6%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .brand {
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .logout {
-            color: white;
-            text-decoration: none;
-            padding: 8px 14px;
-            border: 1px solid rgba(255,255,255,.3);
-            border-radius: 8px;
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+            background: #f5f7fa;
+            color: #111827;
         }
 
         .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 35px auto;
+            max-width: 1250px;
+            margin: 40px auto;
+            padding: 0 25px;
         }
 
-        .welcome {
-            margin-bottom: 25px;
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
         }
 
-        .welcome h1 {
-            margin-bottom: 5px;
+        h1 {
+            margin: 0;
+            font-size: 38px;
         }
 
-        .welcome p {
-            color: #6b7280;
+        .logout {
+            text-decoration: none;
+            padding: 10px 18px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            color: #111827;
+            background: white;
         }
 
         .profile {
             background: white;
-            padding: 22px;
-            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 25px;
             margin-bottom: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,.05);
         }
 
         .profile-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(220px, 1fr)
+                );
+            gap: 18px;
         }
 
-        .profile-item {
-            background: #f9fafb;
-            padding: 15px;
-            border-radius: 10px;
-        }
-
-        .profile-item small {
-            display: block;
+        .label {
+            font-size: 13px;
             color: #6b7280;
             margin-bottom: 5px;
+        }
+
+        .value {
+            font-weight: 700;
         }
 
         .stats {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(180px, 1fr)
+                );
             gap: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .stat {
             background: white;
-            padding: 22px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,.05);
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
         }
 
         .stat-number {
             font-size: 30px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            color: #6b7280;
+            font-weight: 700;
         }
 
         .section {
             background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
             padding: 25px;
-            border-radius: 16px;
             margin-bottom: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,.05);
         }
 
         .section h2 {
             margin-top: 0;
         }
 
-        .task {
-            border: 1px solid #e5e7eb;
-            padding: 17px;
-            border-radius: 12px;
-            margin-bottom: 12px;
+        .form-row {
+            margin-bottom: 15px;
         }
 
-        .task-title {
-            font-weight: bold;
+        label {
+            display: block;
             margin-bottom: 7px;
-        }
-
-        .task-meta {
-            color: #6b7280;
-            font-size: 14px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            text-align: left;
-            padding: 13px;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        th {
-            background: #f9fafb;
-        }
-
-        .status {
-            padding: 6px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .menunggu {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .acc {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .revisi {
-            background: #fee2e2;
-            color: #991b1b;
+            font-weight: 700;
         }
 
         input,
         select {
             width: 100%;
             padding: 12px;
-            margin-bottom: 15px;
             border: 1px solid #d1d5db;
-            border-radius: 9px;
+            border-radius: 7px;
+            font-size: 15px;
         }
 
         button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 7px;
             background: #111827;
             color: white;
-            border: 0;
-            padding: 12px 20px;
-            border-radius: 9px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 700;
         }
 
-        .message {
-            padding: 13px;
+        .report {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+
+        .report h3 {
+            margin-top: 0;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .waiting {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .approved {
             background: #dcfce7;
             color: #166534;
-            border-radius: 10px;
+        }
+
+        .revision {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .note {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff7ed;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .file-revision {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+        }
+
+        .file-revision a {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            color: #166534;
+        }
+
+        .task {
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 9px;
+            margin-bottom: 12px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
             margin-bottom: 20px;
+            background: #eef2ff;
         }
 
-        @media(max-width: 800px) {
-            .profile-grid,
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media(max-width: 500px) {
-            .profile-grid,
-            .stats {
-                grid-template-columns: 1fr;
-            }
-
-            .section {
-                padding: 18px;
-            }
-
-            table {
-                font-size: 13px;
-            }
-        }
     </style>
+
 </head>
+
 
 <body>
 
-<nav class="navbar">
-
-    <div class="brand">
-        Praktikum Perencanaan Tambang
-    </div>
-
-    <a href="{% url 'logout_peserta' %}" class="logout">
-        Logout
-    </a>
-
-</nav>
-
 <div class="container">
 
+
+    <div class="topbar">
+
+        <h1>
+            Dashboard Peserta
+        </h1>
+
+        <a
+            href="{% url 'logout_peserta' %}"
+            class="logout"
+        >
+            Keluar
+        </a>
+
+    </div>
+
+
     {% if messages %}
+
         {% for message in messages %}
-            <div class="message">
+
+            <div class="alert">
                 {{ message }}
             </div>
+
         {% endfor %}
+
     {% endif %}
 
-    <div class="welcome">
-        <h1>Dashboard Peserta</h1>
-        <p>
-            Selamat datang, <strong>{{ peserta.nama }}</strong>
-        </p>
-    </div>
+
+    <!-- PROFIL -->
 
     <div class="profile">
 
-        <h2>Profil Peserta</h2>
+        <h2>
+            Profil Peserta
+        </h2>
 
         <div class="profile-grid">
 
-            <div class="profile-item">
-                <small>Nama</small>
-                <strong>{{ peserta.nama }}</strong>
+            <div>
+
+                <div class="label">
+                    Nama
+                </div>
+
+                <div class="value">
+                    {{ peserta.nama }}
+                </div>
+
             </div>
 
-            <div class="profile-item">
-                <small>NIM</small>
-                <strong>{{ peserta.nim|default:"-" }}</strong>
+
+            <div>
+
+                <div class="label">
+                    NIM
+                </div>
+
+                <div class="value">
+                    {{ peserta.nim|default:"-" }}
+                </div>
+
             </div>
 
-            <div class="profile-item">
-                <small>Kelompok</small>
-                <strong>
+
+            <div>
+
+                <div class="label">
+                    Kelompok
+                </div>
+
+                <div class="value">
+
                     {% if peserta.kelompok %}
                         {{ peserta.kelompok.nama }}
                     {% else %}
                         Belum ditentukan
                     {% endif %}
-                </strong>
+
+                </div>
+
             </div>
 
-            <div class="profile-item">
-                <small>Status</small>
-                <strong>{{ peserta.get_jabatan_display }}</strong>
+
+            <div>
+
+                <div class="label">
+                    Status
+                </div>
+
+                <div class="value">
+                    {{ peserta.get_jabatan_display }}
+                </div>
+
             </div>
 
         </div>
 
     </div>
 
+
+    <!-- STATISTIK -->
 
     <div class="stats">
 
         <div class="stat">
+
+            <div class="label">
+                Total Laporan
+            </div>
+
             <div class="stat-number">
                 {{ total_laporan }}
             </div>
-            <div class="stat-label">
-                Total Laporan
-            </div>
+
         </div>
 
+
         <div class="stat">
+
+            <div class="label">
+                Menunggu
+            </div>
+
             <div class="stat-number">
                 {{ laporan_menunggu }}
             </div>
-            <div class="stat-label">
-                Menunggu Pemeriksaan
-            </div>
+
         </div>
 
+
         <div class="stat">
+
+            <div class="label">
+                ACC
+            </div>
+
             <div class="stat-number">
                 {{ laporan_acc }}
             </div>
-            <div class="stat-label">
-                Laporan ACC
-            </div>
+
         </div>
 
+
         <div class="stat">
+
+            <div class="label">
+                Perlu Revisi
+            </div>
+
             <div class="stat-number">
                 {{ laporan_revisi }}
             </div>
-            <div class="stat-label">
-                Perlu Revisi
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="label">
+                Absensi
             </div>
+
+            <div class="stat-number">
+                {{ persentase_absensi }}%
+            </div>
+
         </div>
 
     </div>
 
 
+    <!-- TUGAS -->
+
     <div class="section">
 
-        <h2>Upload Laporan Mingguan</h2>
+        <h2>
+            Tugas Pendahuluan
+        </h2>
+
+
+        {% for tugas_item in tugas %}
+
+            <div class="task">
+
+                <strong>
+                    {{ tugas_item.judul }}
+                </strong>
+
+                <p>
+                    Acara:
+                    {{ tugas_item.acara.nama }}
+                </p>
+
+                <p>
+                    {{ tugas_item.soal }}
+                </p>
+
+                {% if tugas_item.file %}
+
+                    <a
+                        href="{{ tugas_item.file.url }}"
+                        target="_blank"
+                    >
+                        Download File Tugas
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        {% empty %}
+
+            <p>
+                Belum ada tugas pendahuluan.
+            </p>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- UPLOAD -->
+
+    <div class="section">
+
+        <h2>
+            Upload Laporan Mingguan
+        </h2>
 
         <form
             method="POST"
-            action="{% url 'upload_laporan' %}"
             enctype="multipart/form-data"
+            action="{% url 'upload_laporan' %}"
         >
 
             {% csrf_token %}
 
-            <label>Judul Laporan</label>
 
-            <input
-                type="text"
-                name="judul"
-                placeholder="Contoh: Laporan Mingguan 01"
-                required
-            >
+            <div class="form-row">
 
-            <label>Acara / Minggu</label>
+                <label>
+                    Judul Laporan
+                </label>
 
-            <select name="acara" required>
+                <input
+                    type="text"
+                    name="judul"
+                    placeholder="Contoh: Laporan Mingguan 01"
+                    required
+                >
 
-                <option value="">
-                    -- Pilih Acara --
-                </option>
+            </div>
 
-                {% for item in acara %}
 
-                    <option value="{{ item.id }}">
-                        {{ item.nama }}
-                        {% if item.sub_acara %}
-                            - {{ item.sub_acara }}
-                        {% endif %}
+            <div class="form-row">
+
+                <label>
+                    Acara / Minggu
+                </label>
+
+                <select
+                    name="acara"
+                    required
+                >
+
+                    <option value="">
+                        -- Pilih Acara --
                     </option>
 
-                {% endfor %}
+                    {% for acara_item in acara %}
 
-            </select>
+                        <option
+                            value="{{ acara_item.id }}"
+                        >
+                            {{ acara_item.nama }}
+                        </option>
 
-            <label>File Laporan</label>
+                    {% endfor %}
 
-            <input
-                type="file"
-                name="file"
-                required
-            >
+                </select>
+
+            </div>
+
+
+            <div class="form-row">
+
+                <label>
+                    File Laporan
+                </label>
+
+                <input
+                    type="file"
+                    name="file"
+                    required
+                >
+
+            </div>
+
 
             <button type="submit">
-                Upload Laporan
+                Kirim Laporan
             </button>
 
         </form>
@@ -394,130 +539,121 @@
     </div>
 
 
+    <!-- RIWAYAT -->
+
     <div class="section">
 
-        <h2>Tugas Pendahuluan</h2>
+        <h2>
+            Riwayat Laporan
+        </h2>
 
-        {% for item in tugas %}
 
-            <div class="task">
+        {% for laporan_item in laporan %}
 
-                <div class="task-title">
-                    {{ item.judul }}
-                </div>
+            <div class="report">
 
-                <div class="task-meta">
-
-                    Acara:
-                    {{ item.acara.nama }}
-
-                    {% if item.deadline %}
-                        <br>
-                        Deadline:
-                        {{ item.deadline|date:"d M Y H:i" }}
-                    {% endif %}
-
-                </div>
+                <h3>
+                    {{ laporan_item.judul }}
+                </h3>
 
                 <p>
-                    {{ item.soal|linebreaksbr }}
+                    Acara:
+                    {{ laporan_item.acara.nama }}
                 </p>
 
-                {% if item.file %}
-                    <a href="{{ item.file.url }}" target="_blank">
-                        Download File Tugas
-                    </a>
+                <p>
+                    Dikirim:
+                    {{ laporan_item.uploaded_at|date:"d F Y H:i" }}
+                </p>
+
+
+                {% if laporan_item.status == "menunggu" %}
+
+                    <span class="status waiting">
+                        MENUNGGU PEMERIKSAAN
+                    </span>
+
+
+                {% elif laporan_item.status == "acc" %}
+
+                    <span class="status approved">
+                        ✓ DISETUJUI / ACC
+                    </span>
+
+
+                {% elif laporan_item.status == "revisi" %}
+
+                    <span class="status revision">
+                        ⚠ PERLU REVISI
+                    </span>
+
+
+                    {% if laporan_item.catatan_admin %}
+
+                        <div class="note">
+
+                            <strong>
+                                Catatan Admin:
+                            </strong>
+
+                            <br><br>
+
+                            {{ laporan_item.catatan_admin }}
+
+                        </div>
+
+                    {% endif %}
+
+
+                    {% if laporan_item.file_revisi %}
+
+                        <div class="file-revision">
+
+                            <strong>
+                                File Revisi dari Admin
+                            </strong>
+
+                            <br>
+
+                            <a
+                                href="{{ laporan_item.file_revisi.url }}"
+                                target="_blank"
+                            >
+                                Download File Revisi
+                            </a>
+
+                        </div>
+
+                    {% endif %}
+
                 {% endif %}
+
+
+                <p style="margin-top:15px;">
+
+                    <a
+                        href="{{ laporan_item.file.url }}"
+                        target="_blank"
+                    >
+                        Lihat File yang Dikirim
+                    </a>
+
+                </p>
 
             </div>
 
         {% empty %}
 
-            <p>Belum ada tugas pendahuluan.</p>
-
-        {% endfor %}
-
-    </div>
-
-
-    <div class="section">
-
-        <h2>Riwayat Laporan Mingguan</h2>
-
-        {% if laporan %}
-
-        <table>
-
-            <thead>
-                <tr>
-                    <th>Judul</th>
-                    <th>Acara</th>
-                    <th>Status</th>
-                    <th>Catatan Admin</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-                {% for item in laporan %}
-
-                <tr>
-
-                    <td>
-                        <strong>{{ item.judul }}</strong>
-                    </td>
-
-                    <td>
-                        {{ item.acara.nama }}
-                    </td>
-
-                    <td>
-
-                        {% if item.status == "acc" %}
-
-                            <span class="status acc">
-                                ACC
-                            </span>
-
-                        {% elif item.status == "revisi" %}
-
-                            <span class="status revisi">
-                                REVISI
-                            </span>
-
-                        {% else %}
-
-                            <span class="status menunggu">
-                                MENUNGGU
-                            </span>
-
-                        {% endif %}
-
-                    </td>
-
-                    <td>
-                        {{ item.catatan_admin|default:"-" }}
-                    </td>
-
-                </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-        {% else %}
-
             <p>
-                Belum ada laporan yang diupload.
+                Belum ada laporan mingguan.
             </p>
 
-        {% endif %}
+        {% endfor %}
 
     </div>
 
 </div>
 
 </body>
+
 </html>
