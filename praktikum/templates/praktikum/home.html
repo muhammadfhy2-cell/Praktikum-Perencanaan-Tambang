@@ -1,78 +1,67 @@
-{% extends 'praktikum/base.html' %}
+{% extends "praktikum/base.html" %}
+
+
+{% block title %}
+    {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+{% endblock %}
+
 
 {% block content %}
 
-<!-- ==================== HERO ==================== -->
 
-<section class="hero py-5">
+<!-- ============================================================
+     HERO
+============================================================= -->
+
+<section class="hero">
+
     <div class="container py-4">
 
-```
-    <div class="row align-items-center">
+        <div class="row align-items-center">
 
-        <div class="col-lg-8">
+            <div class="col-lg-8">
 
-            <span class="badge bg-light text-dark px-3 py-2 mb-3">
-                Periode {{ setting.periode }}
-            </span>
+                {% if setting.periode %}
 
-            <h1 class="display-4 fw-bold mb-3">
-                {{ setting.nama_praktikum }}
-            </h1>
+                    <span class="badge bg-light text-dark px-3 py-2 mb-3">
+                        Periode {{ setting.periode }}
+                    </span>
 
-            <p class="lead mb-4">
-                {{ setting.deskripsi|default:"Portal informasi resmi praktikum yang menyediakan jadwal, materi, absensi, kelompok, pengumuman, dan perkembangan kegiatan." }}
-            </p>
-
-            <div class="d-flex flex-wrap gap-2">
-
-                <a href="{% url 'materi' %}" class="btn btn-light btn-lg px-4">
-                    📚 Materi Praktikum
-                </a>
-
-                <a href="{% url 'jadwal' %}" class="btn btn-outline-light btn-lg px-4">
-                    📅 Lihat Jadwal
-                </a>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-4 mt-4 mt-lg-0">
-
-            <div class="bg-white text-dark rounded-4 shadow p-4">
-
-                <small class="text-muted">
-                    Periode Praktikum
-                </small>
-
-                <h2 class="fw-bold mb-3">
-                    {{ setting.periode }}
-                </h2>
-
-                {% if setting.dosen_pengampu %}
-                <div class="mb-3">
-                    <small class="text-muted d-block">
-                        Dosen Pengampu
-                    </small>
-
-                    <strong>
-                        {{ setting.dosen_pengampu }}
-                    </strong>
-                </div>
                 {% endif %}
 
-                {% if setting.kontak %}
-                <div>
-                    <small class="text-muted d-block">
-                        Kontak
-                    </small>
 
-                    <strong>
-                        {{ setting.kontak }}
-                    </strong>
+                <h1 class="display-4">
+
+                    {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+
+                </h1>
+
+
+                <p class="lead mt-3">
+
+                    {{ setting.deskripsi|default:"Sistem Informasi Praktikum Perencanaan Tambang." }}
+
+                </p>
+
+
+                <div class="d-flex flex-wrap gap-2 mt-4">
+
+                    <a
+                        href="{% url 'praktikum:materi' %}"
+                        class="btn btn-light btn-lg"
+                    >
+                        Lihat Materi
+                    </a>
+
+
+                    <a
+                        href="{% url 'praktikum:jadwal' %}"
+                        class="btn btn-outline-light btn-lg"
+                    >
+                        Lihat Jadwal
+                    </a>
+
                 </div>
-                {% endif %}
 
             </div>
 
@@ -80,663 +69,488 @@
 
     </div>
 
-</div>
-```
-
 </section>
 
-<!-- ==================== STATISTIK ==================== -->
 
-<section class="py-4">
+<!-- ============================================================
+     STATISTIK
+============================================================= -->
 
-```
-<div class="container">
+<section class="py-5">
 
-    <div class="row g-3">
+    <div class="container">
 
-        <div class="col-md-3 col-6">
-            <div class="card border-0 shadow-sm h-100 p-3">
+        <div class="row g-4">
 
-                <small class="text-muted">
-                    Kelompok
-                </small>
+            <div class="col-md-3">
 
-                <h2 class="fw-bold mb-0">
-                    {{ kelompok|length }}
-                </h2>
+                <div class="card h-100 p-4 text-center">
 
-                <small class="text-muted">
-                    Kelompok praktikum
-                </small>
-
-            </div>
-        </div>
-
-
-        <div class="col-md-3 col-6">
-            <div class="card border-0 shadow-sm h-100 p-3">
-
-                <small class="text-muted">
-                    Materi
-                </small>
-
-                <h2 class="fw-bold mb-0">
-                    {{ materi|length }}
-                </h2>
-
-                <small class="text-muted">
-                    Materi tersedia
-                </small>
-
-            </div>
-        </div>
-
-
-        <div class="col-md-3 col-6">
-            <div class="card border-0 shadow-sm h-100 p-3">
-
-                <small class="text-muted">
-                    Kegiatan
-                </small>
-
-                <h2 class="fw-bold mb-0">
-                    {{ acara|length }}
-                </h2>
-
-                <small class="text-muted">
-                    Agenda praktikum
-                </small>
-
-            </div>
-        </div>
-
-
-        <div class="col-md-3 col-6">
-            <div class="card border-0 shadow-sm h-100 p-3">
-
-                <small class="text-muted">
-                    Asisten Dosen
-                </small>
-
-                <h2 class="fw-bold mb-0">
-                    {{ asisten|length }}
-                </h2>
-
-                <small class="text-muted">
-                    Asisten Dosen aktif
-                </small>
-
-            </div>
-        </div>
-
-    </div>
-
-</div>
-```
-
-</section>
-
-<!-- ==================== PENGUMUMAN & AGENDA ==================== -->
-
-<section class="py-4">
-
-```
-<div class="container">
-
-    <div class="row g-4">
-
-        <!-- PENGUMUMAN -->
-        <div class="col-lg-5">
-
-            <div class="d-flex justify-content-between align-items-center mb-3">
-
-                <div>
-                    <small class="text-primary fw-semibold">
-                        INFORMASI
-                    </small>
-
-                    <h3 class="fw-bold mb-0">
-                        Pengumuman Terbaru
-                    </h3>
-                </div>
-
-                <a href="{% url 'pengumuman' %}" class="small">
-                    Semua →
-                </a>
-
-            </div>
-
-            {% for x in pengumuman %}
-
-            <div class="card border-0 shadow-sm mb-3">
-
-                <div class="card-body">
-
-                    <h5 class="fw-bold mb-2">
-                        {{ x.judul }}
-                    </h5>
+                    <h2 class="fw-bold">
+                        {{ kelompok|length }}
+                    </h2>
 
                     <p class="text-muted mb-0">
-                        {{ x.isi|truncatewords:28 }}
+                        Kelompok
                     </p>
 
                 </div>
 
             </div>
 
-            {% empty %}
 
-            <div class="card border-0 shadow-sm">
+            <div class="col-md-3">
 
-                <div class="card-body text-muted">
-                    Belum ada pengumuman terbaru.
-                </div>
+                <div class="card h-100 p-4 text-center">
 
-            </div>
+                    <h2 class="fw-bold">
+                        {{ materi|length }}
+                    </h2>
 
-            {% endfor %}
-
-        </div>
-
-
-        <!-- AGENDA -->
-        <div class="col-lg-7">
-
-            <div class="d-flex justify-content-between align-items-center mb-3">
-
-                <div>
-
-                    <small class="text-primary fw-semibold">
-                        AGENDA
-                    </small>
-
-                    <h3 class="fw-bold mb-0">
-                        Timeline / Kegiatan
-                    </h3>
-
-                </div>
-
-                <a href="{% url 'jadwal' %}" class="small">
-                    Semua →
-                </a>
-
-            </div>
-
-            {% for x in acara %}
-
-            <div class="card border-0 shadow-sm mb-3">
-
-                <div class="card-body">
-
-                    <div class="row align-items-center">
-
-                        <div class="col-md-2 mb-2 mb-md-0">
-
-                            <div class="text-center border rounded-3 p-2">
-
-                                <small class="text-muted d-block">
-                                    {{ x.tanggal_mulai|date:"M" }}
-                                </small>
-
-                                <span class="fs-4 fw-bold">
-                                    {{ x.tanggal_mulai|date:"d" }}
-                                </span>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="col-md-7">
-
-                            <h5 class="fw-bold mb-1">
-                                {{ x.nama }}
-                            </h5>
-
-                            {% if x.sub_acara %}
-                            <div class="text-muted small mb-1">
-                                {{ x.sub_acara }}
-                            </div>
-                            {% endif %}
-
-                            <div class="small text-muted">
-                                🕒 {{ x.tanggal_mulai|date:"d M Y, H:i" }}
-                            </div>
-
-                            {% if x.lokasi %}
-                            <div class="small text-muted">
-                                📍 {{ x.lokasi }}
-                            </div>
-                            {% endif %}
-
-                        </div>
-
-
-                        <div class="col-md-3 text-md-end mt-2 mt-md-0">
-
-                            {% if x.status == "Selesai" %}
-
-                            <span class="badge bg-success">
-                                {{ x.status }}
-                            </span>
-
-                            {% elif x.status == "Sedang Berlangsung" %}
-
-                            <span class="badge bg-warning text-dark">
-                                {{ x.status }}
-                            </span>
-
-                            {% else %}
-
-                            <span class="badge bg-secondary">
-                                {{ x.status }}
-                            </span>
-
-                            {% endif %}
-
-                        </div>
-
-                    </div>
+                    <p class="text-muted mb-0">
+                        Materi
+                    </p>
 
                 </div>
 
             </div>
 
-            {% empty %}
 
-            <div class="card border-0 shadow-sm">
+            <div class="col-md-3">
 
-                <div class="card-body text-muted">
-                    Belum ada kegiatan yang dijadwalkan.
+                <div class="card h-100 p-4 text-center">
+
+                    <h2 class="fw-bold">
+                        {{ acara|length }}
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Agenda
+                    </p>
+
                 </div>
 
             </div>
 
-            {% endfor %}
+
+            <div class="col-md-3">
+
+                <div class="card h-100 p-4 text-center">
+
+                    <h2 class="fw-bold">
+                        {{ asisten|length }}
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Personel
+                    </p>
+
+                </div>
+
+            </div>
 
         </div>
 
     </div>
-
-</div>
-```
 
 </section>
 
-<!-- ==================== KELOMPOK ==================== -->
 
-<section class="py-5 bg-light">
+<!-- ============================================================
+     PENGUMUMAN
+============================================================= -->
 
-```
-<div class="container">
+<section class="pb-5">
 
-    <div class="d-flex justify-content-between align-items-end mb-4">
+    <div class="container">
 
-        <div>
-
-            <small class="text-primary fw-semibold">
-                PESERTA
-            </small>
-
-            <h3 class="fw-bold mb-1">
-                Kelompok Praktikum
-            </h3>
-
-            <p class="text-muted mb-0">
-                Daftar kelompok dan perkembangan kegiatan praktikum.
-            </p>
-
-        </div>
-
-        <a href="{% url 'kelompok' %}" class="btn btn-outline-primary btn-sm">
-            Lihat Semua
-        </a>
-
-    </div>
+        <h2 class="section-title">
+            Pengumuman Terbaru
+        </h2>
 
 
-    <div class="row g-3">
+        <div class="row g-4">
 
-        {% for k in kelompok %}
+            {% for item in pengumuman %}
 
-        <div class="col-md-6 col-lg-4">
+                <div class="col-md-6">
 
-            <div class="card border-0 shadow-sm h-100">
+                    <div class="card h-100 p-4">
 
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-
-                        <h5 class="fw-bold mb-0">
-                            {{ k.nama }}
+                        <h5 class="fw-bold">
+                            {{ item.judul }}
                         </h5>
 
-                        <span class="badge bg-primary">
-                            {{ k.progress }}%
-                        </span>
+                        <p class="text-muted small">
+                            {{ item.dibuat|date:"d F Y" }}
+                        </p>
+
+                        <p class="mb-0">
+                            {{ item.isi|truncatewords:30 }}
+                        </p>
 
                     </div>
-
-
-                    <div class="progress mb-3" style="height: 8px;">
-
-                        <div
-                            class="progress-bar"
-                            role="progressbar"
-                            style="width: {{ k.progress }}%;"
-                            aria-valuenow="{{ k.progress }}"
-                            aria-valuemin="0"
-                            aria-valuemax="100">
-                        </div>
-
-                    </div>
-
-
-                    {% if k.mentor %}
-
-                    <div class="small text-muted">
-                        Mentor
-                    </div>
-
-                    <div class="fw-semibold mb-2">
-                        {{ k.mentor.nama }}
-                    </div>
-
-                    {% else %}
-
-                    <div class="small text-muted mb-2">
-                        Mentor belum ditentukan
-                    </div>
-
-                    {% endif %}
-
-
-                    {% if k.catatan %}
-
-                    <div class="small text-muted">
-                        {{ k.catatan|truncatewords:15 }}
-                    </div>
-
-                    {% endif %}
 
                 </div>
 
-            </div>
+            {% empty %}
 
-        </div>
+                <div class="col-12">
 
-        {% empty %}
+                    <div class="alert alert-light border">
+                        Belum ada pengumuman.
+                    </div>
 
-        <div class="col-12">
-
-            <div class="card border-0 shadow-sm">
-
-                <div class="card-body text-center text-muted py-5">
-                    Belum ada data kelompok.
                 </div>
 
-            </div>
+            {% endfor %}
 
         </div>
-
-        {% endfor %}
 
     </div>
-
-</div>
-```
 
 </section>
 
-<!-- ==================== MATERI ==================== -->
 
-<section class="py-5">
+<!-- ============================================================
+     AGENDA
+============================================================= -->
 
-```
-<div class="container">
+<section class="pb-5">
 
-    <div class="d-flex justify-content-between align-items-end mb-4">
+    <div class="container">
 
-        <div>
-
-            <small class="text-primary fw-semibold">
-                DOWNLOAD CENTER
-            </small>
-
-            <h3 class="fw-bold mb-1">
-                Materi Praktikum
-            </h3>
-
-            <p class="text-muted mb-0">
-                Materi dan file pendukung yang tersedia untuk peserta.
-            </p>
-
-        </div>
-
-        <a href="{% url 'materi' %}" class="btn btn-outline-primary btn-sm">
-            Semua Materi
-        </a>
-
-    </div>
+        <h2 class="section-title">
+            Agenda Praktikum
+        </h2>
 
 
-    <div class="row g-3">
+        <div class="row g-4">
 
-        {% for m in materi %}
+            {% for item in acara %}
 
-        <div class="col-md-6 col-lg-4">
+                <div class="col-md-6 col-lg-4">
 
-            <div class="card border-0 shadow-sm h-100">
+                    <div class="card h-100 p-4">
 
-                <div class="card-body">
+                        <h5 class="fw-bold">
+                            {{ item.nama }}
+                        </h5>
 
-                    <div class="d-flex justify-content-between mb-3">
 
-                        <span class="badge bg-light text-dark">
-                            {{ m.get_kategori_display }}
-                        </span>
+                        {% if item.tanggal_mulai %}
 
-                        {% if m.acara %}
+                            <p class="text-muted mb-2">
+                                {{ item.tanggal_mulai|date:"d F Y H:i" }}
+                            </p>
 
-                        <small class="text-muted">
-                            {{ m.acara.nama }}
-                        </small>
+                        {% endif %}
+
+
+                        {% if item.deskripsi %}
+
+                            <p class="mb-0">
+                                {{ item.deskripsi|truncatewords:25 }}
+                            </p>
 
                         {% endif %}
 
                     </div>
 
+                </div>
 
-                    <h5 class="fw-bold">
-                        {{ m.judul }}
-                    </h5>
+            {% empty %}
 
+                <div class="col-12">
 
-                    {% if m.deskripsi %}
-
-                    <p class="text-muted small">
-                        {{ m.deskripsi|truncatewords:20 }}
-                    </p>
-
-                    {% endif %}
-
-
-                    {% if m.file %}
-
-                    <a
-                        href="{{ m.file.url }}"
-                        class="btn btn-primary btn-sm"
-                        target="_blank">
-
-                        Download / Buka
-
-                    </a>
-
-                    {% endif %}
+                    <div class="alert alert-light border">
+                        Belum ada agenda praktikum.
+                    </div>
 
                 </div>
 
-            </div>
+            {% endfor %}
 
         </div>
-
-        {% empty %}
-
-        <div class="col-12">
-
-            <div class="card border-0 shadow-sm">
-
-                <div class="card-body text-center text-muted py-5">
-                    Belum ada materi yang tersedia.
-                </div>
-
-            </div>
-
-        </div>
-
-        {% endfor %}
 
     </div>
 
-</div>
-```
+</section>
+
+
+<!-- ============================================================
+     KELOMPOK
+============================================================= -->
+
+<section class="pb-5">
+
+    <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <h2 class="section-title mb-0">
+                Kelompok Praktikum
+            </h2>
+
+
+            <a
+                href="{% url 'praktikum:kelompok' %}"
+                class="btn btn-outline-dark"
+            >
+                Semua Kelompok
+            </a>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            {% for k in kelompok %}
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="card h-100 p-4">
+
+                        <h5 class="fw-bold">
+                            {{ k.nama }}
+                        </h5>
+
+
+                        {% if k.mentor.all %}
+
+                            <p class="text-muted mb-2">
+
+                                Mentor:
+                                {{ k.mentor.first.nama }}
+
+                            </p>
+
+                        {% endif %}
+
+
+                        <div class="d-flex justify-content-between">
+
+                            <small>
+                                Progress
+                            </small>
+
+                            <small>
+                                {{ k.progress_persen|default:0 }}%
+                            </small>
+
+                        </div>
+
+
+                        <div class="progress mt-2">
+
+                            <div
+                                class="progress-bar"
+                                role="progressbar"
+                                style="width: {{ k.progress_persen|default:0 }}%;"
+                            ></div>
+
+                        </div>
+
+
+                        {% if k.catatan %}
+
+                            <p class="text-muted small mt-3 mb-0">
+                                {{ k.catatan|truncatewords:20 }}
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <div class="col-12">
+
+                    <div class="alert alert-light border">
+                        Belum ada kelompok aktif.
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
 
 </section>
 
-<!-- ==================== QUICK ACCESS ==================== -->
 
-<section class="py-5 bg-light">
+<!-- ============================================================
+     MATERI
+============================================================= -->
 
-```
-<div class="container">
+<section class="pb-5">
 
-    <div class="text-center mb-4">
+    <div class="container">
 
-        <small class="text-primary fw-semibold">
-            QUICK ACCESS
-        </small>
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <h3 class="fw-bold">
+            <h2 class="section-title mb-0">
+                Materi Terbaru
+            </h2>
+
+
+            <a
+                href="{% url 'praktikum:materi' %}"
+                class="btn btn-outline-dark"
+            >
+                Semua Materi
+            </a>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            {% for m in materi|slice:":6" %}
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="card h-100 p-4">
+
+                        <h5 class="fw-bold">
+                            {{ m.judul }}
+                        </h5>
+
+
+                        {% if m.kategori %}
+
+                            <span class="badge bg-secondary mb-3">
+                                {{ m.get_kategori_display }}
+                            </span>
+
+                        {% endif %}
+
+
+                        {% if m.acara %}
+
+                            <p class="text-muted small">
+                                {{ m.acara.nama }}
+                            </p>
+
+                        {% endif %}
+
+
+                        {% if m.deskripsi %}
+
+                            <p class="small">
+                                {{ m.deskripsi|truncatewords:25 }}
+                            </p>
+
+                        {% endif %}
+
+
+                        {% if m.file %}
+
+                            <a
+                                href="{{ m.file.url }}"
+                                class="btn btn-dark mt-auto"
+                                target="_blank"
+                            >
+                                Buka Materi
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <div class="col-12">
+
+                    <div class="alert alert-light border">
+                        Belum ada materi.
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ============================================================
+     AKSES CEPAT
+============================================================= -->
+
+<section class="pb-5">
+
+    <div class="container">
+
+        <h2 class="section-title">
             Akses Cepat
-        </h3>
-
-    </div>
+        </h2>
 
 
-    <div class="row g-3">
-
-        <div class="col-6 col-md-3">
-
-            <a
-                href="{% url 'kelompok' %}"
-                class="text-decoration-none">
-
-                <div class="card border-0 shadow-sm text-center p-4 h-100">
-
-                    <div class="fs-2 mb-2">
-                        👥
-                    </div>
-
-                    <h6 class="fw-bold text-dark">
-                        Kelompok
-                    </h6>
-
-                    <small class="text-muted">
-                        Data kelompok
-                    </small>
-
-                </div>
-
-            </a>
-
-        </div>
+        <div class="row g-3">
 
 
-        <div class="col-6 col-md-3">
+            <div class="col-md-3">
 
-            <a
-                href="{% url 'absensi' %}"
-                class="text-decoration-none">
+                <a
+                    href="{% url 'praktikum:kelompok' %}"
+                    class="btn btn-outline-dark w-100 py-3"
+                >
+                    Kelompok
+                </a>
 
-                <div class="card border-0 shadow-sm text-center p-4 h-100">
-
-                    <div class="fs-2 mb-2">
-                        ✓
-                    </div>
-
-                    <h6 class="fw-bold text-dark">
-                        Absensi
-                    </h6>
-
-                    <small class="text-muted">
-                        Kehadiran peserta
-                    </small>
-
-                </div>
-
-            </a>
-
-        </div>
+            </div>
 
 
-        <div class="col-6 col-md-3">
+            <div class="col-md-3">
 
-            <a
-                href="{% url 'tata_tertib' %}"
-                class="text-decoration-none">
+                <a
+                    href="{% url 'praktikum:absensi' %}"
+                    class="btn btn-outline-dark w-100 py-3"
+                >
+                    Absensi
+                </a>
 
-                <div class="card border-0 shadow-sm text-center p-4 h-100">
-
-                    <div class="fs-2 mb-2">
-                        📋
-                    </div>
-
-                    <h6 class="fw-bold text-dark">
-                        Tata Tertib
-                    </h6>
-
-                    <small class="text-muted">
-                        Aturan praktikum
-                    </small>
-
-                </div>
-
-            </a>
-
-        </div>
+            </div>
 
 
-        <div class="col-6 col-md-3">
+            <div class="col-md-3">
 
-            <a
-                href="{% url 'personel' %}"
-                class="text-decoration-none">
+                <a
+                    href="{% url 'praktikum:tata_tertib' %}"
+                    class="btn btn-outline-dark w-100 py-3"
+                >
+                    Tata Tertib
+                </a>
 
-                <div class="card border-0 shadow-sm text-center p-4 h-100">
+            </div>
 
-                    <div class="fs-2 mb-2">
-                        🎓
-                    </div>
 
-                    <h6 class="fw-bold text-dark">
-                        Personel
-                    </h6>
+            <div class="col-md-3">
 
-                    <small class="text-muted">
-                        Tim praktikum
-                    </small>
+                <a
+                    href="{% url 'praktikum:personel' %}"
+                    class="btn btn-outline-dark w-100 py-3"
+                >
+                    Personel
+                </a>
 
-                </div>
-
-            </a>
+            </div>
 
         </div>
 
     </div>
-
-</div>
-```
 
 </section>
+
 
 {% endblock %}
