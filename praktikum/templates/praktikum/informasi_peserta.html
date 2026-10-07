@@ -1,0 +1,828 @@
+{% extends 'praktikum/base.html' %}
+
+{% block title %}
+Informasi Peserta | Praktikum Perencanaan Tambang
+{% endblock %}
+
+
+{% block content %}
+
+<!-- =========================================================
+     HERO
+========================================================== -->
+
+<section class="hero">
+
+    <div class="container py-5">
+
+        <div class="hero-content py-lg-5">
+
+            <span class="hero-badge mb-3">
+                <i class="bi bi-person-vcard"></i>
+                Database Peserta
+            </span>
+
+            <h1 class="hero-title mb-3">
+                Informasi
+                <span>Peserta</span>
+            </h1>
+
+            <p class="hero-description mb-0">
+
+                Informasi peserta Praktikum Perencanaan Tambang
+                yang mencakup identitas, kelompok, jabatan,
+                dan status keaktifan peserta.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     STATISTIK
+========================================================== -->
+
+<section class="py-5">
+
+    <div class="container">
+
+        <div class="row g-4">
+
+
+            <!-- TOTAL -->
+
+            <div class="col-6 col-lg-3">
+
+                <div class="stat-card h-100">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <div class="stat-label">
+                                Total Peserta
+                            </div>
+
+                            <div class="stat-number">
+                                {{ total_peserta }}
+                            </div>
+
+                        </div>
+
+                        <div class="icon-box">
+                            <i class="bi bi-people"></i>
+                        </div>
+
+                    </div>
+
+                    <small class="text-muted">
+                        Seluruh peserta terdaftar
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- AKTIF -->
+
+            <div class="col-6 col-lg-3">
+
+                <div class="stat-card h-100">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <div class="stat-label">
+                                Peserta Aktif
+                            </div>
+
+                            <div class="stat-number text-success">
+                                {{ total_aktif }}
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="icon-box"
+                            style="
+                                background:rgba(25,135,84,.10);
+                                color:#157347;
+                            "
+                        >
+
+                            <i class="bi bi-person-check"></i>
+
+                        </div>
+
+                    </div>
+
+                    <small class="text-muted">
+                        Peserta yang masih aktif
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- GUGUR -->
+
+            <div class="col-6 col-lg-3">
+
+                <div class="stat-card h-100">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <div class="stat-label">
+                                Peserta Gugur
+                            </div>
+
+                            <div class="stat-number text-danger">
+                                {{ total_gugur }}
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="icon-box"
+                            style="
+                                background:rgba(220,53,69,.10);
+                                color:#b02a37;
+                            "
+                        >
+
+                            <i class="bi bi-person-x"></i>
+
+                        </div>
+
+                    </div>
+
+                    <small class="text-muted">
+                        Peserta yang dinyatakan gugur
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- KELOMPOK -->
+
+            <div class="col-6 col-lg-3">
+
+                <div class="stat-card h-100">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <div class="stat-label">
+                                Kelompok Aktif
+                            </div>
+
+                            <div class="stat-number">
+                                {{ total_kelompok }}
+                            </div>
+
+                        </div>
+
+                        <div class="icon-box">
+                            <i class="bi bi-diagram-3"></i>
+                        </div>
+
+                    </div>
+
+                    <small class="text-muted">
+                        Kelompok praktikum aktif
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     DATA PESERTA
+========================================================== -->
+
+<section class="pb-5">
+
+    <div class="container">
+
+        <div class="mine-card">
+
+
+            <!-- HEADER -->
+
+            <div class="mine-card-header">
+
+                <div
+                    class="d-flex flex-column flex-lg-row
+                           justify-content-between
+                           align-items-lg-center
+                           gap-3"
+                >
+
+                    <div>
+
+                        <div class="section-label">
+                            Participant Database
+                        </div>
+
+                        <h2 class="h4 mb-1">
+                            Daftar Peserta
+                        </h2>
+
+                        <p class="text-muted small mb-0">
+
+                            Data peserta berdasarkan
+                            status dan kelompok.
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- SEARCH -->
+
+                    <div
+                        class="position-relative"
+                        style="min-width:min(100%, 300px);"
+                    >
+
+                        <i
+                            class="bi bi-search position-absolute"
+                            style="
+                                left:14px;
+                                top:11px;
+                                color:#7b837e;
+                            "
+                        ></i>
+
+                        <input
+                            type="text"
+                            id="searchPeserta"
+                            class="form-control"
+                            placeholder="Cari nama atau NIM..."
+                            style="
+                                padding-left:40px;
+                                border-radius:11px;
+                            "
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- FILTER -->
+
+            <div class="px-4 pt-4">
+
+                <div
+                    class="d-flex flex-wrap gap-2"
+                    id="filterStatus"
+                >
+
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-mine filter-btn active-filter"
+                        data-filter="all"
+                    >
+                        Semua
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-outline-mine filter-btn"
+                        data-filter="aktif"
+                    >
+                        <i class="bi bi-check-circle me-1"></i>
+                        Aktif
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-outline-mine filter-btn"
+                        data-filter="gugur"
+                    >
+                        <i class="bi bi-x-circle me-1"></i>
+                        Gugur
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- TABLE -->
+
+            <div class="table-responsive mt-4">
+
+                <table
+                    class="table mine-table align-middle"
+                    id="tabelPeserta"
+                >
+
+                    <thead>
+
+                        <tr>
+
+                            <th width="70">
+                                No.
+                            </th>
+
+                            <th>
+                                Peserta
+                            </th>
+
+                            <th>
+                                NIM
+                            </th>
+
+                            <th>
+                                Kelompok
+                            </th>
+
+                            <th>
+                                Jabatan
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for p in peserta %}
+
+                        <tr
+                            class="peserta-row"
+                            data-status="{{ p.status_kemajuan|lower }}"
+                            data-search="
+                                {{ p.nama|lower }}
+                                {{ p.nim|lower }}
+                                {{ p.kelompok.nama|lower }}
+                            "
+                        >
+
+                            <td>
+                                <span class="text-muted">
+                                    {{ forloop.counter }}
+                                </span>
+                            </td>
+
+
+                            <td>
+
+                                <div
+                                    class="d-flex
+                                           align-items-center
+                                           gap-3"
+                                >
+
+                                    <div
+                                        class="icon-box"
+                                        style="
+                                            width:40px;
+                                            height:40px;
+                                            min-width:40px;
+                                            border-radius:11px;
+                                            font-size:17px;
+                                        "
+                                    >
+
+                                        <i class="bi bi-person"></i>
+
+                                    </div>
+
+                                    <div>
+
+                                        <div class="fw-semibold">
+                                            {{ p.nama }}
+                                        </div>
+
+                                        {% if p.email %}
+
+                                        <small class="text-muted">
+                                            {{ p.email }}
+                                        </small>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="fw-semibold">
+                                    {{ p.nim }}
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                {% if p.kelompok %}
+
+                                <span
+                                    class="badge badge-nickel
+                                           rounded-pill px-3 py-2"
+                                >
+
+                                    <i class="bi bi-diagram-3 me-1"></i>
+
+                                    {{ p.kelompok.nama }}
+
+                                </span>
+
+                                {% else %}
+
+                                <span class="text-muted">
+                                    -
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+
+                                {% if p.jabatan %}
+
+                                <span>
+                                    {{ p.jabatan }}
+                                </span>
+
+                                {% else %}
+
+                                <span class="text-muted">
+                                    -
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+
+                                {% if p.status_kemajuan|lower == "aktif" %}
+
+                                <span
+                                    class="badge badge-active
+                                           rounded-pill px-3 py-2"
+                                >
+
+                                    <i
+                                        class="bi bi-check-circle me-1"
+                                    ></i>
+
+                                    AKTIF
+
+                                </span>
+
+                                {% elif p.status_kemajuan|lower == "gugur" %}
+
+                                <span
+                                    class="badge badge-danger
+                                           rounded-pill px-3 py-2"
+                                >
+
+                                    <i
+                                        class="bi bi-x-circle me-1"
+                                    ></i>
+
+                                    GUGUR
+
+                                </span>
+
+                                {% else %}
+
+                                <span
+                                    class="badge bg-secondary
+                                           rounded-pill px-3 py-2"
+                                >
+
+                                    {{ p.status_kemajuan }}
+
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="text-center py-5"
+                            >
+
+                                <div class="icon-box mx-auto mb-3">
+
+                                    <i class="bi bi-people"></i>
+
+                                </div>
+
+                                <h5>
+                                    Belum Ada Data Peserta
+                                </h5>
+
+                                <p class="text-muted mb-0">
+
+                                    Data peserta belum tersedia
+                                    di sistem.
+
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- NO RESULT -->
+
+            <div
+                id="noResult"
+                class="text-center py-5 d-none"
+            >
+
+                <div class="icon-box mx-auto mb-3">
+
+                    <i class="bi bi-search"></i>
+
+                </div>
+
+                <h5>
+                    Peserta Tidak Ditemukan
+                </h5>
+
+                <p class="text-muted mb-0">
+
+                    Coba gunakan nama, NIM, atau
+                    filter yang berbeda.
+
+                </p>
+
+            </div>
+
+
+            <!-- FOOTER -->
+
+            <div
+                class="px-4 py-3 border-top
+                       d-flex flex-column flex-md-row
+                       justify-content-between
+                       gap-2"
+            >
+
+                <small class="text-muted">
+
+                    Menampilkan
+                    <strong id="jumlahTampil">
+                        {{ total_peserta }}
+                    </strong>
+                    peserta
+
+                </small>
+
+                <small class="text-muted">
+
+                    <i class="bi bi-shield-check me-1"></i>
+
+                    Informasi peserta resmi praktikum
+
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const searchInput =
+            document.getElementById(
+                "searchPeserta"
+            );
+
+        const rows =
+            document.querySelectorAll(
+                ".peserta-row"
+            );
+
+        const filterButtons =
+            document.querySelectorAll(
+                ".filter-btn"
+            );
+
+        const noResult =
+            document.getElementById(
+                "noResult"
+            );
+
+        const jumlahTampil =
+            document.getElementById(
+                "jumlahTampil"
+            );
+
+        let activeFilter = "all";
+
+
+        function filterTable() {
+
+            const keyword =
+                searchInput.value
+                    .toLowerCase()
+                    .trim();
+
+            let visible = 0;
+
+
+            rows.forEach(function (row) {
+
+                const status =
+                    row.dataset.status
+                        .toLowerCase();
+
+                const searchData =
+                    row.dataset.search
+                        .toLowerCase();
+
+                const matchesSearch =
+                    !keyword ||
+                    searchData.includes(
+                        keyword
+                    );
+
+                let matchesFilter = true;
+
+
+                if (
+                    activeFilter !== "all"
+                ) {
+
+                    matchesFilter =
+                        status === activeFilter;
+
+                }
+
+
+                if (
+                    matchesSearch &&
+                    matchesFilter
+                ) {
+
+                    row.style.display = "";
+
+                    visible++;
+
+                } else {
+
+                    row.style.display = "none";
+
+                }
+
+            });
+
+
+            jumlahTampil.textContent =
+                visible;
+
+
+            if (visible === 0) {
+
+                noResult.classList.remove(
+                    "d-none"
+                );
+
+            } else {
+
+                noResult.classList.add(
+                    "d-none"
+                );
+
+            }
+
+        }
+
+
+        searchInput.addEventListener(
+            "input",
+            filterTable
+        );
+
+
+        filterButtons.forEach(
+            function (button) {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        activeFilter =
+                            this.dataset.filter;
+
+
+                        filterButtons.forEach(
+                            function (btn) {
+
+                                btn.classList.remove(
+                                    "active-filter"
+                                );
+
+                                btn.classList.remove(
+                                    "btn-mine"
+                                );
+
+                                btn.classList.add(
+                                    "btn-outline-mine"
+                                );
+
+                            }
+                        );
+
+
+                        this.classList.remove(
+                            "btn-outline-mine"
+                        );
+
+                        this.classList.add(
+                            "btn-mine"
+                        );
+
+                        this.classList.add(
+                            "active-filter"
+                        );
+
+
+                        filterTable();
+
+                    }
+                );
+
+            }
+        );
+
+
+        filterTable();
+
+    }
+);
+
+</script>
+
+{% endblock %}
