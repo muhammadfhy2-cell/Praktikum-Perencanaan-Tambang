@@ -15,10 +15,6 @@ from .models import (
 )
 
 
-# ============================================================
-# SETTING PRAKTIKUM
-# ============================================================
-
 @admin.register(Setting)
 class SettingAdmin(admin.ModelAdmin):
 
@@ -30,20 +26,6 @@ class SettingAdmin(admin.ModelAdmin):
         "updated_at",
     )
 
-    search_fields = (
-        "nama_praktikum",
-        "periode",
-        "dosen_pengampu",
-    )
-
-    def has_add_permission(self, request):
-        # Hanya boleh ada satu Setting
-        return not Setting.objects.exists()
-
-
-# ============================================================
-# STAFF / PERSONEL
-# ============================================================
 
 @admin.register(Staff)
 class StaffAdmin(admin.ModelAdmin):
@@ -66,74 +48,23 @@ class StaffAdmin(admin.ModelAdmin):
         "kontak",
     )
 
-    ordering = (
-        "jabatan",
-        "urutan",
-        "nama",
-    )
-
-
-# ============================================================
-# KELOMPOK
-# ============================================================
 
 @admin.register(Kelompok)
 class KelompokAdmin(admin.ModelAdmin):
 
     list_display = (
         "nama",
-        "jumlah_anggota",
-        "mentor_list",
         "progress",
-        "aktif_logo",
     )
 
     search_fields = (
         "nama",
-        "catatan",
-        "mentor__nama",
     )
 
-    list_filter = (
-        "progress",
-    )
-
-    # Memilih lebih dari satu mentor
     filter_horizontal = (
         "mentor",
     )
 
-    ordering = (
-        "nama",
-    )
-
-    def jumlah_anggota(self, obj):
-        return obj.peserta.count()
-
-    jumlah_anggota.short_description = "Jumlah Anggota"
-
-    def mentor_list(self, obj):
-        mentors = obj.mentor.all()
-
-        if not mentors:
-            return "Belum ditentukan"
-
-        return ", ".join(
-            mentor.nama
-            for mentor in mentors
-        )
-
-    mentor_list.short_description = "Mentor"
-
-    def aktif_logo(self, obj):
-        return "Ya" if obj.logo else "Tidak"
-
-    aktif_logo.short_description = "Logo"
-
-
-# ============================================================
-# PESERTA
-# ============================================================
 
 @admin.register(Peserta)
 class PesertaAdmin(admin.ModelAdmin):
@@ -143,14 +74,13 @@ class PesertaAdmin(admin.ModelAdmin):
         "nim",
         "kelompok",
         "jabatan",
-        "email",
         "akun",
         "aktif",
     )
 
     list_filter = (
-        "jabatan",
         "kelompok",
+        "jabatan",
         "aktif",
     )
 
@@ -158,24 +88,13 @@ class PesertaAdmin(admin.ModelAdmin):
         "nama",
         "nim",
         "email",
-        "kelompok__nama",
+        "akun__username",
     )
 
-    list_select_related = (
-        "kelompok",
+    autocomplete_fields = (
         "akun",
     )
 
-    ordering = (
-        "kelompok",
-        "jabatan",
-        "nama",
-    )
-
-
-# ============================================================
-# ACARA / JADWAL
-# ============================================================
 
 @admin.register(Acara)
 class AcaraAdmin(admin.ModelAdmin):
@@ -187,50 +106,23 @@ class AcaraAdmin(admin.ModelAdmin):
         "tanggal_selesai",
         "lokasi",
         "status",
-        "mc_list",
         "urutan",
     )
 
     list_filter = (
         "status",
-        "tanggal_mulai",
     )
 
     search_fields = (
         "nama",
         "sub_acara",
         "lokasi",
-        "deskripsi",
-        "pembawa_acara__nama",
     )
 
     filter_horizontal = (
         "pembawa_acara",
     )
 
-    ordering = (
-        "urutan",
-        "tanggal_mulai",
-    )
-
-    def mc_list(self, obj):
-
-        mc = obj.pembawa_acara.all()
-
-        if not mc:
-            return "Belum ditentukan"
-
-        return ", ".join(
-            personel.nama
-            for personel in mc
-        )
-
-    mc_list.short_description = "Pembawa Acara / MC"
-
-
-# ============================================================
-# MATERI
-# ============================================================
 
 @admin.register(Materi)
 class MateriAdmin(admin.ModelAdmin):
@@ -250,61 +142,149 @@ class MateriAdmin(admin.ModelAdmin):
     search_fields = (
         "judul",
         "deskripsi",
-        "acara__nama",
     )
 
-    ordering = (
-        "-uploaded_at",
-    )
-
-
-# ============================================================
-# ABSENSI
-# ============================================================
 
 @admin.register(Absensi)
 class AbsensiAdmin(admin.ModelAdmin):
 
     list_display = (
         "peserta",
-        "kelompok",
         "acara",
-        "status",
-        "catatan",
+        "start_display",
+        "ishoma1_display",
+        "ishoma2_display",
+        "ishoma3_display",
+        "ls_display",
+        "nilai_absensi",
+        "akumulasi_absensi",
     )
 
     list_filter = (
-        "status",
         "acara",
-        "peserta__kelompok",
+        "start",
+        "ishoma_1",
+        "ishoma_2",
+        "ishoma_3",
+        "ls",
     )
 
     search_fields = (
         "peserta__nama",
         "peserta__nim",
-        "peserta__kelompok__nama",
         "acara__nama",
     )
 
-    list_select_related = (
-        "peserta",
-        "peserta__kelompok",
-        "acara",
+    fieldsets = (
+        (
+            "Data Absensi",
+            {
+                "fields": (
+                    "peserta",
+                    "acara",
+                    "status",
+                    "catatan",
+                )
+            },
+        ),
+        (
+            "Penilaian Absensi",
+            {
+                "description": (
+                    "Setiap acara memiliki nilai maksimum "
+                    "100%. Centang komponen yang diikuti."
+                ),
+                "fields": (
+                    "start",
+                    "ishoma_1",
+                    "ishoma_2",
+                    "ishoma_3",
+                    "ls",
+                ),
+            },
+        ),
     )
 
-    def kelompok(self, obj):
+    @admin.display(description="START")
+    def start_display(self, obj):
+        return "20%" if obj.start else "0%"
 
-        if obj.peserta.kelompok:
-            return obj.peserta.kelompok.nama
+    @admin.display(description="ISHOMA 1")
+    def ishoma1_display(self, obj):
+        return "10%" if obj.ishoma_1 else "0%"
 
-        return "-"
+    @admin.display(description="ISHOMA 2")
+    def ishoma2_display(self, obj):
+        return "10%" if obj.ishoma_2 else "0%"
 
-    kelompok.short_description = "Kelompok"
+    @admin.display(description="ISHOMA 3")
+    def ishoma3_display(self, obj):
+        return "10%" if obj.ishoma_3 else "0%"
+
+    @admin.display(description="LS")
+    def ls_display(self, obj):
+        return "50%" if obj.ls else "0%"
+
+    @admin.display(
+        description="Nilai Acara",
+        ordering=None
+    )
+    def nilai_absensi(self, obj):
+        return f"{obj.nilai_persentase}%"
+
+    @admin.display(
+        description="Akumulasi",
+        ordering=None
+    )
+    def akumulasi_absensi(self, obj):
+
+        peserta = obj.peserta
+
+        jumlah = peserta.absensi.count()
+
+        if jumlah == 0:
+            return "0%"
+
+        return f"{peserta.persentase_absensi}%"
 
 
-# ============================================================
-# TUGAS PENDAHULUAN
-# ============================================================
+@admin.register(Pengumuman)
+class PengumumanAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "judul",
+        "aktif",
+        "dibuat",
+    )
+
+    list_filter = (
+        "aktif",
+    )
+
+    search_fields = (
+        "judul",
+        "isi",
+    )
+
+
+@admin.register(TataTertib)
+class TataTertibAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "judul",
+        "urutan",
+        "aktif",
+    )
+
+    list_filter = (
+        "aktif",
+    )
+
+    search_fields = (
+        "judul",
+        "isi",
+    )
+
 
 @admin.register(TugasPendahuluan)
 class TugasPendahuluanAdmin(admin.ModelAdmin):
@@ -320,60 +300,13 @@ class TugasPendahuluanAdmin(admin.ModelAdmin):
     list_filter = (
         "aktif",
         "acara",
-        "deadline",
     )
 
     search_fields = (
         "judul",
         "soal",
-        "acara__nama",
     )
 
-    ordering = (
-        "-dibuat",
-    )
-
-    readonly_fields = (
-        "dibuat",
-    )
-
-    fieldsets = (
-        (
-            "Informasi Tugas",
-            {
-                "fields": (
-                    "judul",
-                    "acara",
-                    "soal",
-                    "file",
-                )
-            },
-        ),
-
-        (
-            "Pengaturan",
-            {
-                "fields": (
-                    "deadline",
-                    "aktif",
-                )
-            },
-        ),
-
-        (
-            "Informasi Sistem",
-            {
-                "fields": (
-                    "dibuat",
-                )
-            },
-        ),
-    )
-
-
-# ============================================================
-# LAPORAN MINGGUAN
-# ============================================================
 
 @admin.register(LaporanMingguan)
 class LaporanMingguanAdmin(admin.ModelAdmin):
@@ -390,9 +323,8 @@ class LaporanMingguanAdmin(admin.ModelAdmin):
 
     list_filter = (
         "status",
-        "acara",
         "kelompok",
-        "uploaded_at",
+        "acara",
     )
 
     search_fields = (
@@ -400,17 +332,6 @@ class LaporanMingguanAdmin(admin.ModelAdmin):
         "peserta__nama",
         "peserta__nim",
         "kelompok__nama",
-        "acara__nama",
-    )
-
-    list_select_related = (
-        "peserta",
-        "kelompok",
-        "acara",
-    )
-
-    ordering = (
-        "-uploaded_at",
     )
 
     readonly_fields = (
@@ -418,37 +339,31 @@ class LaporanMingguanAdmin(admin.ModelAdmin):
         "updated_at",
     )
 
-    # Admin bisa mengubah status langsung dari daftar
-    list_editable = (
-        "status",
-    )
-
     fieldsets = (
         (
-            "Informasi Laporan",
+            "Laporan Peserta",
             {
                 "fields": (
-                    "judul",
                     "peserta",
                     "kelompok",
                     "acara",
+                    "judul",
                     "file",
                 )
             },
         ),
-
         (
-            "Pemeriksaan",
+            "Pemeriksaan Admin",
             {
                 "fields": (
                     "status",
                     "catatan_admin",
+                    "file_revisi",
                 )
             },
         ),
-
         (
-            "Informasi Waktu",
+            "Informasi Sistem",
             {
                 "fields": (
                     "uploaded_at",
@@ -458,58 +373,6 @@ class LaporanMingguanAdmin(admin.ModelAdmin):
         ),
     )
 
-
-# ============================================================
-# PENGUMUMAN
-# ============================================================
-
-@admin.register(Pengumuman)
-class PengumumanAdmin(admin.ModelAdmin):
-
-    list_display = (
-        "judul",
-        "aktif",
-        "dibuat",
-    )
-
-    list_filter = (
-        "aktif",
-        "dibuat",
-    )
-
-    search_fields = (
-        "judul",
-        "isi",
-    )
-
     ordering = (
-        "-dibuat",
-    )
-
-
-# ============================================================
-# TATA TERTIB
-# ============================================================
-
-@admin.register(TataTertib)
-class TataTertibAdmin(admin.ModelAdmin):
-
-    list_display = (
-        "judul",
-        "aktif",
-        "urutan",
-    )
-
-    list_filter = (
-        "aktif",
-    )
-
-    search_fields = (
-        "judul",
-        "isi",
-    )
-
-    ordering = (
-        "urutan",
-        "id",
+        "-uploaded_at",
     )
