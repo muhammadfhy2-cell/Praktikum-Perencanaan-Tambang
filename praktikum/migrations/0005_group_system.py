@@ -5,7 +5,10 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("praktikum", "0004_absensi_components_laporan_revisi"),
+        (
+            "praktikum",
+            "0004_absensi_components_laporan_revisi",
+        ),
     ]
 
     operations = [
@@ -13,6 +16,50 @@ class Migration(migrations.Migration):
         # =====================================================
         # KELOMPOK
         # =====================================================
+
+        migrations.AddField(
+            model_name="kelompok",
+            name="mentor",
+            field=models.ManyToManyField(
+                blank=True,
+                limit_choices_to={
+                    "jabatan__in": [
+                        "penanggung_jawab",
+                        "koordinator",
+                        "asisten",
+                    ],
+                    "aktif": True,
+                },
+                related_name="kelompok_binaan",
+                to="praktikum.staff",
+            ),
+        ),
+
+        migrations.AddField(
+            model_name="kelompok",
+            name="logo",
+            field=models.ImageField(
+                blank=True,
+                null=True,
+                upload_to="logo_kelompok/",
+            ),
+        ),
+
+        migrations.AddField(
+            model_name="kelompok",
+            name="progress",
+            field=models.PositiveIntegerField(
+                default=0,
+            ),
+        ),
+
+        migrations.AddField(
+            model_name="kelompok",
+            name="catatan",
+            field=models.TextField(
+                blank=True,
+            ),
+        ),
 
         migrations.AddField(
             model_name="kelompok",
@@ -29,12 +76,27 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="kelompok",
             name="aktif",
-            field=models.BooleanField(default=True),
+            field=models.BooleanField(
+                default=True,
+            ),
         ),
 
         # =====================================================
         # PESERTA
         # =====================================================
+
+        migrations.AddField(
+            model_name="peserta",
+            name="jabatan",
+            field=models.CharField(
+                choices=[
+                    ("ketua", "Ketua"),
+                    ("anggota", "Anggota"),
+                ],
+                default="anggota",
+                max_length=20,
+            ),
+        ),
 
         migrations.AddField(
             model_name="peserta",
@@ -51,12 +113,6 @@ class Migration(migrations.Migration):
 
         migrations.AddField(
             model_name="peserta",
-            name="alasan_gugur",
-            field=models.TextField(blank=True),
-        ),
-
-        migrations.AddField(
-            model_name="peserta",
             name="acara_gugur",
             field=models.ForeignKey(
                 blank=True,
@@ -64,6 +120,14 @@ class Migration(migrations.Migration):
                 on_delete=django.db.models.deletion.SET_NULL,
                 related_name="peserta_gugur",
                 to="praktikum.acara",
+            ),
+        ),
+
+        migrations.AddField(
+            model_name="peserta",
+            name="alasan_gugur",
+            field=models.TextField(
+                blank=True,
             ),
         ),
 
@@ -78,7 +142,24 @@ class Migration(migrations.Migration):
                 blank=True,
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
-                related_name="acara_penanggung_jawaban",
+                related_name="acara_penanggung_jawab",
+                to="praktikum.staff",
+            ),
+        ),
+
+        migrations.AddField(
+            model_name="acara",
+            name="pembawa_acara",
+            field=models.ManyToManyField(
+                blank=True,
+                limit_choices_to={
+                    "jabatan__in": [
+                        "koordinator",
+                        "asisten",
+                    ],
+                    "aktif": True,
+                },
+                related_name="acara_dibawakan",
                 to="praktikum.staff",
             ),
         ),
@@ -101,27 +182,33 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nilai_progress",
-                    models.PositiveIntegerField(default=0),
+                    models.PositiveIntegerField(
+                        default=0,
+                    ),
                 ),
                 (
                     "laporan_acc",
-                    models.BooleanField(default=False),
+                    models.BooleanField(
+                        default=False,
+                    ),
                 ),
                 (
                     "peta_acc",
-                    models.BooleanField(default=False),
+                    models.BooleanField(
+                        default=False,
+                    ),
                 ),
                 (
                     "ppt_acc",
-                    models.BooleanField(default=False),
-                ),
-                (
-                    "catatan",
-                    models.TextField(blank=True),
+                    models.BooleanField(
+                        default=False,
+                    ),
                 ),
                 (
                     "updated_at",
-                    models.DateTimeField(auto_now=True),
+                    models.DateTimeField(
+                        auto_now=True,
+                    ),
                 ),
                 (
                     "acara",
@@ -141,19 +228,16 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "ordering": [
-                    "acara__urutan",
-                    "acara__tanggal_mulai",
+                "constraints": [
+                    models.UniqueConstraint(
+                        fields=[
+                            "kelompok",
+                            "acara",
+                        ],
+                        name="unique_progress_kelompok_acara",
+                    ),
                 ],
             },
-        ),
-
-        migrations.AddConstraint(
-            model_name="progressacara",
-            constraint=models.UniqueConstraint(
-                fields=("kelompok", "acara"),
-                name="unique_progress_kelompok_acara",
-            ),
         ),
 
         # =====================================================
@@ -174,17 +258,16 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nama_file",
-                    models.CharField(max_length=200),
+                    models.CharField(
+                        max_length=200,
+                    ),
                 ),
                 (
                     "jenis",
                     models.CharField(
                         choices=[
-                            ("peta", "Peta"),
-                            ("ppt", "PPT"),
-                            ("excel", "Excel"),
-                            ("word", "Word"),
-                            ("pdf", "PDF"),
+                            ("peta", "Peta / Desain"),
+                            ("ppt", "PowerPoint"),
                             ("lainnya", "Lainnya"),
                         ],
                         default="lainnya",
@@ -194,7 +277,7 @@ class Migration(migrations.Migration):
                 (
                     "file",
                     models.FileField(
-                        upload_to="file_kelompok/%Y/%m/"
+                        upload_to="file_kelompok/%Y/%m/",
                     ),
                 ),
                 (
@@ -202,8 +285,8 @@ class Migration(migrations.Migration):
                     models.CharField(
                         choices=[
                             ("menunggu", "Menunggu Pemeriksaan"),
-                            ("revisi", "Perlu Revisi"),
                             ("acc", "ACC"),
+                            ("revisi", "Perlu Revisi"),
                         ],
                         default="menunggu",
                         max_length=20,
@@ -211,22 +294,26 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "catatan_admin",
-                    models.TextField(blank=True),
+                    models.TextField(
+                        blank=True,
+                    ),
                 ),
                 (
                     "uploaded_at",
-                    models.DateTimeField(auto_now_add=True),
+                    models.DateTimeField(
+                        auto_now_add=True,
+                    ),
                 ),
                 (
                     "updated_at",
-                    models.DateTimeField(auto_now=True),
+                    models.DateTimeField(
+                        auto_now=True,
+                    ),
                 ),
                 (
                     "acara",
                     models.ForeignKey(
-                        blank=True,
-                        null=True,
-                        on_delete=django.db.models.deletion.SET_NULL,
+                        on_delete=django.db.models.deletion.CASCADE,
                         related_name="file_kelompok",
                         to="praktikum.acara",
                     ),
@@ -245,7 +332,7 @@ class Migration(migrations.Migration):
                         blank=True,
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="file_diupload",
+                        related_name="file_yang_diunggah",
                         to="praktikum.peserta",
                     ),
                 ),
@@ -278,7 +365,6 @@ class Migration(migrations.Migration):
                 (
                     "judul",
                     models.CharField(
-                        default="Daily Minutes of Meeting",
                         max_length=200,
                     ),
                 ),
@@ -288,19 +374,27 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "keputusan",
-                    models.TextField(blank=True),
+                    models.TextField(
+                        blank=True,
+                    ),
                 ),
                 (
                     "tindak_lanjut",
-                    models.TextField(blank=True),
+                    models.TextField(
+                        blank=True,
+                    ),
+                ),
+                (
+                    "dibuat",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                    ),
                 ),
                 (
                     "updated_at",
-                    models.DateTimeField(auto_now=True),
-                ),
-                (
-                    "created_at",
-                    models.DateTimeField(auto_now_add=True),
+                    models.DateTimeField(
+                        auto_now=True,
+                    ),
                 ),
                 (
                     "acara",
@@ -330,12 +424,12 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "ordering": ["-tanggal", "-created_at"],
+                "ordering": ["-tanggal", "-dibuat"],
             },
         ),
 
         # =====================================================
-        # FULL REPORT
+        # LAPORAN LENGKAP
         # =====================================================
 
         migrations.CreateModel(
@@ -352,12 +446,14 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "judul",
-                    models.CharField(max_length=200),
+                    models.CharField(
+                        max_length=200,
+                    ),
                 ),
                 (
                     "file",
                     models.FileField(
-                        upload_to="laporan_lengkap/%Y/%m/"
+                        upload_to="laporan_lengkap/%Y/%m/",
                     ),
                 ),
                 (
@@ -365,8 +461,8 @@ class Migration(migrations.Migration):
                     models.CharField(
                         choices=[
                             ("menunggu", "Menunggu Pemeriksaan"),
-                            ("revisi", "Perlu Revisi"),
                             ("acc", "ACC"),
+                            ("revisi", "Perlu Revisi"),
                         ],
                         default="menunggu",
                         max_length=20,
@@ -374,15 +470,21 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "catatan_admin",
-                    models.TextField(blank=True),
+                    models.TextField(
+                        blank=True,
+                    ),
                 ),
                 (
                     "uploaded_at",
-                    models.DateTimeField(auto_now_add=True),
+                    models.DateTimeField(
+                        auto_now_add=True,
+                    ),
                 ),
                 (
                     "updated_at",
-                    models.DateTimeField(auto_now=True),
+                    models.DateTimeField(
+                        auto_now=True,
+                    ),
                 ),
                 (
                     "kelompok",
@@ -393,9 +495,6 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={
-                "ordering": ["-uploaded_at"],
-            },
         ),
 
         # =====================================================
@@ -416,16 +515,18 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "judul",
-                    models.CharField(max_length=200),
+                    models.CharField(
+                        max_length=200,
+                    ),
                 ),
                 (
                     "jenis",
                     models.CharField(
                         choices=[
                             ("pdf", "PDF"),
-                            ("excel", "Excel"),
-                            ("word", "Word"),
-                            ("ppt", "PowerPoint"),
+                            ("word", "Microsoft Word"),
+                            ("excel", "Microsoft Excel"),
+                            ("ppt", "Microsoft PowerPoint"),
                             ("lainnya", "Lainnya"),
                         ],
                         default="lainnya",
@@ -435,25 +536,28 @@ class Migration(migrations.Migration):
                 (
                     "file",
                     models.FileField(
-                        upload_to="format_dokumen/%Y/%m/"
+                        upload_to="format_dokumen/%Y/%m/",
                     ),
                 ),
                 (
                     "deskripsi",
-                    models.TextField(blank=True),
+                    models.TextField(
+                        blank=True,
+                    ),
                 ),
                 (
                     "aktif",
-                    models.BooleanField(default=True),
+                    models.BooleanField(
+                        default=True,
+                    ),
                 ),
                 (
                     "uploaded_at",
-                    models.DateTimeField(auto_now_add=True),
+                    models.DateTimeField(
+                        auto_now_add=True,
+                    ),
                 ),
             ],
-            options={
-                "ordering": ["-uploaded_at"],
-            },
         ),
 
         # =====================================================
@@ -474,7 +578,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "topik",
-                    models.CharField(max_length=200),
+                    models.CharField(
+                        max_length=200,
+                    ),
                 ),
                 (
                     "pertanyaan",
@@ -482,14 +588,16 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "jawaban",
-                    models.TextField(blank=True),
+                    models.TextField(
+                        blank=True,
+                    ),
                 ),
                 (
                     "status",
                     models.CharField(
                         choices=[
-                            ("menunggu", "Menunggu"),
-                            ("diproses", "Diproses"),
+                            ("menunggu", "Menunggu Jawaban"),
+                            ("dijawab", "Sudah Dijawab"),
                             ("selesai", "Selesai"),
                         ],
                         default="menunggu",
@@ -498,11 +606,15 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "dibuat",
-                    models.DateTimeField(auto_now_add=True),
+                    models.DateTimeField(
+                        auto_now_add=True,
+                    ),
                 ),
                 (
-                    "diperbarui",
-                    models.DateTimeField(auto_now=True),
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                    ),
                 ),
                 (
                     "acara",
@@ -510,6 +622,7 @@ class Migration(migrations.Migration):
                         blank=True,
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="konsultasi",
                         to="praktikum.acara",
                     ),
                 ),
@@ -527,7 +640,7 @@ class Migration(migrations.Migration):
                         blank=True,
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="konsultasi_dibuat",
+                        related_name="konsultasi",
                         to="praktikum.peserta",
                     ),
                 ),
@@ -542,8 +655,5 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={
-                "ordering": ["-dibuat"],
-            },
         ),
     ]
