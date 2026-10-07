@@ -7,27 +7,14 @@ class Setting(models.Model):
         max_length=200,
         default="Praktikum Perencanaan Tambang"
     )
-
     periode = models.CharField(
         max_length=100,
         default="2026/2027"
     )
-
     deskripsi = models.TextField(blank=True)
-
-    dosen_pengampu = models.CharField(
-        max_length=200,
-        blank=True
-    )
-
-    kontak = models.CharField(
-        max_length=200,
-        blank=True
-    )
-
-    updated_at = models.DateTimeField(
-        auto_now=True
-    )
+    dosen_pengampu = models.CharField(max_length=200, blank=True)
+    kontak = models.CharField(max_length=200, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.nama_praktikum
@@ -36,41 +23,22 @@ class Setting(models.Model):
 class Staff(models.Model):
 
     ROLE = [
-        (
-            "penanggung_jawab",
-            "Penanggung Jawab Praktikum"
-        ),
-        (
-            "koordinator",
-            "Koordinator Asisten Dosen"
-        ),
-        (
-            "asisten",
-            "Asisten Dosen"
-        ),
+        ("penanggung_jawab", "Penanggung Jawab Praktikum"),
+        ("koordinator", "Koordinator Asisten Dosen"),
+        ("asisten", "Asisten Dosen"),
     ]
 
-    nama = models.CharField(
-        max_length=200
-    )
-
+    nama = models.CharField(max_length=200)
     jabatan = models.CharField(
         max_length=30,
         choices=ROLE
     )
-
     kontak = models.CharField(
         max_length=100,
         blank=True
     )
-
-    urutan = models.PositiveIntegerField(
-        default=0
-    )
-
-    aktif = models.BooleanField(
-        default=True
-    )
+    urutan = models.PositiveIntegerField(default=0)
+    aktif = models.BooleanField(default=True)
 
     class Meta:
         ordering = [
@@ -98,7 +66,7 @@ class Kelompok(models.Model):
             "jabatan__in": [
                 "penanggung_jawab",
                 "koordinator",
-                "asisten",
+                "asisten"
             ],
             "aktif": True,
         },
@@ -160,17 +128,48 @@ class Peserta(models.Model):
         default=True
     )
 
-    # Akun login peserta
     akun = models.OneToOneField(
         User,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="profil_peserta"
+        related_name="profil_peserta",
     )
 
     def __str__(self):
         return self.nama
+
+    @property
+    def total_acara_absensi(self):
+        return self.absensi.count()
+
+    @property
+    def total_nilai_absensi(self):
+
+        data = self.absensi.all()
+
+        if not data:
+            return 0
+
+        total = sum(
+            item.nilai_persentase
+            for item in data
+        )
+
+        return round(total, 2)
+
+    @property
+    def persentase_absensi(self):
+
+        jumlah = self.absensi.count()
+
+        if jumlah == 0:
+            return 0
+
+        return round(
+            self.total_nilai_absensi / jumlah,
+            2
+        )
 
 
 class Acara(models.Model):
@@ -209,14 +208,13 @@ class Acara(models.Model):
         default=0
     )
 
-    # MC / Pembawa Acara
     pembawa_acara = models.ManyToManyField(
         Staff,
         blank=True,
         related_name="acara_dibawakan",
         limit_choices_to={
             "jabatan": "asisten",
-            "aktif": True,
+            "aktif": True
         },
     )
 
@@ -245,8 +243,8 @@ class Materi(models.Model):
 
     kategori = models.CharField(
         max_length=30,
-        choices=KAT,
-        default="modul"
+        default="modul",
+        choices=KAT
     )
 
     acara = models.ForeignKey(
@@ -304,13 +302,70 @@ class Absensi(models.Model):
         blank=True
     )
 
+    # =========================
+    # KOMPONEN ABSENSI
+    # =========================
+
+    start = models.BooleanField(
+        default=False,
+        verbose_name="START (20%)"
+    )
+
+    ishoma_1 = models.BooleanField(
+        default=False,
+        verbose_name="ISHOMA 1 (10%)"
+    )
+
+    ishoma_2 = models.BooleanField(
+        default=False,
+        verbose_name="ISHOMA 2 (10%)"
+    )
+
+    ishoma_3 = models.BooleanField(
+        default=False,
+        verbose_name="ISHOMA 3 (10%)"
+    )
+
+    ls = models.BooleanField(
+        default=False,
+        verbose_name="LS (50%)"
+    )
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["peserta", "acara"],
+                fields=[
+                    "peserta",
+                    "acara"
+                ],
                 name="unique_peserta_acara"
             )
         ]
+
+    @property
+    def nilai_persentase(self):
+
+        nilai = 0
+
+        if self.start:
+            nilai += 20
+
+        if self.ishoma_1:
+            nilai += 10
+
+        if self.ishoma_2:
+            nilai += 10
+
+        if self.ishoma_3:
+            nilai += 10
+
+        if self.ls:
+            nilai += 50
+
+        return nilai
+
+    def __str__(self):
+        return f"{self.peserta.nama} - {self.acara.nama}"
 
 
 class Pengumuman(models.Model):
@@ -330,7 +385,9 @@ class Pengumuman(models.Model):
     )
 
     class Meta:
-        ordering = ["-dibuat"]
+        ordering = [
+            "-dibuat"
+        ]
 
     def __str__(self):
         return self.judul
@@ -396,7 +453,9 @@ class TugasPendahuluan(models.Model):
     )
 
     class Meta:
-        ordering = ["-dibuat"]
+        ordering = [
+            "-dibuat"
+        ]
 
     def __str__(self):
         return self.judul
@@ -455,6 +514,14 @@ class LaporanMingguan(models.Model):
         blank=True
     )
 
+    # FILE YANG DIKIRIM ADMIN KEMBALI
+    file_revisi = models.FileField(
+        upload_to="laporan_revisi/%Y/%m/",
+        blank=True,
+        null=True,
+        verbose_name="File Revisi"
+    )
+
     uploaded_at = models.DateTimeField(
         auto_now_add=True
     )
@@ -464,7 +531,9 @@ class LaporanMingguan(models.Model):
     )
 
     class Meta:
-        ordering = ["-uploaded_at"]
+        ordering = [
+            "-uploaded_at"
+        ]
 
     def __str__(self):
         return self.judul
