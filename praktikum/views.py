@@ -4,7 +4,24 @@ from django.shortcuts import redirect, render
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods
 
-from .models import Kelompok
+from .models import (
+    Kelompok,
+    Peserta,
+    Staff,
+    Acara,
+    Materi,
+    Absensi,
+    Pengumuman,
+    TataTertib,
+    TugasPendahuluan,
+    LaporanMingguan,
+    ProgressAcara,
+    FileKelompok,
+    DailyMOM,
+    LaporanLengkap,
+    FormatDokumen,
+    Konsultasi,
+)
 
 
 # ============================================================
@@ -13,52 +30,201 @@ from .models import Kelompok
 
 def get_kelompok_login(request):
     """
-    Mengambil kelompok yang sedang login berdasarkan session.
-
-    Session yang digunakan:
-        kelompok_id
-        kelompok_nama
-        login_type = kelompok
+    Mengambil kelompok berdasarkan peserta yang sedang login.
     """
 
-    # --------------------------------------------------------
-    # Pastikan session memang milik login kelompok
-    # --------------------------------------------------------
+    peserta_id = request.session.get("peserta_id")
 
-    if request.session.get("login_type") != "kelompok":
+    if not peserta_id:
         return None
-
-    kelompok_id = request.session.get("kelompok_id")
-
-    if not kelompok_id:
-        return None
-
-    # --------------------------------------------------------
-    # Ambil data kelompok
-    # --------------------------------------------------------
 
     try:
-        kelompok = (
-            Kelompok.objects
-            .prefetch_related(
-                "mentor",
-                "peserta",
-                "progress_acara__acara",
-            )
-            .select_related(
-                "akun_login",
-            )
-            .get(
-                id=kelompok_id,
-                aktif=True,
-            )
+        peserta = Peserta.objects.select_related(
+            "kelompok",
+            "akun",
+        ).get(
+            id=peserta_id,
+            aktif=True,
+            status_kemajuan="aktif",
         )
-
-    except Kelompok.DoesNotExist:
+    except Peserta.DoesNotExist:
         request.session.flush()
         return None
 
-    return kelompok
+    if not peserta.kelompok or not peserta.kelompok.aktif:
+        return None
+
+    return peserta.kelompok
+
+
+def get_peserta_login(request):
+    """
+    Mengambil peserta yang sedang login.
+    """
+
+    peserta_id = request.session.get("peserta_id")
+
+    if not peserta_id:
+        return None
+
+    try:
+        return Peserta.objects.select_related(
+            "kelompok",
+            "akun",
+        ).get(
+            id=peserta_id,
+            aktif=True,
+            status_kemajuan="aktif",
+        )
+    except Peserta.DoesNotExist:
+        request.session.flush()
+        return None
+
+
+def get_role_peserta(request):
+    """
+    Mengambil role peserta:
+    ketua / anggota.
+    """
+
+    peserta = get_peserta_login(request)
+
+    if not peserta:
+        return None
+
+    return peserta.jabatan
+
+
+# ============================================================
+# HALAMAN PUBLIK
+# ============================================================
+
+def home(request):
+    return render(
+        request,
+        "praktikum/home.html",
+        {
+            "kelompok_list": Kelompok.objects.filter(
+                aktif=True
+            ).order_by("nama"),
+            "acara_list": Acara.objects.all(),
+            "pengumuman_list": Pengumuman.objects.filter(
+                aktif=True
+            ),
+        },
+    )
+
+
+def kelompok(request):
+    kelompok_list = Kelompok.objects.filter(
+        aktif=True
+    ).order_by("nama")
+
+    return render(
+        request,
+        "praktikum/kelompok.html",
+        {
+            "kelompok_list": kelompok_list,
+        },
+    )
+
+
+def personel(request):
+    peserta_list = Peserta.objects.filter(
+        aktif=True,
+        status_kemajuan="aktif",
+    ).select_related(
+        "kelompok"
+    )
+
+    return render(
+        request,
+        "praktikum/personel.html",
+        {
+            "peserta_list": peserta_list,
+        },
+    )
+
+
+def jadwal(request):
+    acara_list = Acara.objects.all().order_by(
+        "urutan",
+        "tanggal_mulai",
+    )
+
+    return render(
+        request,
+        "praktikum/jadwal.html",
+        {
+            "acara_list": acara_list,
+        },
+    )
+
+
+def materi(request):
+    materi_list = Materi.objects.all().order_by(
+        "-uploaded_at"
+    )
+
+    return render(
+        request,
+        "praktikum/materi.html",
+        {
+            "materi_list": materi_list,
+        },
+    )
+
+
+def absensi(request):
+    return render(
+        request,
+        "praktikum/absensi.html",
+    )
+
+
+def tata_tertib(request):
+    tata_tertib_list = TataTertib.objects.filter(
+        aktif=True
+    ).order_by(
+        "urutan",
+        "id",
+    )
+
+    return render(
+        request,
+        "praktikum/tata_tertib.html",
+        {
+            "tata_tertib_list": tata_tertib_list,
+        },
+    )
+
+
+def pengumuman(request):
+    pengumuman_list = Pengumuman.objects.filter(
+        aktif=True
+    )
+
+    return render(
+        request,
+        "praktikum/pengumuman.html",
+        {
+            "pengumuman_list": pengumuman_list,
+        },
+    )
+
+
+def tugas_pendahuluan(request):
+    tugas_list = TugasPendahuluan.objects.filter(
+        aktif=True
+    ).order_by("-dibuat")
+
+    return render(
+        request,
+        "praktikum/tugas_pendahuluan.html",
+        {
+            "tugas_list": tugas_list,
+        },
+    )
 
 
 # ============================================================
@@ -68,31 +234,13 @@ def get_kelompok_login(request):
 @never_cache
 @require_http_methods(["GET", "POST"])
 def login_kelompok(request):
-    """
-    Halaman login khusus akun kelompok.
 
-    Login menggunakan:
-        username
-        password
+    peserta = get_peserta_login(request)
 
-    User Django harus terhubung dengan:
-        Kelompok.akun_login
-    """
-
-    # --------------------------------------------------------
-    # Jika sudah login sebagai kelompok
-    # --------------------------------------------------------
-
-    kelompok = get_kelompok_login(request)
-
-    if kelompok is not None:
+    if peserta:
         return redirect(
             "praktikum:dashboard_kelompok"
         )
-
-    # --------------------------------------------------------
-    # Proses POST
-    # --------------------------------------------------------
 
     if request.method == "POST":
 
@@ -106,10 +254,6 @@ def login_kelompok(request):
             ""
         )
 
-        # ----------------------------------------------------
-        # Validasi input
-        # ----------------------------------------------------
-
         if not username or not password:
 
             messages.error(
@@ -119,12 +263,8 @@ def login_kelompok(request):
 
             return render(
                 request,
-                "praktikum/login.html"
+                "praktikum/login.html",
             )
-
-        # ----------------------------------------------------
-        # Authenticate User Django
-        # ----------------------------------------------------
 
         user = authenticate(
             request,
@@ -141,119 +281,102 @@ def login_kelompok(request):
 
             return render(
                 request,
-                "praktikum/login.html"
+                "praktikum/login.html",
             )
-
-        # ----------------------------------------------------
-        # User harus aktif
-        # ----------------------------------------------------
 
         if not user.is_active:
 
             messages.error(
                 request,
-                "Akun ini tidak aktif."
+                "Akun tidak aktif."
             )
 
             return render(
                 request,
-                "praktikum/login.html"
+                "praktikum/login.html",
             )
-
-        # ----------------------------------------------------
-        # Cari kelompok berdasarkan akun_login
-        # ----------------------------------------------------
 
         try:
 
-            kelompok = (
-                Kelompok.objects
-                .prefetch_related(
-                    "mentor",
-                    "peserta",
-                    "progress_acara__acara",
-                )
-                .select_related(
-                    "akun_login",
-                )
-                .get(
-                    akun_login=user,
-                    aktif=True,
-                )
+            peserta = Peserta.objects.select_related(
+                "kelompok",
+                "akun",
+            ).get(
+                akun=user,
+                aktif=True,
+                status_kemajuan="aktif",
             )
 
-        except Kelompok.DoesNotExist:
+        except Peserta.DoesNotExist:
 
             messages.error(
                 request,
-                "Akun ini belum terhubung dengan kelompok."
+                "Akun belum terhubung dengan peserta."
             )
 
             return render(
                 request,
-                "praktikum/login.html"
+                "praktikum/login.html",
             )
 
-        # ----------------------------------------------------
-        # Reset session
-        #
-        # Tujuan:
-        # mencegah session lama digunakan kembali.
-        # ----------------------------------------------------
+        if not peserta.kelompok:
+
+            messages.error(
+                request,
+                "Peserta belum terhubung dengan kelompok."
+            )
+
+            return render(
+                request,
+                "praktikum/login.html",
+            )
+
+        if not peserta.kelompok.aktif:
+
+            messages.error(
+                request,
+                "Kelompok ini sedang tidak aktif."
+            )
+
+            return render(
+                request,
+                "praktikum/login.html",
+            )
 
         request.session.flush()
 
-        # ----------------------------------------------------
-        # Simpan session kelompok
-        # ----------------------------------------------------
-
-        request.session["kelompok_id"] = kelompok.id
-
-        request.session["kelompok_nama"] = kelompok.nama
-
-        request.session["login_type"] = "kelompok"
-
-        # ----------------------------------------------------
-        # Session berlaku 12 jam
-        # ----------------------------------------------------
+        request.session["peserta_id"] = peserta.id
+        request.session["kelompok_id"] = peserta.kelompok.id
+        request.session["kelompok_nama"] = peserta.kelompok.nama
+        request.session["peserta_nama"] = peserta.nama
+        request.session["peserta_role"] = peserta.jabatan
+        request.session["login_type"] = "peserta"
 
         request.session.set_expiry(
             60 * 60 * 12
         )
 
-        # ----------------------------------------------------
-        # Pesan sukses
-        # ----------------------------------------------------
-
         messages.success(
             request,
-            f"Selamat datang, {kelompok.nama}."
+            f"Selamat datang, {peserta.nama}."
         )
 
         return redirect(
             "praktikum:dashboard_kelompok"
         )
 
-    # --------------------------------------------------------
-    # GET
-    # --------------------------------------------------------
-
     return render(
         request,
-        "praktikum/login.html"
+        "praktikum/login.html",
     )
 
 
 # ============================================================
-# LOGOUT KELOMPOK
+# LOGOUT
 # ============================================================
 
 @never_cache
-@require_http_methods(["GET", "POST"])
 def logout_kelompok(request):
-    """
-    Logout akun kelompok.
-    """
 
     request.session.flush()
 
@@ -272,22 +395,11 @@ def logout_kelompok(request):
 # ============================================================
 
 @never_cache
-@require_http_methods(["GET"])
 def dashboard_kelompok(request):
-    """
-    Dashboard utama kelompok.
 
-    Data yang ditampilkan hanya milik kelompok
-    yang sedang login.
-    """
+    peserta = get_peserta_login(request)
 
-    # --------------------------------------------------------
-    # Ambil kelompok dari session
-    # --------------------------------------------------------
-
-    kelompok = get_kelompok_login(request)
-
-    if kelompok is None:
+    if not peserta:
 
         messages.warning(
             request,
@@ -298,54 +410,29 @@ def dashboard_kelompok(request):
             "praktikum:login_kelompok"
         )
 
-    # --------------------------------------------------------
-    # Mentor aktif
-    # --------------------------------------------------------
+    kelompok_obj = peserta.kelompok
 
-    mentor = kelompok.mentor.filter(
+    anggota = Peserta.objects.filter(
+        kelompok=kelompok_obj,
+        aktif=True,
+        status_kemajuan="aktif",
+    ).order_by(
+        "jabatan",
+        "nama",
+    )
+
+    mentor = kelompok_obj.mentor.filter(
         aktif=True
     )
 
-    # --------------------------------------------------------
-    # Anggota aktif
-    #
-    # Hanya peserta:
-    #   aktif=True
-    #   status_kemajuan="aktif"
-    # --------------------------------------------------------
-
-    anggota = (
-        kelompok.peserta
-        .filter(
-            aktif=True,
-            status_kemajuan="aktif",
-        )
-        .order_by(
-            "jabatan",
-            "nama",
-        )
+    progress_acara = ProgressAcara.objects.filter(
+        kelompok=kelompok_obj
+    ).select_related(
+        "acara"
+    ).order_by(
+        "acara__urutan",
+        "acara__tanggal_mulai",
     )
-
-    # --------------------------------------------------------
-    # Progress per acara
-    # --------------------------------------------------------
-
-    progress_acara = (
-        kelompok.progress_acara
-        .select_related("acara")
-        .order_by(
-            "acara__urutan",
-            "acara__tanggal_mulai",
-        )
-    )
-
-    # --------------------------------------------------------
-    # Hitung progress keseluruhan
-    #
-    # Prioritas:
-    # 1. Jika ada ProgressAcara → rata-rata progress.
-    # 2. Jika belum ada → gunakan field Kelompok.progress.
-    # --------------------------------------------------------
 
     progress_list = [
         item.nilai_progress
@@ -360,44 +447,251 @@ def dashboard_kelompok(request):
 
     else:
 
-        progress_persen = kelompok.progress_persen
+        progress_persen = kelompok_obj.progress_persen
 
-    # --------------------------------------------------------
-    # Jumlah event/acara yang memiliki progress
-    # --------------------------------------------------------
+    laporan = LaporanMingguan.objects.filter(
+        kelompok=kelompok_obj
+    ).select_related(
+        "peserta",
+        "acara",
+    )
 
-    jumlah_event = progress_acara.count()
+    file_kelompok = FileKelompok.objects.filter(
+        kelompok=kelompok_obj
+    ).select_related(
+        "uploaded_by",
+        "acara",
+    )
 
-    # --------------------------------------------------------
-    # Username akun kelompok
-    # --------------------------------------------------------
+    daily_mom = DailyMOM.objects.filter(
+        kelompok=kelompok_obj
+    ).select_related(
+        "acara",
+        "dibuat_oleh",
+    )[:10]
 
-    username = ""
+    laporan_lengkap = LaporanLengkap.objects.filter(
+        kelompok=kelompok_obj
+    ).order_by(
+        "-uploaded_at"
+    )
 
-    if kelompok.akun_login:
-        username = kelompok.akun_login.username
-
-    # --------------------------------------------------------
-    # Context dashboard
-    # --------------------------------------------------------
+    konsultasi = Konsultasi.objects.filter(
+        kelompok=kelompok_obj
+    ).select_related(
+        "peserta",
+        "tujuan",
+        "acara",
+    ).order_by(
+        "-dibuat"
+    )
 
     context = {
-        "kelompok": kelompok,
-        "mentor": mentor,
+        "peserta": peserta,
+        "kelompok": kelompok_obj,
         "anggota": anggota,
+        "mentor": mentor,
         "progress_acara": progress_acara,
         "progress_persen": progress_persen,
-        "jumlah_event": jumlah_event,
         "jumlah_anggota": anggota.count(),
-        "username": username,
+        "laporan": laporan,
+        "file_kelompok": file_kelompok,
+        "daily_mom": daily_mom,
+        "laporan_lengkap": laporan_lengkap,
+        "konsultasi": konsultasi,
+        "is_ketua": peserta.jabatan == "ketua",
+        "is_anggota": peserta.jabatan == "anggota",
+        "username": (
+            peserta.akun.username
+            if peserta.akun
+            else ""
+        ),
     }
-
-    # --------------------------------------------------------
-    # Render dashboard
-    # --------------------------------------------------------
 
     return render(
         request,
         "praktikum/dashboard_kelompok.html",
         context,
+    )
+
+
+# ============================================================
+# DASHBOARD PESERTA LAMA
+# ============================================================
+
+def dashboard_peserta(request):
+
+    peserta = get_peserta_login(request)
+
+    if not peserta:
+
+        return redirect(
+            "praktikum:login_kelompok"
+        )
+
+    return redirect(
+        "praktikum:dashboard_kelompok"
+    )
+
+
+# ============================================================
+# UPLOAD LAPORAN MINGGUAN
+# ============================================================
+
+@require_http_methods(["GET", "POST"])
+def upload_laporan(request):
+
+    peserta = get_peserta_login(request)
+
+    if not peserta:
+
+        return redirect(
+            "praktikum:login_kelompok"
+        )
+
+    kelompok_obj = peserta.kelompok
+
+    if request.method == "POST":
+
+        acara_id = request.POST.get("acara")
+        peserta_id = request.POST.get("peserta")
+        judul = request.POST.get("judul", "").strip()
+        file = request.FILES.get("file")
+
+        if peserta.jabatan not in ["ketua", "anggota"]:
+
+            messages.error(
+                request,
+                "Anda tidak memiliki akses."
+            )
+
+            return redirect(
+                "praktikum:dashboard_kelompok"
+            )
+
+        try:
+            peserta_upload = Peserta.objects.get(
+                id=peserta_id,
+                kelompok=kelompok_obj,
+                aktif=True,
+            )
+        except Peserta.DoesNotExist:
+
+            messages.error(
+                request,
+                "Peserta tidak ditemukan."
+            )
+
+            return redirect(
+                "praktikum:dashboard_kelompok"
+            )
+
+        if not acara_id or not judul or not file:
+
+            messages.error(
+                request,
+                "Acara, judul, dan file wajib diisi."
+            )
+
+            return redirect(
+                "praktikum:dashboard_kelompok"
+            )
+
+        try:
+            acara_obj = Acara.objects.get(
+                id=acara_id
+            )
+        except Acara.DoesNotExist:
+
+            messages.error(
+                request,
+                "Acara tidak ditemukan."
+            )
+
+            return redirect(
+                "praktikum:dashboard_kelompok"
+            )
+
+        LaporanMingguan.objects.create(
+            peserta=peserta_upload,
+            kelompok=kelompok_obj,
+            acara=acara_obj,
+            judul=judul,
+            file=file,
+        )
+
+        messages.success(
+            request,
+            "Laporan mingguan berhasil diupload."
+        )
+
+        return redirect(
+            "praktikum:dashboard_kelompok"
+        )
+
+    return render(
+        request,
+        "praktikum/dashboard_kelompok.html",
+        {
+            "peserta": peserta,
+            "kelompok": kelompok_obj,
+            "anggota": Peserta.objects.filter(
+                kelompok=kelompok_obj,
+                aktif=True,
+            ),
+            "acara_list": Acara.objects.all(),
+            "is_ketua": peserta.jabatan == "ketua",
+        },
+    )
+
+
+# ============================================================
+# DOWNLOAD FILE REVISI
+# ============================================================
+
+def download_file_revisi(request, laporan_id):
+
+    peserta = get_peserta_login(request)
+
+    if not peserta:
+
+        return redirect(
+            "praktikum:login_kelompok"
+        )
+
+    try:
+
+        laporan = LaporanMingguan.objects.get(
+            id=laporan_id,
+            kelompok=peserta.kelompok,
+        )
+
+    except LaporanMingguan.DoesNotExist:
+
+        messages.error(
+            request,
+            "Laporan tidak ditemukan."
+        )
+
+        return redirect(
+            "praktikum:dashboard_kelompok"
+        )
+
+    if not laporan.file_revisi:
+
+        messages.error(
+            request,
+            "File revisi belum tersedia."
+        )
+
+        return redirect(
+            "praktikum:dashboard_kelompok"
+        )
+
+    from django.http import FileResponse
+
+    return FileResponse(
+        laporan.file_revisi.open("rb"),
+        as_attachment=True,
+        filename=laporan.file_revisi.name.split("/")[-1],
     )
