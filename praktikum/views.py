@@ -33,6 +33,7 @@ ACTIVE_STATUS = [
 # ============================================================
 
 def get_kelompok_login(request):
+
     kelompok_id = request.session.get("kelompok_id")
 
     if not kelompok_id:
@@ -52,6 +53,7 @@ def get_kelompok_login(request):
 # ============================================================
 
 def get_user_kelompok(request):
+
     if not request.user.is_authenticated:
         return None
 
@@ -69,6 +71,7 @@ def get_user_kelompok(request):
 # ============================================================
 
 def get_peserta_login(request):
+
     if not request.user.is_authenticated:
         return None
 
@@ -83,17 +86,29 @@ def get_peserta_login(request):
 
 
 # ============================================================
-# HOME
+# HOME / BERANDA PUBLIK
 # ============================================================
 
 def home(request):
+
     setting = Setting.objects.first()
+
+    # ========================================================
+    # KELOMPOK
+    # ========================================================
+    # Semua data yang ada di database dibaca.
+    # Tidak difilter aktif agar data admin langsung terbaca.
+    # ========================================================
 
     kelompok_list = (
         Kelompok.objects
-        .filter(aktif=True)
+        .all()
         .order_by("nama")
     )
+
+    # ========================================================
+    # ACARA / JADWAL
+    # ========================================================
 
     acara_list = (
         Acara.objects
@@ -104,24 +119,36 @@ def home(request):
         )
     )
 
+    # ========================================================
+    # MATERI
+    # ========================================================
+
     materi_list = (
         Materi.objects
         .all()
         .order_by("-uploaded_at")
     )
 
+    # ========================================================
+    # PENGUMUMAN
+    # ========================================================
+
     pengumuman_list = (
         Pengumuman.objects
-        .filter(aktif=True)
+        .all()
         .order_by("-id")
     )
 
+    # ========================================================
+    # PESERTA
+    # ========================================================
+    # Semua peserta dibaca agar data publik konsisten
+    # dengan data yang dikelola admin.
+    # ========================================================
+
     peserta_list = (
         Peserta.objects
-        .filter(
-            aktif=True,
-            status_kemajuan__in=ACTIVE_STATUS,
-        )
+        .all()
         .select_related("kelompok")
         .order_by(
             "kelompok__nama",
@@ -129,9 +156,14 @@ def home(request):
         )
     )
 
+    # ========================================================
+    # KOORDINATOR
+    # ========================================================
+
     koordinator = None
 
     for person in peserta_list:
+
         jabatan = str(
             getattr(
                 person,
@@ -141,28 +173,43 @@ def home(request):
         ).strip().lower()
 
         if "koordinator" in jabatan:
+
             koordinator = person
             break
 
+    # ========================================================
+    # CONTEXT
+    # ========================================================
+
     context = {
+
         "setting": setting,
 
+        # Kelompok
         "kelompok": kelompok_list,
         "kelompok_list": kelompok_list,
 
+        # Acara
         "acara": acara_list,
         "acara_list": acara_list,
 
+        # Materi
         "materi": materi_list,
         "materi_list": materi_list,
 
+        # Pengumuman
         "pengumuman": pengumuman_list,
         "pengumuman_list": pengumuman_list,
 
+        # Peserta
+        "peserta": peserta_list,
         "peserta_list": peserta_list,
+
+        # Personel
         "personel": peserta_list,
         "asisten": peserta_list,
 
+        # Koordinator
         "koordinator": koordinator,
     }
 
@@ -178,11 +225,12 @@ def home(request):
 # ============================================================
 
 def personel(request):
+
     setting = Setting.objects.first()
 
     peserta_list = (
         Peserta.objects
-        .filter(aktif=True)
+        .all()
         .select_related("kelompok")
         .order_by(
             "kelompok__nama",
@@ -209,11 +257,12 @@ def personel(request):
 # ============================================================
 
 def kelompok(request):
+
     setting = Setting.objects.first()
 
     kelompok_list = (
         Kelompok.objects
-        .filter(aktif=True)
+        .all()
         .order_by("nama")
     )
 
@@ -235,6 +284,7 @@ def kelompok(request):
 # ============================================================
 
 def jadwal(request):
+
     setting = Setting.objects.first()
 
     acara_list = (
@@ -264,6 +314,7 @@ def jadwal(request):
 # ============================================================
 
 def materi(request):
+
     setting = Setting.objects.first()
 
     materi_list = (
@@ -290,11 +341,12 @@ def materi(request):
 # ============================================================
 
 def absensi(request):
+
     setting = Setting.objects.first()
 
     kelompok_list = (
         Kelompok.objects
-        .filter(aktif=True)
+        .all()
         .order_by("nama")
     )
 
@@ -316,11 +368,12 @@ def absensi(request):
 # ============================================================
 
 def pengumuman(request):
+
     setting = Setting.objects.first()
 
     pengumuman_list = (
         Pengumuman.objects
-        .filter(aktif=True)
+        .all()
         .order_by("-id")
     )
 
@@ -342,11 +395,12 @@ def pengumuman(request):
 # ============================================================
 
 def tata_tertib(request):
+
     setting = Setting.objects.first()
 
     tata_tertib_list = (
         TataTertib.objects
-        .filter(aktif=True)
+        .all()
         .order_by("urutan")
     )
 
@@ -368,11 +422,12 @@ def tata_tertib(request):
 # ============================================================
 
 def tugas_pendahuluan(request):
+
     setting = Setting.objects.first()
 
     tugas_list = (
         TugasPendahuluan.objects
-        .filter(aktif=True)
+        .all()
         .order_by("-dibuat")
     )
 
@@ -394,11 +449,13 @@ def tugas_pendahuluan(request):
 # ============================================================
 
 def informasi_peserta(request):
+
     setting = Setting.objects.first()
 
-    # SEMUA PESERTA DITAMPILKAN
+    # Semua peserta ditampilkan.
     peserta_list = (
         Peserta.objects
+        .all()
         .select_related("kelompok")
         .order_by(
             "kelompok__nama",
@@ -426,13 +483,18 @@ def informasi_peserta(request):
 
     total_kelompok = (
         peserta_list
-        .exclude(kelompok=None)
-        .values("kelompok")
+        .exclude(
+            kelompok=None
+        )
+        .values(
+            "kelompok"
+        )
         .distinct()
         .count()
     )
 
     context = {
+
         "setting": setting,
 
         "peserta": peserta_list,
@@ -458,6 +520,7 @@ def informasi_peserta(request):
 def login_kelompok(request):
 
     if request.session.get("kelompok_id"):
+
         return redirect(
             "praktikum:dashboard_kelompok"
         )
@@ -616,6 +679,7 @@ def dashboard_kelompok(request):
     )
 
     context = {
+
         "setting": setting,
 
         "kelompok": kelompok,
@@ -682,6 +746,7 @@ def dashboard_peserta(request):
     )
 
     context = {
+
         "setting": setting,
 
         "peserta": peserta,
