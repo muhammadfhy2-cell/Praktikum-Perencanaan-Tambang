@@ -4,6 +4,10 @@ from . import views
 
 urlpatterns = [
 
+    # ==============================
+    # PUBLIC
+    # ==============================
+
     path(
         "",
         views.home,
@@ -58,6 +62,11 @@ urlpatterns = [
         name="tugas_pendahuluan"
     ),
 
+
+    # ==============================
+    # PESERTA
+    # ==============================
+
     path(
         "login/",
         views.login_peserta,
@@ -87,4 +96,5 @@ urlpatterns = [
         views.download_file_revisi,
         name="download_file_revisi"
     ),
+
 ]
