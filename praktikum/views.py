@@ -1,6 +1,5 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods
@@ -15,12 +14,28 @@ from .models import Kelompok
 def get_kelompok_login(request):
     """
     Mengambil kelompok yang sedang login berdasarkan session.
+
+    Session yang digunakan:
+        kelompok_id
+        kelompok_nama
+        login_type = kelompok
     """
+
+    # --------------------------------------------------------
+    # Pastikan session memang milik login kelompok
+    # --------------------------------------------------------
+
+    if request.session.get("login_type") != "kelompok":
+        return None
 
     kelompok_id = request.session.get("kelompok_id")
 
     if not kelompok_id:
         return None
+
+    # --------------------------------------------------------
+    # Ambil data kelompok
+    # --------------------------------------------------------
 
     try:
         kelompok = (
@@ -29,6 +44,9 @@ def get_kelompok_login(request):
                 "mentor",
                 "peserta",
                 "progress_acara__acara",
+            )
+            .select_related(
+                "akun_login",
             )
             .get(
                 id=kelompok_id,
@@ -68,7 +86,9 @@ def login_kelompok(request):
     kelompok = get_kelompok_login(request)
 
     if kelompok is not None:
-        return redirect("absensi:dashboard_kelompok")
+        return redirect(
+            "praktikum:dashboard_kelompok"
+        )
 
     # --------------------------------------------------------
     # Proses POST
@@ -99,7 +119,7 @@ def login_kelompok(request):
 
             return render(
                 request,
-                "absensi/login.html"
+                "praktikum/login.html"
             )
 
         # ----------------------------------------------------
@@ -121,7 +141,7 @@ def login_kelompok(request):
 
             return render(
                 request,
-                "absensi/login.html"
+                "praktikum/login.html"
             )
 
         # ----------------------------------------------------
@@ -137,7 +157,7 @@ def login_kelompok(request):
 
             return render(
                 request,
-                "absensi/login.html"
+                "praktikum/login.html"
             )
 
         # ----------------------------------------------------
@@ -152,6 +172,9 @@ def login_kelompok(request):
                     "mentor",
                     "peserta",
                     "progress_acara__acara",
+                )
+                .select_related(
+                    "akun_login",
                 )
                 .get(
                     akun_login=user,
@@ -168,7 +191,7 @@ def login_kelompok(request):
 
             return render(
                 request,
-                "absensi/login.html"
+                "praktikum/login.html"
             )
 
         # ----------------------------------------------------
@@ -190,6 +213,10 @@ def login_kelompok(request):
 
         request.session["login_type"] = "kelompok"
 
+        # ----------------------------------------------------
+        # Session berlaku 12 jam
+        # ----------------------------------------------------
+
         request.session.set_expiry(
             60 * 60 * 12
         )
@@ -204,7 +231,7 @@ def login_kelompok(request):
         )
 
         return redirect(
-            "absensi:dashboard_kelompok"
+            "praktikum:dashboard_kelompok"
         )
 
     # --------------------------------------------------------
@@ -213,7 +240,7 @@ def login_kelompok(request):
 
     return render(
         request,
-        "absensi/login.html"
+        "praktikum/login.html"
     )
 
 
@@ -236,7 +263,7 @@ def logout_kelompok(request):
     )
 
     return redirect(
-        "absensi:login_kelompok"
+        "praktikum:login_kelompok"
     )
 
 
@@ -268,7 +295,7 @@ def dashboard_kelompok(request):
         )
 
         return redirect(
-            "absensi:login_kelompok"
+            "praktikum:login_kelompok"
         )
 
     # --------------------------------------------------------
@@ -336,10 +363,19 @@ def dashboard_kelompok(request):
         progress_persen = kelompok.progress_persen
 
     # --------------------------------------------------------
-    # Event / acara yang sudah memiliki progress
+    # Jumlah event/acara yang memiliki progress
     # --------------------------------------------------------
 
     jumlah_event = progress_acara.count()
+
+    # --------------------------------------------------------
+    # Username akun kelompok
+    # --------------------------------------------------------
+
+    username = ""
+
+    if kelompok.akun_login:
+        username = kelompok.akun_login.username
 
     # --------------------------------------------------------
     # Context dashboard
@@ -347,28 +383,21 @@ def dashboard_kelompok(request):
 
     context = {
         "kelompok": kelompok,
-
         "mentor": mentor,
-
         "anggota": anggota,
-
         "progress_acara": progress_acara,
-
         "progress_persen": progress_persen,
-
         "jumlah_event": jumlah_event,
-
         "jumlah_anggota": anggota.count(),
-
-        "username": (
-            kelompok.akun_login.username
-            if kelompok.akun_login
-            else ""
-        ),
+        "username": username,
     }
+
+    # --------------------------------------------------------
+    # Render dashboard
+    # --------------------------------------------------------
 
     return render(
         request,
-        "absensi/dashboard_kelompok.html",
+        "praktikum/dashboard_kelompok.html",
         context,
     )
