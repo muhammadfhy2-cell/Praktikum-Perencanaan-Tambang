@@ -9,7 +9,7 @@ app_name = "praktikum"
 urlpatterns = [
 
     # ========================================================
-    # HALAMAN PUBLIK
+    # PUBLIC
     # ========================================================
 
     path(
@@ -74,7 +74,7 @@ urlpatterns = [
 
 
     # ========================================================
-    # LOGIN AKUN KELOMPOK
+    # LOGIN KELOMPOK
     # ========================================================
 
     path(
@@ -91,7 +91,7 @@ urlpatterns = [
 
 
     # ========================================================
-    # DASHBOARD KELOMPOK
+    # DASHBOARD
     # ========================================================
 
     path(
@@ -100,7 +100,6 @@ urlpatterns = [
         name="dashboard_kelompok",
     ),
 
-    # Kompatibilitas route lama
     path(
         "dashboard/peserta/",
         views.dashboard_peserta,
