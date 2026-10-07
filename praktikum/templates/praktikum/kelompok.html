@@ -1,1 +1,237 @@
-{% extends 'praktikum/base.html' %}{% block content %}<div class="container py-5"><h1>Kelompok Praktikum</h1><p>Informasi kelompok dan progres pengerjaan.</p><div class="table-responsive"><table class="table table-bordered align-middle"><thead><tr><th>Kelompok</th><th>Asisten Pembimbing / Mentor</th><th>Progress</th><th>Catatan</th></tr></thead><tbody>{% for x in kelompok %}<tr><td><b>{{ x.nama }}</b></td><td>{{ x.mentor|default:'-' }}</td><td><div class="progress"><div class="progress-bar" style="width:{{ x.progress }}%">{{ x.progress }}%</div></div></td><td>{{ x.catatan|default:'-' }}</td></tr>{% empty %}<tr><td colspan="4">Belum ada data.</td></tr>{% endfor %}</tbody></table></div></div>{% endblock %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Kelompok Praktikum</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fa;
+            color: #111827;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 24px;
+        }
+
+        h1 {
+            font-size: 46px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 22px;
+            margin-bottom: 32px;
+            color: #374151;
+        }
+
+        .group-card {
+            background: white;
+            border: 1px solid #d9dee5;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .group-header {
+            padding: 22px 26px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .group-name {
+            font-size: 25px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .mentor {
+            color: #374151;
+            font-size: 16px;
+        }
+
+        .content {
+            padding: 24px 26px;
+        }
+
+        .section-title {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .participant-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 10px;
+        }
+
+        .participant {
+            padding: 12px 15px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+
+        .participant-name {
+            font-weight: 700;
+        }
+
+        .participant-info {
+            margin-top: 4px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .empty {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .progress-wrapper {
+            margin-top: 22px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #111827;
+        }
+
+        .progress-text {
+            margin-top: 6px;
+            font-size: 14px;
+            color: #4b5563;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Kelompok Praktikum</h1>
+
+    <div class="subtitle">
+        Informasi kelompok, mentor, peserta, dan progres pengerjaan.
+    </div>
+
+    {% for kelompok_item in kelompok %}
+
+    <div class="group-card">
+
+        <div class="group-header">
+
+            <div class="group-name">
+                {{ kelompok_item.nama }}
+            </div>
+
+            <div class="mentor">
+                <strong>Asisten Pembimbing / Mentor:</strong>
+
+                {% for mentor in kelompok_item.mentor.all %}
+
+                    {{ mentor.nama }}
+                    {% if not forloop.last %}, {% endif %}
+
+                {% empty %}
+
+                    Belum ditentukan
+
+                {% endfor %}
+            </div>
+
+        </div>
+
+        <div class="content">
+
+            <div class="section-title">
+                Peserta Kelompok
+            </div>
+
+            <div class="participant-list">
+
+                {% for peserta in kelompok_item.peserta.all %}
+
+                    <div class="participant">
+
+                        <div class="participant-name">
+                            {{ peserta.nama }}
+                        </div>
+
+                        <div class="participant-info">
+
+                            {% if peserta.nim %}
+                                NIM: {{ peserta.nim }}
+                            {% endif %}
+
+                            {% if peserta.jabatan %}
+                                <br>
+                                Status: {{ peserta.get_jabatan_display }}
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="empty">
+                        Belum ada peserta pada kelompok ini.
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <div class="progress-wrapper">
+
+                <strong>Progress</strong>
+
+                <div class="progress-bar">
+
+                    <div
+                        class="progress-fill"
+                        style="width: {{ kelompok_item.progress }}%;"
+                    ></div>
+
+                </div>
+
+                <div class="progress-text">
+                    {{ kelompok_item.progress }}%
+                </div>
+
+            </div>
+
+
+            {% if kelompok_item.catatan %}
+
+                <div style="margin-top:18px;">
+                    <strong>Catatan:</strong>
+                    {{ kelompok_item.catatan }}
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+</body>
+</html>
