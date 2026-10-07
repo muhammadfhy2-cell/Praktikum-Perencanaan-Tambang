@@ -1,20 +1,13 @@
-from django.contrib.auth.models import User
 from django.db import models
+from django.contrib.auth.models import User
 
-
-# ============================================================
-# SETTING
-# ============================================================
 
 class Setting(models.Model):
     nama_praktikum = models.CharField(
         max_length=200,
         default="Praktikum Perencanaan Tambang"
     )
-    periode = models.CharField(
-        max_length=100,
-        default="2026/2027"
-    )
+    periode = models.CharField(max_length=100, default="2026/2027")
     deskripsi = models.TextField(blank=True)
     dosen_pengampu = models.CharField(max_length=200, blank=True)
     kontak = models.CharField(max_length=200, blank=True)
@@ -24,68 +17,28 @@ class Setting(models.Model):
         return self.nama_praktikum
 
 
-# ============================================================
-# STAFF
-# ============================================================
-
 class Staff(models.Model):
-
     ROLE = [
-        (
-            "penanggung_jawab",
-            "Penanggung Jawab Praktikum"
-        ),
-        (
-            "koordinator",
-            "Koordinator Asisten Dosen"
-        ),
-        (
-            "asisten",
-            "Asisten Dosen"
-        ),
+        ("penanggung_jawab", "Penanggung Jawab Praktikum"),
+        ("koordinator", "Koordinator Asisten Dosen"),
+        ("asisten", "Asisten Dosen"),
     ]
 
     nama = models.CharField(max_length=200)
-
-    jabatan = models.CharField(
-        max_length=30,
-        choices=ROLE
-    )
-
-    kontak = models.CharField(
-        max_length=100,
-        blank=True
-    )
-
-    urutan = models.PositiveIntegerField(
-        default=0
-    )
-
-    aktif = models.BooleanField(
-        default=True
-    )
+    jabatan = models.CharField(max_length=30, choices=ROLE)
+    kontak = models.CharField(max_length=100, blank=True)
+    urutan = models.PositiveIntegerField(default=0)
+    aktif = models.BooleanField(default=True)
 
     class Meta:
-        ordering = [
-            "jabatan",
-            "urutan",
-            "nama"
-        ]
+        ordering = ["jabatan", "urutan", "nama"]
 
     def __str__(self):
         return f"{self.nama} - {self.get_jabatan_display()}"
 
 
-# ============================================================
-# KELOMPOK
-# ============================================================
-
 class Kelompok(models.Model):
-
-    nama = models.CharField(
-        max_length=100,
-        unique=True
-    )
+    nama = models.CharField(max_length=100, unique=True)
 
     mentor = models.ManyToManyField(
         Staff,
@@ -107,7 +60,14 @@ class Kelompok(models.Model):
         null=True
     )
 
-    # AKUN LOGIN KELOMPOK
+    progress = models.PositiveIntegerField(
+        default=0,
+        help_text="Progress keseluruhan kelompok dalam persen."
+    )
+
+    catatan = models.TextField(blank=True)
+
+    # LOGIN KELOMPOK
     akun_login = models.OneToOneField(
         User,
         on_delete=models.SET_NULL,
@@ -116,28 +76,16 @@ class Kelompok(models.Model):
         related_name="akun_kelompok",
     )
 
-    progress = models.PositiveIntegerField(
-        default=0
-    )
+    aktif = models.BooleanField(default=True)
 
-    catatan = models.TextField(
-        blank=True
-    )
-
-    aktif = models.BooleanField(
-        default=True
-    )
+    class Meta:
+        ordering = ["nama"]
 
     def __str__(self):
         return self.nama
 
 
-# ============================================================
-# PESERTA
-# ============================================================
-
 class Peserta(models.Model):
-
     JABATAN = [
         ("ketua", "Ketua"),
         ("anggota", "Anggota"),
@@ -148,21 +96,15 @@ class Peserta(models.Model):
         ("gugur", "GUGUR"),
     ]
 
-    nama = models.CharField(
-        max_length=200
-    )
-
-    nim = models.CharField(
-        max_length=50,
-        blank=True
-    )
+    nama = models.CharField(max_length=200)
+    nim = models.CharField(max_length=50, blank=True)
 
     kelompok = models.ForeignKey(
         Kelompok,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="peserta"
+        related_name="peserta",
     )
 
     jabatan = models.CharField(
@@ -171,15 +113,9 @@ class Peserta(models.Model):
         default="anggota"
     )
 
-    email = models.EmailField(
-        blank=True
-    )
+    email = models.EmailField(blank=True)
+    aktif = models.BooleanField(default=True)
 
-    aktif = models.BooleanField(
-        default=True
-    )
-
-    # Dipertahankan untuk kompatibilitas data lama
     akun = models.OneToOneField(
         User,
         on_delete=models.SET_NULL,
@@ -188,11 +124,11 @@ class Peserta(models.Model):
         related_name="profil_peserta",
     )
 
-    # STATUS KEMAJUAN
+    # STATUS KEMAJUAN PESERTA
     status_kemajuan = models.CharField(
         max_length=20,
         choices=STATUS,
-        default="aktif"
+        default="aktif",
     )
 
     acara_gugur = models.ForeignKey(
@@ -203,77 +139,53 @@ class Peserta(models.Model):
         related_name="peserta_gugur",
     )
 
-    alasan_gugur = models.TextField(
-        blank=True
-    )
+    alasan_gugur = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["kelompok", "jabatan", "nama"]
 
     def __str__(self):
         return self.nama
 
 
-# ============================================================
-# ACARA
-# ============================================================
-
 class Acara(models.Model):
-
-    nama = models.CharField(
-        max_length=200
-    )
-
-    sub_acara = models.CharField(
-        max_length=200,
-        blank=True
-    )
+    nama = models.CharField(max_length=200)
+    sub_acara = models.CharField(max_length=200, blank=True)
 
     tanggal_mulai = models.DateTimeField()
-
     tanggal_selesai = models.DateTimeField(
         null=True,
         blank=True
     )
 
-    lokasi = models.CharField(
-        max_length=200,
-        blank=True
-    )
+    lokasi = models.CharField(max_length=200, blank=True)
 
     status = models.CharField(
         max_length=50,
         default="Belum Dimulai"
     )
 
-    deskripsi = models.TextField(
-        blank=True
-    )
+    deskripsi = models.TextField(blank=True)
+    urutan = models.PositiveIntegerField(default=0)
 
-    urutan = models.PositiveIntegerField(
-        default=0
-    )
-
-    # MC:
-    # KOORDINATOR + ASISTEN
+    # MC
     pembawa_acara = models.ManyToManyField(
         Staff,
         blank=True,
         related_name="acara_dibawakan",
         limit_choices_to={
-            "jabatan__in": [
-                "koordinator",
-                "asisten",
-            ],
+            "jabatan__in": ["koordinator", "asisten"],
             "aktif": True,
         },
     )
 
-    # PENANGGUNG JAWAB ACARA
-    # HANYA PENANGGUNG JAWAB PRAKTIKUM
+    # PJ ACARA
     penanggung_jawab = models.ForeignKey(
         Staff,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="acara_ditangani",
+        related_name="acara_penanggung_jawaban",
         limit_choices_to={
             "jabatan": "penanggung_jawab",
             "aktif": True,
@@ -281,21 +193,13 @@ class Acara(models.Model):
     )
 
     class Meta:
-        ordering = [
-            "urutan",
-            "tanggal_mulai"
-        ]
+        ordering = ["urutan", "tanggal_mulai"]
 
     def __str__(self):
         return self.nama
 
 
-# ============================================================
-# MATERI
-# ============================================================
-
 class Materi(models.Model):
-
     KAT = [
         ("modul", "Modul"),
         ("dataset", "Dataset"),
@@ -303,10 +207,7 @@ class Materi(models.Model):
         ("lainnya", "Lainnya"),
     ]
 
-    judul = models.CharField(
-        max_length=200
-    )
-
+    judul = models.CharField(max_length=200)
     kategori = models.CharField(
         max_length=30,
         default="modul",
@@ -317,31 +218,21 @@ class Materi(models.Model):
         Acara,
         on_delete=models.SET_NULL,
         null=True,
-        blank=True
+        blank=True,
     )
 
     file = models.FileField(
         upload_to="materi/%Y/%m/"
     )
 
-    deskripsi = models.TextField(
-        blank=True
-    )
-
-    uploaded_at = models.DateTimeField(
-        auto_now_add=True
-    )
+    deskripsi = models.TextField(blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.judul
 
 
-# ============================================================
-# ABSENSI
-# ============================================================
-
 class Absensi(models.Model):
-
     STATUS = [
         ("H", "Hadir"),
         ("I", "Izin"),
@@ -372,40 +263,67 @@ class Absensi(models.Model):
         blank=True
     )
 
+    # 5 KOMPONEN ABSENSI
+    start = models.BooleanField(
+        default=False,
+        verbose_name="START (20%)"
+    )
+
+    ishoma_1 = models.BooleanField(
+        default=False,
+        verbose_name="ISHOMA 1 (10%)"
+    )
+
+    ishoma_2 = models.BooleanField(
+        default=False,
+        verbose_name="ISHOMA 2 (10%)"
+    )
+
+    ishoma_3 = models.BooleanField(
+        default=False,
+        verbose_name="ISHOMA 3 (10%)"
+    )
+
+    ls = models.BooleanField(
+        default=False,
+        verbose_name="LS (50%)"
+    )
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=[
-                    "peserta",
-                    "acara"
-                ],
+                fields=["peserta", "acara"],
                 name="unique_peserta_acara"
             )
         ]
 
-    def __str__(self):
-        return f"{self.peserta.nama} - {self.acara.nama}"
+    @property
+    def nilai_kehadiran(self):
+        nilai = 0
 
+        if self.start:
+            nilai += 20
 
-# ============================================================
-# PENGUMUMAN
-# ============================================================
+        if self.ishoma_1:
+            nilai += 10
+
+        if self.ishoma_2:
+            nilai += 10
+
+        if self.ishoma_3:
+            nilai += 10
+
+        if self.ls:
+            nilai += 50
+
+        return nilai
+
 
 class Pengumuman(models.Model):
-
-    judul = models.CharField(
-        max_length=200
-    )
-
+    judul = models.CharField(max_length=200)
     isi = models.TextField()
-
-    aktif = models.BooleanField(
-        default=True
-    )
-
-    dibuat = models.DateTimeField(
-        auto_now_add=True
-    )
+    aktif = models.BooleanField(default=True)
+    dibuat = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["-dibuat"]
@@ -414,45 +332,21 @@ class Pengumuman(models.Model):
         return self.judul
 
 
-# ============================================================
-# TATA TERTIB
-# ============================================================
-
 class TataTertib(models.Model):
-
-    judul = models.CharField(
-        max_length=200
-    )
-
+    judul = models.CharField(max_length=200)
     isi = models.TextField()
-
-    aktif = models.BooleanField(
-        default=True
-    )
-
-    urutan = models.PositiveIntegerField(
-        default=0
-    )
+    aktif = models.BooleanField(default=True)
+    urutan = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = [
-            "urutan",
-            "id"
-        ]
+        ordering = ["urutan", "id"]
 
     def __str__(self):
         return self.judul
 
 
-# ============================================================
-# TUGAS PENDAHULUAN
-# ============================================================
-
 class TugasPendahuluan(models.Model):
-
-    judul = models.CharField(
-        max_length=200
-    )
+    judul = models.CharField(max_length=200)
 
     acara = models.ForeignKey(
         Acara,
@@ -473,13 +367,8 @@ class TugasPendahuluan(models.Model):
         blank=True
     )
 
-    aktif = models.BooleanField(
-        default=True
-    )
-
-    dibuat = models.DateTimeField(
-        auto_now_add=True
-    )
+    aktif = models.BooleanField(default=True)
+    dibuat = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["-dibuat"]
@@ -488,12 +377,7 @@ class TugasPendahuluan(models.Model):
         return self.judul
 
 
-# ============================================================
-# LAPORAN MINGGUAN
-# ============================================================
-
 class LaporanMingguan(models.Model):
-
     STATUS = [
         ("menunggu", "Menunggu Pemeriksaan"),
         ("acc", "Disetujui / ACC"),
@@ -518,18 +402,18 @@ class LaporanMingguan(models.Model):
         related_name="laporan_mingguan"
     )
 
-    judul = models.CharField(
-        max_length=200
-    )
+    judul = models.CharField(max_length=200)
 
     file = models.FileField(
         upload_to="laporan_mingguan/%Y/%m/"
     )
 
+    # SUDAH ADA DI MIGRATION 0004
     file_revisi = models.FileField(
         upload_to="laporan_revisi/%Y/%m/",
         blank=True,
-        null=True
+        null=True,
+        verbose_name="File Revisi"
     )
 
     status = models.CharField(
@@ -538,9 +422,7 @@ class LaporanMingguan(models.Model):
         default="menunggu"
     )
 
-    catatan_admin = models.TextField(
-        blank=True
-    )
+    catatan_admin = models.TextField(blank=True)
 
     uploaded_at = models.DateTimeField(
         auto_now_add=True
@@ -562,7 +444,6 @@ class LaporanMingguan(models.Model):
 # ============================================================
 
 class ProgressAcara(models.Model):
-
     kelompok = models.ForeignKey(
         Kelompok,
         on_delete=models.CASCADE,
@@ -575,54 +456,50 @@ class ProgressAcara(models.Model):
         related_name="progress_kelompok"
     )
 
-    nilai = models.PositiveIntegerField(
-        default=0
+    nilai_progress = models.PositiveIntegerField(
+        default=0,
+        help_text="Nilai progress acara 0-100 persen."
     )
 
-    catatan = models.TextField(
-        blank=True
-    )
+    laporan_acc = models.BooleanField(default=False)
+    peta_acc = models.BooleanField(default=False)
+    ppt_acc = models.BooleanField(default=False)
 
-    updated_at = models.DateTimeField(
-        auto_now=True
-    )
+    catatan = models.TextField(blank=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = [
-            "acara__urutan",
-            "acara__tanggal_mulai"
-        ]
-
+        ordering = ["acara__urutan", "acara__tanggal_mulai"]
         constraints = [
             models.UniqueConstraint(
-                fields=[
-                    "kelompok",
-                    "acara"
-                ],
+                fields=["kelompok", "acara"],
                 name="unique_progress_kelompok_acara"
             )
         ]
 
     def __str__(self):
-        return f"{self.kelompok.nama} - {self.acara.nama}"
+        return f"{self.kelompok} - {self.acara}"
 
 
 # ============================================================
 # FILE KELOMPOK
-# PETA / PPT
 # ============================================================
 
 class FileKelompok(models.Model):
-
     JENIS = [
         ("peta", "Peta"),
-        ("ppt", "Desain / PPT"),
+        ("ppt", "PPT"),
+        ("excel", "Excel"),
+        ("word", "Word"),
+        ("pdf", "PDF"),
+        ("lainnya", "Lainnya"),
     ]
 
     STATUS = [
         ("menunggu", "Menunggu Pemeriksaan"),
-        ("acc", "Disetujui / ACC"),
         ("revisi", "Perlu Revisi"),
+        ("acc", "ACC"),
     ]
 
     kelompok = models.ForeignKey(
@@ -631,39 +508,24 @@ class FileKelompok(models.Model):
         related_name="file_kelompok"
     )
 
-    peserta = models.ForeignKey(
-        Peserta,
-        on_delete=models.CASCADE,
-        related_name="file_kelompok",
-        null=True,
-        blank=True
-    )
-
     acara = models.ForeignKey(
         Acara,
-        on_delete=models.CASCADE,
-        related_name="file_kelompok",
+        on_delete=models.SET_NULL,
         null=True,
-        blank=True
+        blank=True,
+        related_name="file_kelompok"
     )
+
+    nama_file = models.CharField(max_length=200)
 
     jenis = models.CharField(
         max_length=20,
-        choices=JENIS
-    )
-
-    judul = models.CharField(
-        max_length=200
+        choices=JENIS,
+        default="lainnya"
     )
 
     file = models.FileField(
         upload_to="file_kelompok/%Y/%m/"
-    )
-
-    file_revisi = models.FileField(
-        upload_to="file_kelompok_revisi/%Y/%m/",
-        blank=True,
-        null=True
     )
 
     status = models.CharField(
@@ -672,51 +534,17 @@ class FileKelompok(models.Model):
         default="menunggu"
     )
 
-    catatan_admin = models.TextField(
-        blank=True
+    catatan_admin = models.TextField(blank=True)
+
+    uploaded_by = models.ForeignKey(
+        Peserta,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="file_diupload"
     )
 
     uploaded_at = models.DateTimeField(
-        auto_now_add=True
-    )
-
-    updated_at = models.DateTimeField(
-        auto_now=True
-    )
-
-    def __str__(self):
-        return self.judul
-
-
-# ============================================================
-# DAILY MOM
-# ============================================================
-
-class DailyMOM(models.Model):
-
-    kelompok = models.ForeignKey(
-        Kelompok,
-        on_delete=models.CASCADE,
-        related_name="daily_mom"
-    )
-
-    tanggal = models.DateField()
-
-    kegiatan = models.TextField()
-
-    progress = models.TextField(
-        blank=True
-    )
-
-    kendala = models.TextField(
-        blank=True
-    )
-
-    rencana = models.TextField(
-        blank=True
-    )
-
-    dibuat = models.DateTimeField(
         auto_now_add=True
     )
 
@@ -725,25 +553,74 @@ class DailyMOM(models.Model):
     )
 
     class Meta:
-        ordering = [
-            "-tanggal",
-            "-id"
-        ]
+        ordering = ["-uploaded_at"]
 
     def __str__(self):
-        return f"{self.kelompok.nama} - {self.tanggal}"
+        return self.nama_file
 
 
 # ============================================================
-# LAPORAN LENGKAP
+# DAILY MOM
+# ============================================================
+
+class DailyMOM(models.Model):
+    kelompok = models.ForeignKey(
+        Kelompok,
+        on_delete=models.CASCADE,
+        related_name="daily_mom"
+    )
+
+    acara = models.ForeignKey(
+        Acara,
+        on_delete=models.CASCADE,
+        related_name="daily_mom"
+    )
+
+    tanggal = models.DateField()
+
+    judul = models.CharField(
+        max_length=200,
+        default="Daily Minutes of Meeting"
+    )
+
+    isi = models.TextField()
+
+    keputusan = models.TextField(blank=True)
+
+    tindak_lanjut = models.TextField(blank=True)
+
+    dibuat_oleh = models.ForeignKey(
+        Peserta,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="mom_dibuat"
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+        ordering = ["-tanggal", "-created_at"]
+
+    def __str__(self):
+        return f"{self.kelompok} - {self.tanggal}"
+
+
+# ============================================================
+# FULL REPORT
 # ============================================================
 
 class LaporanLengkap(models.Model):
-
     STATUS = [
         ("menunggu", "Menunggu Pemeriksaan"),
-        ("acc", "Disetujui / ACC"),
         ("revisi", "Perlu Revisi"),
+        ("acc", "ACC"),
     ]
 
     kelompok = models.ForeignKey(
@@ -752,14 +629,10 @@ class LaporanLengkap(models.Model):
         related_name="laporan_lengkap"
     )
 
+    judul = models.CharField(max_length=200)
+
     file = models.FileField(
         upload_to="laporan_lengkap/%Y/%m/"
-    )
-
-    file_revisi = models.FileField(
-        upload_to="laporan_lengkap_revisi/%Y/%m/",
-        blank=True,
-        null=True
     )
 
     status = models.CharField(
@@ -768,9 +641,7 @@ class LaporanLengkap(models.Model):
         default="menunggu"
     )
 
-    catatan_admin = models.TextField(
-        blank=True
-    )
+    catatan_admin = models.TextField(blank=True)
 
     uploaded_at = models.DateTimeField(
         auto_now_add=True
@@ -780,83 +651,48 @@ class LaporanLengkap(models.Model):
         auto_now=True
     )
 
-    def __str__(self):
-        return f"Laporan Lengkap - {self.kelompok.nama}"
-
-
-# ============================================================
-# KEMAJUAN PESERTA
-# ============================================================
-
-class KemajuanPeserta(models.Model):
-
-    STATUS = [
-        ("aktif", "AKTIF"),
-        ("gugur", "GUGUR"),
-    ]
-
-    peserta = models.OneToOneField(
-        Peserta,
-        on_delete=models.CASCADE,
-        related_name="kemajuan"
-    )
-
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS,
-        default="aktif"
-    )
-
-    acara_gugur = models.ForeignKey(
-        Acara,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="kemajuan_gugur"
-    )
-
-    alasan_gugur = models.TextField(
-        blank=True
-    )
-
-    updated_at = models.DateTimeField(
-        auto_now=True
-    )
+    class Meta:
+        ordering = ["-uploaded_at"]
 
     def __str__(self):
-        return f"{self.peserta.nama} - {self.get_status_display()}"
+        return self.judul
 
 
 # ============================================================
-# FORMAT DOKUMEN
+# FORMAT DOKUMEN ADMIN
 # ============================================================
 
 class FormatDokumen(models.Model):
+    JENIS = [
+        ("pdf", "PDF"),
+        ("excel", "Excel"),
+        ("word", "Word"),
+        ("ppt", "PowerPoint"),
+        ("lainnya", "Lainnya"),
+    ]
 
-    judul = models.CharField(
-        max_length=200
-    )
+    judul = models.CharField(max_length=200)
 
-    kategori = models.CharField(
-        max_length=100,
-        blank=True
+    jenis = models.CharField(
+        max_length=20,
+        choices=JENIS,
+        default="lainnya"
     )
 
     file = models.FileField(
-        upload_to="format/%Y/%m/"
+        upload_to="format_dokumen/%Y/%m/"
     )
 
-    deskripsi = models.TextField(
-        blank=True
-    )
+    deskripsi = models.TextField(blank=True)
 
-    aktif = models.BooleanField(
-        default=True
-    )
+    aktif = models.BooleanField(default=True)
 
     uploaded_at = models.DateTimeField(
         auto_now_add=True
     )
+
+    class Meta:
+        ordering = ["-uploaded_at"]
 
     def __str__(self):
         return self.judul
@@ -867,11 +703,10 @@ class FormatDokumen(models.Model):
 # ============================================================
 
 class Konsultasi(models.Model):
-
-    DENGAN = [
-        ("asisten", "Asisten Dosen"),
-        ("koordinator", "Koordinator Asisten Dosen"),
-        ("pj_acara", "Penanggung Jawab Acara"),
+    STATUS = [
+        ("menunggu", "Menunggu"),
+        ("diproses", "Diproses"),
+        ("selesai", "Selesai"),
     ]
 
     kelompok = models.ForeignKey(
@@ -880,28 +715,15 @@ class Konsultasi(models.Model):
         related_name="konsultasi"
     )
 
-    acara = models.ForeignKey(
-        Acara,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="konsultasi"
-    )
-
     peserta = models.ForeignKey(
         Peserta,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="konsultasi"
+        related_name="konsultasi_dibuat"
     )
 
-    konsultasi_dengan = models.CharField(
-        max_length=30,
-        choices=DENGAN
-    )
-
-    staff = models.ForeignKey(
+    tujuan = models.ForeignKey(
         Staff,
         on_delete=models.SET_NULL,
         null=True,
@@ -909,26 +731,35 @@ class Konsultasi(models.Model):
         related_name="konsultasi_masuk"
     )
 
-    tanggal = models.DateTimeField()
-
-    topik = models.CharField(
-        max_length=200
-    )
-
-    hasil = models.TextField(
+    acara = models.ForeignKey(
+        Acara,
+        on_delete=models.SET_NULL,
+        null=True,
         blank=True
     )
 
-    tindak_lanjut = models.TextField(
-        blank=True
+    topik = models.CharField(max_length=200)
+
+    pertanyaan = models.TextField()
+
+    jawaban = models.TextField(blank=True)
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS,
+        default="menunggu"
     )
 
     dibuat = models.DateTimeField(
         auto_now_add=True
     )
 
+    diperbarui = models.DateTimeField(
+        auto_now=True
+    )
+
     class Meta:
-        ordering = ["-tanggal"]
+        ordering = ["-dibuat"]
 
     def __str__(self):
-        return f"{self.kelompok.nama} - {self.topik}"
+        return self.topik
