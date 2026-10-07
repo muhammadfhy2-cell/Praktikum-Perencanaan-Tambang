@@ -1,91 +1,113 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Kelompok Praktikum</title>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Kelompok Praktikum
+    </title>
 
     <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
             background: #f5f7fa;
             color: #111827;
         }
 
         .container {
             max-width: 1400px;
-            margin: 40px auto;
-            padding: 0 24px;
+            margin: 45px auto;
+            padding: 0 25px;
         }
 
         h1 {
             font-size: 46px;
-            margin-bottom: 8px;
+            margin: 0 0 8px;
         }
 
         .subtitle {
-            font-size: 22px;
-            margin-bottom: 32px;
-            color: #374151;
+            font-size: 20px;
+            color: #4b5563;
+            margin-bottom: 35px;
         }
 
         .group-card {
             background: white;
             border: 1px solid #d9dee5;
             border-radius: 12px;
-            margin-bottom: 24px;
+            margin-bottom: 25px;
             overflow: hidden;
         }
 
         .group-header {
-            padding: 22px 26px;
+            padding: 25px;
             border-bottom: 1px solid #e5e7eb;
         }
 
         .group-name {
             font-size: 25px;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .mentor {
-            color: #374151;
             font-size: 16px;
+            color: #374151;
         }
 
         .content {
-            padding: 24px 26px;
+            padding: 25px;
         }
 
         .section-title {
+            font-size: 19px;
             font-weight: 700;
-            font-size: 18px;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
 
         .participant-list {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 10px;
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(260px, 1fr)
+                );
+            gap: 12px;
         }
 
         .participant {
-            padding: 12px 15px;
             background: #f8fafc;
             border: 1px solid #e5e7eb;
-            border-radius: 8px;
+            border-radius: 9px;
+            padding: 15px;
         }
 
         .participant-name {
+            font-size: 17px;
             font-weight: 700;
         }
 
         .participant-info {
-            margin-top: 4px;
+            margin-top: 6px;
             color: #6b7280;
             font-size: 14px;
+            line-height: 1.6;
         }
 
         .empty {
@@ -94,7 +116,7 @@
         }
 
         .progress-wrapper {
-            margin-top: 22px;
+            margin-top: 25px;
         }
 
         .progress-bar {
@@ -102,6 +124,7 @@
             background: #e5e7eb;
             border-radius: 10px;
             overflow: hidden;
+            margin-top: 8px;
         }
 
         .progress-fill {
@@ -110,22 +133,35 @@
         }
 
         .progress-text {
-            margin-top: 6px;
+            margin-top: 7px;
             font-size: 14px;
-            color: #4b5563;
+            color: #6b7280;
         }
+
+        .catatan {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
     </style>
+
 </head>
 
 <body>
 
 <div class="container">
 
-    <h1>Kelompok Praktikum</h1>
+    <h1>
+        Kelompok Praktikum
+    </h1>
 
     <div class="subtitle">
-        Informasi kelompok, mentor, peserta, dan progres pengerjaan.
+        Informasi kelompok, mentor, peserta,
+        dan progres pengerjaan.
     </div>
+
 
     {% for kelompok_item in kelompok %}
 
@@ -138,27 +174,36 @@
             </div>
 
             <div class="mentor">
-                <strong>Asisten Pembimbing / Mentor:</strong>
+
+                <strong>
+                    Asisten Pembimbing / Mentor:
+                </strong>
 
                 {% for mentor in kelompok_item.mentor.all %}
 
                     {{ mentor.nama }}
-                    {% if not forloop.last %}, {% endif %}
+
+                    {% if not forloop.last %}
+                        ,
+                    {% endif %}
 
                 {% empty %}
 
                     Belum ditentukan
 
                 {% endfor %}
+
             </div>
 
         </div>
+
 
         <div class="content">
 
             <div class="section-title">
                 Peserta Kelompok
             </div>
+
 
             <div class="participant-list">
 
@@ -173,13 +218,13 @@
                         <div class="participant-info">
 
                             {% if peserta.nim %}
-                                NIM: {{ peserta.nim }}
+                                NIM:
+                                {{ peserta.nim }}
+                                <br>
                             {% endif %}
 
-                            {% if peserta.jabatan %}
-                                <br>
-                                Status: {{ peserta.get_jabatan_display }}
-                            {% endif %}
+                            Status:
+                            {{ peserta.get_jabatan_display }}
 
                         </div>
 
@@ -188,7 +233,8 @@
                 {% empty %}
 
                     <div class="empty">
-                        Belum ada peserta pada kelompok ini.
+                        Belum ada peserta
+                        pada kelompok ini.
                     </div>
 
                 {% endfor %}
@@ -198,19 +244,26 @@
 
             <div class="progress-wrapper">
 
-                <strong>Progress</strong>
+                <strong>
+                    Progress Pengerjaan
+                </strong>
 
                 <div class="progress-bar">
 
                     <div
                         class="progress-fill"
-                        style="width: {{ kelompok_item.progress }}%;"
+                        style="
+                            width:
+                            {{ kelompok_item.progress }}%;
+                        "
                     ></div>
 
                 </div>
 
                 <div class="progress-text">
+
                     {{ kelompok_item.progress }}%
+
                 </div>
 
             </div>
@@ -218,9 +271,16 @@
 
             {% if kelompok_item.catatan %}
 
-                <div style="margin-top:18px;">
-                    <strong>Catatan:</strong>
+                <div class="catatan">
+
+                    <strong>
+                        Catatan:
+                    </strong>
+
+                    <br><br>
+
                     {{ kelompok_item.catatan }}
+
                 </div>
 
             {% endif %}
@@ -234,4 +294,5 @@
 </div>
 
 </body>
+
 </html>
