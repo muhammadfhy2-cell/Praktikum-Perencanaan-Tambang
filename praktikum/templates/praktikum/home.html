@@ -1,71 +1,637 @@
 {% extends "praktikum/base.html" %}
 
-
 {% block title %}
-
     {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
-
 {% endblock %}
 
-
-
 {% block content %}
+
+<style>
+    :root {
+        --mine-dark: #182019;
+        --mine-dark-2: #263228;
+        --mine-green: #314a35;
+        --mine-green-light: #58715a;
+        --laterite: #c98528;
+        --laterite-light: #e5b35c;
+        --sand: #f5f1e8;
+        --cream: #fbfaf6;
+        --white: #ffffff;
+        --text: #20251f;
+        --muted: #6d746d;
+        --border: #e3e0d7;
+    }
+
+    body {
+        background: var(--cream);
+        color: var(--text);
+    }
+
+    /* =========================
+       HERO
+    ========================= */
+
+    .mine-hero {
+        position: relative;
+        overflow: hidden;
+        min-height: 540px;
+        display: flex;
+        align-items: center;
+        background:
+            linear-gradient(
+                90deg,
+                rgba(20, 28, 22, 0.98) 0%,
+                rgba(28, 42, 31, 0.94) 48%,
+                rgba(28, 42, 31, 0.70) 100%
+            ),
+            radial-gradient(
+                circle at 85% 50%,
+                rgba(201, 133, 40, 0.30),
+                transparent 35%
+            );
+        color: white;
+    }
+
+    .mine-hero::before {
+        content: "";
+        position: absolute;
+        width: 650px;
+        height: 650px;
+        right: -180px;
+        bottom: -350px;
+        border-radius: 50%;
+        background: rgba(201, 133, 40, 0.15);
+    }
+
+    .mine-hero::after {
+        content: "";
+        position: absolute;
+        inset: auto 0 0 0;
+        height: 90px;
+        background:
+            linear-gradient(
+                135deg,
+                transparent 0 20%,
+                rgba(201,133,40,.18) 20% 35%,
+                transparent 35% 50%,
+                rgba(255,255,255,.04) 50% 65%,
+                transparent 65%
+            );
+        opacity: .8;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .mine-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,.10);
+        border: 1px solid rgba(255,255,255,.18);
+        color: #f2d49d;
+        font-size: .78rem;
+        font-weight: 700;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+    }
+
+    .mine-hero h1 {
+        font-weight: 800;
+        line-height: 1.08;
+        margin-top: 20px;
+        max-width: 850px;
+    }
+
+    .mine-hero h1 span {
+        color: var(--laterite-light);
+    }
+
+    .mine-hero p {
+        max-width: 760px;
+        color: rgba(255,255,255,.78);
+        font-size: 1.08rem;
+        line-height: 1.8;
+    }
+
+    .hero-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 30px;
+    }
+
+    .btn-mine {
+        background: var(--laterite);
+        border-color: var(--laterite);
+        color: white;
+        font-weight: 700;
+        padding: 12px 22px;
+        border-radius: 10px;
+    }
+
+    .btn-mine:hover {
+        background: #b8741d;
+        border-color: #b8741d;
+        color: white;
+    }
+
+    .btn-outline-mine {
+        border: 1px solid rgba(255,255,255,.35);
+        color: white;
+        font-weight: 600;
+        padding: 12px 22px;
+        border-radius: 10px;
+    }
+
+    .btn-outline-mine:hover {
+        background: white;
+        color: var(--mine-dark);
+    }
+
+    /* =========================
+       HERO SIDE PANEL
+    ========================= */
+
+    .mine-visual-card {
+        position: relative;
+        z-index: 2;
+        background: rgba(255,255,255,.08);
+        border: 1px solid rgba(255,255,255,.15);
+        border-radius: 22px;
+        padding: 28px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 25px 70px rgba(0,0,0,.25);
+    }
+
+    .mine-visual-title {
+        color: #f2d49d;
+        font-size: .75rem;
+        font-weight: 700;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+    }
+
+    .mine-pit {
+        position: relative;
+        height: 220px;
+        margin-top: 18px;
+        overflow: hidden;
+        border-radius: 16px;
+        background:
+            linear-gradient(
+                155deg,
+                #5e4630 0%,
+                #79552f 35%,
+                #9a6b34 58%,
+                #c18a3c 100%
+            );
+    }
+
+    .mine-pit::before,
+    .mine-pit::after {
+        content: "";
+        position: absolute;
+        left: 8%;
+        right: 8%;
+        height: 28px;
+        border-top: 4px solid rgba(245,225,188,.42);
+        transform: skewY(-12deg);
+    }
+
+    .mine-pit::before {
+        top: 58px;
+    }
+
+    .mine-pit::after {
+        top: 112px;
+    }
+
+    .pit-road {
+        position: absolute;
+        left: 5%;
+        bottom: 20px;
+        width: 90%;
+        height: 38px;
+        border-radius: 50%;
+        border: 7px solid rgba(50,40,28,.55);
+        transform: rotate(-8deg);
+    }
+
+    .mine-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-top: 18px;
+    }
+
+    .mine-stat-mini {
+        padding: 12px;
+        background: rgba(0,0,0,.16);
+        border-radius: 12px;
+    }
+
+    .mine-stat-mini strong {
+        display: block;
+        font-size: 1.2rem;
+        color: white;
+    }
+
+    .mine-stat-mini small {
+        color: rgba(255,255,255,.65);
+    }
+
+    /* =========================
+       SECTION
+    ========================= */
+
+    .mine-section {
+        padding: 70px 0;
+    }
+
+    .mine-section-soft {
+        background: var(--sand);
+    }
+
+    .section-kicker {
+        color: var(--laterite);
+        font-size: .75rem;
+        font-weight: 800;
+        letter-spacing: .13em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    .mine-section-title {
+        font-weight: 800;
+        color: var(--mine-dark);
+        margin-bottom: 10px;
+    }
+
+    .mine-section-desc {
+        color: var(--muted);
+        max-width: 720px;
+    }
+
+    /* =========================
+       STATISTICS
+    ========================= */
+
+    .mine-stat-card {
+        height: 100%;
+        padding: 25px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: white;
+        transition: .25s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .mine-stat-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 5px;
+        background: var(--laterite);
+    }
+
+    .mine-stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(25,35,27,.10);
+    }
+
+    .mine-stat-icon {
+        font-size: 1.7rem;
+        margin-bottom: 15px;
+    }
+
+    .mine-stat-card h2 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 2px;
+        color: var(--mine-dark);
+    }
+
+    .mine-stat-card p {
+        color: var(--muted);
+        margin: 0;
+    }
+
+    /* =========================
+       CARDS
+    ========================= */
+
+    .mine-card {
+        height: 100%;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 25px;
+        box-shadow: 0 8px 25px rgba(20,30,22,.04);
+    }
+
+    .mine-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 12px;
+    }
+
+    .mine-card-header h3 {
+        font-size: 1.2rem;
+        font-weight: 800;
+        margin: 0;
+        color: var(--mine-dark);
+    }
+
+    .mine-link {
+        color: var(--laterite);
+        font-weight: 700;
+        font-size: .85rem;
+        text-decoration: none;
+    }
+
+    .mine-link:hover {
+        color: var(--mine-green);
+    }
+
+    .mine-list-item {
+        padding: 16px 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .mine-list-item:last-child {
+        border-bottom: 0;
+    }
+
+    .mine-list-item h6 {
+        font-weight: 750;
+        margin-bottom: 5px;
+    }
+
+    .mine-list-item p {
+        color: var(--muted);
+        margin: 7px 0 0;
+        line-height: 1.6;
+    }
+
+    /* =========================
+       GROUP / MATERIAL
+    ========================= */
+
+    .mine-grid-card {
+        height: 100%;
+        padding: 23px;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        transition: .25s ease;
+    }
+
+    .mine-grid-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 35px rgba(20,30,22,.08);
+    }
+
+    .mine-grid-card h5 {
+        color: var(--mine-dark);
+        font-weight: 800;
+    }
+
+    .mine-badge {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 7px;
+        background: rgba(201,133,40,.12);
+        color: #9a641b;
+        font-size: .75rem;
+        font-weight: 700;
+    }
+
+    .mine-progress {
+        height: 8px;
+        background: #ebe8df;
+        border-radius: 99px;
+        overflow: hidden;
+    }
+
+    .mine-progress .progress-bar {
+        background: linear-gradient(
+            90deg,
+            var(--mine-green),
+            var(--laterite)
+        );
+    }
+
+    /* =========================
+       QUICK ACCESS
+    ========================= */
+
+    .quick-access {
+        background: var(--mine-dark);
+        border-radius: 22px;
+        padding: 35px;
+        color: white;
+        box-shadow: 0 20px 50px rgba(20,30,22,.15);
+    }
+
+    .quick-access h3 {
+        font-weight: 800;
+    }
+
+    .quick-btn {
+        display: block;
+        text-align: center;
+        padding: 13px 15px;
+        border: 1px solid rgba(255,255,255,.16);
+        border-radius: 10px;
+        color: white;
+        text-decoration: none;
+        font-weight: 650;
+        background: rgba(255,255,255,.05);
+        transition: .2s ease;
+    }
+
+    .quick-btn:hover {
+        background: var(--laterite);
+        border-color: var(--laterite);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 991px) {
+        .mine-hero {
+            min-height: auto;
+            padding: 70px 0;
+        }
+
+        .mine-visual-card {
+            margin-top: 35px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .mine-hero h1 {
+            font-size: 2.2rem;
+        }
+
+        .mine-hero p {
+            font-size: 1rem;
+        }
+
+        .mine-section {
+            padding: 50px 0;
+        }
+
+        .quick-access {
+            padding: 25px;
+        }
+    }
+</style>
 
 
 <!-- ========================================================= -->
 <!-- HERO -->
 <!-- ========================================================= -->
 
-<section class="hero">
+<section class="mine-hero">
 
-    <div class="container py-4">
+    <div class="container">
 
-        <div class="row align-items-center">
+        <div class="row align-items-center g-5">
 
-            <div class="col-lg-8">
+            <div class="col-lg-7">
 
+                <div class="hero-content">
 
-                {% if setting.periode %}
-
-                    <span class="badge bg-light text-dark px-3 py-2 mb-3">
-
-                        Periode {{ setting.periode }}
-
+                    <span class="mine-label">
+                        ⛏ Mine Planning Practicum
                     </span>
 
-                {% endif %}
+                    {% if setting.periode %}
+                        <div class="mt-3">
+                            <span class="badge bg-light text-dark px-3 py-2">
+                                Periode {{ setting.periode }}
+                            </span>
+                        </div>
+                    {% endif %}
+
+                    <h1 class="display-4">
+
+                        {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+
+                        <span>
+                            — Nickel Laterite Mining
+                        </span>
+
+                    </h1>
+
+                    <p class="mt-3">
+
+                        {{ setting.deskripsi|default:"Portal resmi praktikum perencanaan tambang untuk mendukung pembelajaran mine planning, pengelolaan data, kegiatan praktikum, laporan, dan evaluasi peserta." }}
+
+                    </p>
+
+                    <div class="hero-buttons">
+
+                        <a
+                            href="{% url 'praktikum:materi' %}"
+                            class="btn btn-mine btn-lg"
+                        >
+                            📚 Lihat Materi
+                        </a>
+
+                        <a
+                            href="{% url 'praktikum:jadwal' %}"
+                            class="btn btn-outline-mine btn-lg"
+                        >
+                            📅 Lihat Jadwal
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
 
 
-                <h1 class="display-4">
+            <div class="col-lg-5">
 
-                    {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+                <div class="mine-visual-card">
 
-                </h1>
+                    <div class="mine-visual-title">
+                        Mine Planning • Nickel Laterite
+                    </div>
 
+                    <div class="mine-pit">
 
-                <p class="lead">
+                        <div class="pit-road"></div>
 
-                    {{ setting.deskripsi|default:"Portal informasi resmi praktikum yang menyediakan jadwal, materi, absensi, kelompok, pengumuman, dan perkembangan kegiatan." }}
+                    </div>
 
-                </p>
+                    <div class="mine-stats">
 
+                        <div class="mine-stat-mini">
 
-                <div class="d-flex flex-wrap gap-2 mt-4">
+                            <strong>
+                                {{ kelompok|length }}
+                            </strong>
 
-                    <a
-                        href="{% url 'praktikum:materi' %}"
-                        class="btn btn-light btn-lg"
-                    >
-                        Lihat Materi
-                    </a>
+                            <small>
+                                Kelompok
+                            </small>
 
+                        </div>
 
-                    <a
-                        href="{% url 'praktikum:jadwal' %}"
-                        class="btn btn-outline-light btn-lg"
-                    >
-                        Lihat Jadwal
-                    </a>
+                        <div class="mine-stat-mini">
+
+                            <strong>
+                                {{ materi|length }}
+                            </strong>
+
+                            <small>
+                                Materi
+                            </small>
+
+                        </div>
+
+                        <div class="mine-stat-mini">
+
+                            <strong>
+                                {{ acara|length }}
+                            </strong>
+
+                            <small>
+                                Agenda
+                            </small>
+
+                        </div>
+
+                        <div class="mine-stat-mini">
+
+                            <strong>
+                                {{ asisten|length }}
+                            </strong>
+
+                            <small>
+                                Asisten
+                            </small>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -76,32 +642,50 @@
     </div>
 
 </section>
-
 
 
 <!-- ========================================================= -->
 <!-- STATISTIK -->
 <!-- ========================================================= -->
 
-<section class="py-5">
+<section class="mine-section">
 
     <div class="container">
 
+        <div class="mb-4">
+
+            <div class="section-kicker">
+                Praktikum dalam angka
+            </div>
+
+            <h2 class="mine-section-title">
+                Informasi Praktikum
+            </h2>
+
+            <p class="mine-section-desc">
+                Pantau ekosistem kegiatan praktikum mulai dari kelompok,
+                materi pembelajaran, agenda kegiatan hingga tim asisten.
+            </p>
+
+        </div>
+
+
         <div class="row g-4">
 
-
             <div class="col-md-3">
 
-                <div class="card p-4 text-center h-100">
+                <div class="mine-stat-card">
 
-                    <h2 class="fw-bold">
+                    <div class="mine-stat-icon">
+                        👷
+                    </div>
 
+                    <h2>
                         {{ kelompok|length }}
-
                     </h2>
 
-                    <p class="text-muted mb-0">
-                        Kelompok
+                    <p>
+                        Kelompok Praktikum
                     </p>
 
                 </div>
@@ -111,16 +695,18 @@
 
             <div class="col-md-3">
 
-                <div class="card p-4 text-center h-100">
+                <div class="mine-stat-card">
 
-                    <h2 class="fw-bold">
+                    <div class="mine-stat-icon">
+                        📚
+                    </div>
 
+                    <h2>
                         {{ materi|length }}
-
                     </h2>
 
-                    <p class="text-muted mb-0">
-                        Materi
+                    <p>
+                        Materi Pembelajaran
                     </p>
 
                 </div>
@@ -130,16 +716,18 @@
 
             <div class="col-md-3">
 
-                <div class="card p-4 text-center h-100">
+                <div class="mine-stat-card">
 
-                    <h2 class="fw-bold">
+                    <div class="mine-stat-icon">
+                        📅
+                    </div>
 
+                    <h2>
                         {{ acara|length }}
-
                     </h2>
 
-                    <p class="text-muted mb-0">
-                        Agenda
+                    <p>
+                        Agenda Praktikum
                     </p>
 
                 </div>
@@ -149,22 +737,23 @@
 
             <div class="col-md-3">
 
-                <div class="card p-4 text-center h-100">
+                <div class="mine-stat-card">
 
-                    <h2 class="fw-bold">
+                    <div class="mine-stat-icon">
+                        🦺
+                    </div>
 
+                    <h2>
                         {{ asisten|length }}
-
                     </h2>
 
-                    <p class="text-muted mb-0">
-                        Asisten
+                    <p>
+                        Tim Asisten
                     </p>
 
                 </div>
 
             </div>
-
 
         </div>
 
@@ -173,36 +762,33 @@
 </section>
 
 
-
 <!-- ========================================================= -->
 <!-- PENGUMUMAN + AGENDA -->
 <!-- ========================================================= -->
 
-<section class="pb-5">
+<section class="mine-section mine-section-soft">
 
     <div class="container">
 
         <div class="row g-4">
 
-
             <!-- PENGUMUMAN -->
 
             <div class="col-lg-6">
 
-                <div class="card p-4 h-100">
+                <div class="mine-card">
 
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="mine-card-header">
 
-                        <h3 class="section-title mb-0">
-                            Pengumuman
+                        <h3>
+                            📢 Pengumuman
                         </h3>
-
 
                         <a
                             href="{% url 'praktikum:pengumuman' %}"
-                            class="small"
+                            class="mine-link"
                         >
-                            Lihat semua
+                            Lihat semua →
                         </a>
 
                     </div>
@@ -210,74 +796,60 @@
 
                     {% for x in pengumuman|slice:":5" %}
 
-                        <div class="border-bottom py-3">
+                        <div class="mine-list-item">
 
-                            <h6 class="fw-bold mb-1">
-
+                            <h6>
                                 {{ x.judul }}
-
                             </h6>
-
 
                             {% if x.tanggal %}
 
                                 <small class="text-muted">
-
                                     {{ x.tanggal }}
-
                                 </small>
 
                             {% endif %}
 
-
                             {% if x.isi %}
 
-                                <p class="mb-0 mt-2">
-
+                                <p>
                                     {{ x.isi|truncatechars:150 }}
-
                                 </p>
 
                             {% endif %}
 
                         </div>
 
-
                     {% empty %}
 
-                        <div class="text-muted">
-
+                        <div class="text-muted py-3">
                             Belum ada pengumuman.
-
                         </div>
 
                     {% endfor %}
-
 
                 </div>
 
             </div>
 
 
-
             <!-- AGENDA -->
 
             <div class="col-lg-6">
 
-                <div class="card p-4 h-100">
+                <div class="mine-card">
 
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="mine-card-header">
 
-                        <h3 class="section-title mb-0">
-                            Agenda
+                        <h3>
+                            📅 Agenda Praktikum
                         </h3>
-
 
                         <a
                             href="{% url 'praktikum:jadwal' %}"
-                            class="small"
+                            class="mine-link"
                         >
-                            Lihat jadwal
+                            Lihat jadwal →
                         </a>
 
                     </div>
@@ -285,54 +857,41 @@
 
                     {% for x in acara|slice:":5" %}
 
-                        <div class="border-bottom py-3">
+                        <div class="mine-list-item">
 
-                            <h6 class="fw-bold mb-1">
-
+                            <h6>
                                 {{ x.nama }}
-
                             </h6>
-
 
                             {% if x.tanggal %}
 
                                 <small class="text-muted">
-
                                     {{ x.tanggal }}
-
                                 </small>
 
                             {% endif %}
 
-
                             {% if x.keterangan %}
 
-                                <p class="mb-0 mt-2">
-
+                                <p>
                                     {{ x.keterangan|truncatechars:150 }}
-
                                 </p>
 
                             {% endif %}
 
                         </div>
 
-
                     {% empty %}
 
-                        <div class="text-muted">
-
+                        <div class="text-muted py-3">
                             Belum ada agenda.
-
                         </div>
 
                     {% endfor %}
 
-
                 </div>
 
             </div>
-
 
         </div>
 
@@ -341,22 +900,27 @@
 </section>
 
 
-
 <!-- ========================================================= -->
 <!-- KELOMPOK -->
 <!-- ========================================================= -->
 
-<section class="pb-5">
+<section class="mine-section">
 
     <div class="container">
 
-
         <div class="d-flex justify-content-between align-items-center mb-4">
 
-            <h2 class="section-title mb-0">
-                Kelompok Praktikum
-            </h2>
+            <div>
 
+                <div class="section-kicker">
+                    Mine Planning Team
+                </div>
+
+                <h2 class="mine-section-title mb-0">
+                    Kelompok Praktikum
+                </h2>
+
+            </div>
 
             <a
                 href="{% url 'praktikum:kelompok' %}"
@@ -370,18 +934,18 @@
 
         <div class="row g-4">
 
-
             {% for k in kelompok %}
 
                 <div class="col-md-6 col-lg-4">
 
-                    <div class="card p-4 h-100">
+                    <div class="mine-grid-card">
 
+                        <span class="mine-badge">
+                            ⛏ Kelompok
+                        </span>
 
-                        <h5 class="fw-bold">
-
+                        <h5 class="mt-3">
                             {{ k.nama }}
-
                         </h5>
 
 
@@ -399,7 +963,7 @@
 
                         {% if k.progress %}
 
-                            <div class="progress mb-2">
+                            <div class="mine-progress mb-2">
 
                                 <div
                                     class="progress-bar"
@@ -408,7 +972,6 @@
                                 ></div>
 
                             </div>
-
 
                             <small class="text-muted">
 
@@ -429,17 +992,15 @@
 
                         {% endif %}
 
-
                     </div>
 
                 </div>
-
 
             {% empty %}
 
                 <div class="col-12">
 
-                    <div class="card p-4 text-center text-muted">
+                    <div class="mine-card text-center text-muted">
 
                         Belum ada data kelompok.
 
@@ -449,7 +1010,6 @@
 
             {% endfor %}
 
-
         </div>
 
     </div>
@@ -457,22 +1017,27 @@
 </section>
 
 
-
 <!-- ========================================================= -->
 <!-- MATERI -->
 <!-- ========================================================= -->
 
-<section class="pb-5">
+<section class="mine-section mine-section-soft">
 
     <div class="container">
 
-
         <div class="d-flex justify-content-between align-items-center mb-4">
 
-            <h2 class="section-title mb-0">
-                Materi Praktikum
-            </h2>
+            <div>
 
+                <div class="section-kicker">
+                    Technical Learning
+                </div>
+
+                <h2 class="mine-section-title mb-0">
+                    Materi Praktikum
+                </h2>
+
+            </div>
 
             <a
                 href="{% url 'praktikum:materi' %}"
@@ -486,15 +1051,17 @@
 
         <div class="row g-4">
 
-
             {% for m in materi|slice:":6" %}
 
                 <div class="col-md-6 col-lg-4">
 
-                    <div class="card p-4 h-100">
+                    <div class="mine-grid-card d-flex flex-column">
 
+                        <span class="mine-badge">
+                            📚 Materi
+                        </span>
 
-                        <h5 class="fw-bold">
+                        <h5 class="mt-3">
 
                             {{ m.judul|default:m.nama }}
 
@@ -503,11 +1070,15 @@
 
                         {% if m.kategori %}
 
-                            <span class="badge bg-secondary mb-3">
+                            <div class="mb-2">
 
-                                {{ m.get_kategori_display }}
+                                <span class="badge bg-secondary">
 
-                            </span>
+                                    {{ m.get_kategori_display }}
+
+                                </span>
+
+                            </div>
 
                         {% endif %}
 
@@ -516,7 +1087,7 @@
 
                             <p class="text-muted small">
 
-                                {{ m.acara.nama }}
+                                📅 {{ m.acara.nama }}
 
                             </p>
 
@@ -538,7 +1109,7 @@
 
                             <a
                                 href="{{ m.file.url }}"
-                                class="btn btn-sm btn-dark mt-auto"
+                                class="btn btn-dark mt-auto"
                                 target="_blank"
                             >
                                 Buka Materi
@@ -546,17 +1117,15 @@
 
                         {% endif %}
 
-
                     </div>
 
                 </div>
-
 
             {% empty %}
 
                 <div class="col-12">
 
-                    <div class="card p-4 text-center text-muted">
+                    <div class="mine-card text-center text-muted">
 
                         Belum ada materi.
 
@@ -566,7 +1135,6 @@
 
             {% endfor %}
 
-
         </div>
 
     </div>
@@ -574,75 +1142,69 @@
 </section>
 
 
-
 <!-- ========================================================= -->
 <!-- AKSES CEPAT -->
 <!-- ========================================================= -->
 
-<section class="pb-5">
+<section class="mine-section">
 
     <div class="container">
 
+        <div class="quick-access">
 
-        <div class="card p-4">
+            <div class="section-kicker">
+                Navigation
+            </div>
 
-            <h3 class="section-title">
-
-                Akses Cepat
-
+            <h3 class="mb-4">
+                Akses Cepat Praktikum
             </h3>
 
-
             <div class="row g-3">
-
 
                 <div class="col-md-3">
 
                     <a
                         href="{% url 'praktikum:kelompok' %}"
-                        class="btn btn-outline-primary w-100"
+                        class="quick-btn"
                     >
-                        Kelompok
+                        👷 Kelompok
                     </a>
 
                 </div>
-
 
                 <div class="col-md-3">
 
                     <a
                         href="{% url 'praktikum:absensi' %}"
-                        class="btn btn-outline-primary w-100"
+                        class="quick-btn"
                     >
-                        Absensi
+                        📋 Absensi
                     </a>
 
                 </div>
-
 
                 <div class="col-md-3">
 
                     <a
                         href="{% url 'praktikum:tata_tertib' %}"
-                        class="btn btn-outline-primary w-100"
+                        class="quick-btn"
                     >
-                        Tata Tertib
+                        🦺 Tata Tertib
                     </a>
 
                 </div>
-
 
                 <div class="col-md-3">
 
                     <a
                         href="{% url 'praktikum:personel' %}"
-                        class="btn btn-outline-primary w-100"
+                        class="quick-btn"
                     >
-                        Personel
+                        👥 Personel
                     </a>
 
                 </div>
-
 
             </div>
 
@@ -651,6 +1213,5 @@
     </div>
 
 </section>
-
 
 {% endblock %}
