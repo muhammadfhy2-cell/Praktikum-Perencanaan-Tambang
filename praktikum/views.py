@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.http import FileResponse, Http404
 from django.shortcuts import (
     get_object_or_404,
     redirect,
@@ -61,6 +62,7 @@ def home(request):
 
         "acara": (
             Acara.objects
+            .prefetch_related("pembawa_acara")
             .all()
             .order_by(
                 "urutan",
@@ -128,6 +130,7 @@ def jadwal(request):
 
     c["acara"] = (
         Acara.objects
+        .prefetch_related("pembawa_acara")
         .all()
         .order_by(
             "urutan",
@@ -388,6 +391,7 @@ def dashboard_peserta(request):
 
     acara = (
         Acara.objects
+        .prefetch_related("pembawa_acara")
         .all()
         .order_by(
             "urutan",
@@ -415,9 +419,11 @@ def dashboard_peserta(request):
 
         "laporan_menunggu": laporan_menunggu,
 
-        "persentase_absensi": peserta.persentase_absensi,
+        "persentase_absensi":
+            peserta.persentase_absensi,
 
-        "total_acara_absensi": peserta.total_acara_absensi,
+        "total_acara_absensi":
+            peserta.total_acara_absensi,
     })
 
     return render(
@@ -431,8 +437,7 @@ def dashboard_peserta(request):
 def upload_laporan(request):
 
     peserta = get_object_or_404(
-        Peserta.objects
-        .select_related(
+        Peserta.objects.select_related(
             "kelompok",
             "akun"
         ),
@@ -511,17 +516,11 @@ def upload_laporan(request):
     )
 
     LaporanMingguan.objects.create(
-
         peserta=peserta,
-
         kelompok=peserta.kelompok,
-
         acara=acara,
-
         judul=judul,
-
         file=file,
-
         status="menunggu",
     )
 
@@ -533,4 +532,45 @@ def upload_laporan(request):
 
     return redirect(
         "dashboard_peserta"
+    )
+
+
+@login_required(login_url="/login/")
+def download_file_revisi(request, laporan_id):
+
+    peserta = get_object_or_404(
+        Peserta,
+        akun=request.user,
+        aktif=True
+    )
+
+    laporan = get_object_or_404(
+        LaporanMingguan,
+        id=laporan_id,
+        peserta=peserta,
+        status="revisi"
+    )
+
+    if not laporan.file_revisi:
+
+        raise Http404(
+            "File revisi belum tersedia."
+        )
+
+    try:
+        file_handle = laporan.file_revisi.open(
+            "rb"
+        )
+    except FileNotFoundError:
+
+        raise Http404(
+            "File revisi tidak ditemukan."
+        )
+
+    filename = laporan.file_revisi.name.split("/")[-1]
+
+    return FileResponse(
+        file_handle,
+        as_attachment=True,
+        filename=filename
     )
