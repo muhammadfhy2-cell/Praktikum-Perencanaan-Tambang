@@ -103,9 +103,9 @@ class AcaraAdmin(admin.ModelAdmin):
         "nama",
         "sub_acara",
         "tanggal_mulai",
-        "tanggal_selesai",
         "lokasi",
         "status",
+        "tampilkan_pembawa_acara",
         "urutan",
     )
 
@@ -122,6 +122,51 @@ class AcaraAdmin(admin.ModelAdmin):
     filter_horizontal = (
         "pembawa_acara",
     )
+
+    fieldsets = (
+        (
+            "Informasi Acara",
+            {
+                "fields": (
+                    "nama",
+                    "sub_acara",
+                    "tanggal_mulai",
+                    "tanggal_selesai",
+                    "lokasi",
+                    "status",
+                    "deskripsi",
+                    "urutan",
+                )
+            },
+        ),
+        (
+            "Pembawa Acara",
+            {
+                "description": (
+                    "Pilih satu atau beberapa Asisten Dosen "
+                    "yang bertugas sebagai pembawa acara."
+                ),
+                "fields": (
+                    "pembawa_acara",
+                ),
+            },
+        ),
+    )
+
+    @admin.display(
+        description="Pembawa Acara"
+    )
+    def tampilkan_pembawa_acara(self, obj):
+
+        data = obj.pembawa_acara.all()
+
+        if not data:
+            return "-"
+
+        return ", ".join(
+            staff.nama
+            for staff in data
+        )
 
 
 @admin.register(Materi)
@@ -191,8 +236,7 @@ class AbsensiAdmin(admin.ModelAdmin):
             "Penilaian Absensi",
             {
                 "description": (
-                    "Setiap acara memiliki nilai maksimum "
-                    "100%. Centang komponen yang diikuti."
+                    "Setiap acara memiliki nilai maksimum 100%."
                 ),
                 "fields": (
                     "start",
@@ -225,17 +269,11 @@ class AbsensiAdmin(admin.ModelAdmin):
     def ls_display(self, obj):
         return "50%" if obj.ls else "0%"
 
-    @admin.display(
-        description="Nilai Acara",
-        ordering=None
-    )
+    @admin.display(description="Nilai Acara")
     def nilai_absensi(self, obj):
         return f"{obj.nilai_persentase}%"
 
-    @admin.display(
-        description="Akumulasi",
-        ordering=None
-    )
+    @admin.display(description="Akumulasi")
     def akumulasi_absensi(self, obj):
 
         peserta = obj.peserta
