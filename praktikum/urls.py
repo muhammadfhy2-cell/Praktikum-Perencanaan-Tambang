@@ -43,6 +43,12 @@ urlpatterns = [
     ),
 
     path(
+        "absensi/",
+        views.absensi,
+        name="absensi",
+    ),
+
+    path(
         "pengumuman/",
         views.pengumuman,
         name="pengumuman",
@@ -55,15 +61,15 @@ urlpatterns = [
     ),
 
     path(
-        "absensi/",
-        views.absensi,
-        name="absensi",
-    ),
-
-    path(
         "tugas-pendahuluan/",
         views.tugas_pendahuluan,
         name="tugas_pendahuluan",
+    ),
+
+    path(
+        "informasi-peserta/",
+        views.informasi_peserta,
+        name="informasi_peserta",
     ),
 
 
@@ -94,6 +100,7 @@ urlpatterns = [
         name="dashboard_kelompok",
     ),
 
+    # Kompatibilitas route lama
     path(
         "dashboard/peserta/",
         views.dashboard_peserta,
