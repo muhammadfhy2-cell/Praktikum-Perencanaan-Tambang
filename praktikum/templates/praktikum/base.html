@@ -2,390 +2,956 @@
 
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>
         {% block title %}
-            {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+        {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
         {% endblock %}
     </title>
 
-    <meta
-        name="description"
-        content="{{ setting.deskripsi|default:'Sistem Informasi Praktikum Perencanaan Tambang' }}"
-    >
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+    <meta name="theme-color" content="#182019">
 
     <style>
 
+        :root {
+            --mine-dark: #182019;
+            --mine-dark-2: #222d25;
+            --mine-green: #314a35;
+            --mine-green-light: #49684e;
+
+            --laterite: #c98528;
+            --laterite-light: #e5b35c;
+
+            --cream: #fbfaf6;
+            --sand: #f1eee6;
+            --white: #ffffff;
+
+            --text-dark: #20251f;
+            --text-muted: #6b716b;
+
+            --border: #e2ddd1;
+
+            --danger: #a63d32;
+            --success: #25804b;
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
         body {
-            background: #f5f7fa;
-            color: #212529;
+
+            margin: 0;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #fbfaf6 0%,
+                    #f1eee6 100%
+                );
+
+            color: var(--text-dark);
+
+            font-family:
+                "Segoe UI",
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            line-height: 1.6;
         }
 
-        .navbar-brand {
-            font-weight: 700;
-            letter-spacing: .3px;
+
+        a {
+            text-decoration: none;
         }
 
-        .hero {
-            background: linear-gradient(
-                135deg,
-                #111827,
-                #374151
-            );
+
+        /* ====================================================
+           NAVBAR
+           ==================================================== */
+
+        .mine-navbar {
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 999;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--mine-dark),
+                    var(--mine-dark-2)
+                );
+
+            border-bottom:
+                3px solid var(--laterite);
+
+            box-shadow:
+                0 5px 20px rgba(0,0,0,.18);
+        }
+
+
+        .mine-nav-container {
+
+            max-width: 1250px;
+
+            margin: auto;
+
+            padding: 13px 22px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+        }
+
+
+        .mine-brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
 
             color: white;
 
-            border-radius: 0 0 28px 28px;
-
-            padding: 70px 0;
+            min-width: 240px;
         }
 
-        .hero h1 {
+
+        .mine-brand-icon {
+
+            width: 43px;
+            height: 43px;
+
+            border-radius: 11px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--laterite),
+                    var(--laterite-light)
+                );
+
+            color: white;
+
+            font-size: 22px;
+
+            box-shadow:
+                0 4px 12px rgba(0,0,0,.25);
+        }
+
+
+        .mine-brand-title {
+
+            font-size: 14px;
+
             font-weight: 800;
-            font-size: clamp(2rem, 5vw, 4rem);
+
+            letter-spacing: .7px;
+
+            line-height: 1.2;
         }
 
-        .hero p {
-            max-width: 800px;
-            color: #d1d5db;
+
+        .mine-brand-subtitle {
+
+            margin-top: 3px;
+
+            color: #cfd6cf;
+
+            font-size: 10px;
+
+            letter-spacing: .5px;
         }
 
-        .section-title {
+
+        .mine-nav-links {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: flex-end;
+
+            flex-wrap: wrap;
+
+            gap: 5px;
+        }
+
+
+        .mine-nav-links a {
+
+            color: #dfe5df;
+
+            padding: 8px 10px;
+
+            border-radius: 8px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            transition: .2s ease;
+        }
+
+
+        .mine-nav-links a:hover {
+
+            background:
+                rgba(255,255,255,.09);
+
+            color:
+                var(--laterite-light);
+
+            transform:
+                translateY(-1px);
+        }
+
+
+        .mine-nav-links .nav-highlight {
+
+            background:
+                var(--laterite);
+
+            color:
+                white;
+        }
+
+
+        .mine-nav-links .nav-highlight:hover {
+
+            background:
+                var(--laterite-light);
+
+            color:
+                var(--mine-dark);
+        }
+
+
+        /* ====================================================
+           MAIN
+           ==================================================== */
+
+        .mine-main {
+
+            min-height: 75vh;
+
+            max-width: 1250px;
+
+            margin: auto;
+
+            padding:
+                35px 22px 55px;
+        }
+
+
+        /* ====================================================
+           PAGE HEADER
+           ==================================================== */
+
+        .mine-page-header {
+
+            position: relative;
+
+            overflow: hidden;
+
+            margin-bottom: 30px;
+
+            padding: 35px;
+
+            border-radius: 22px;
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(24,32,25,.98),
+                    rgba(49,74,53,.96)
+                );
+
+            box-shadow:
+                0 10px 30px rgba(24,32,25,.15);
+        }
+
+
+        .mine-page-header::after {
+
+            content: "";
+
+            position: absolute;
+
+            right: -80px;
+            bottom: -100px;
+
+            width: 300px;
+            height: 300px;
+
+            border-radius: 50%;
+
+            border:
+                45px solid rgba(201,133,40,.12);
+        }
+
+
+        .mine-eyebrow {
+
+            position: relative;
+
+            z-index: 2;
+
+            display: inline-block;
+
+            margin-bottom: 10px;
+
+            padding: 6px 12px;
+
+            border-radius: 20px;
+
+            background:
+                rgba(201,133,40,.18);
+
+            color:
+                var(--laterite-light);
+
+            font-size: 11px;
+
             font-weight: 800;
-            margin-bottom: 25px;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
         }
 
-        .card {
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, .06);
+
+        .mine-page-title {
+
+            position: relative;
+
+            z-index: 2;
+
+            margin: 0;
+
+            font-size:
+                clamp(28px, 4vw, 44px);
+
+            font-weight: 850;
+
+            line-height: 1.15;
         }
 
-        .progress {
-            height: 8px;
-            border-radius: 10px;
+
+        .mine-page-description {
+
+            position: relative;
+
+            z-index: 2;
+
+            max-width: 760px;
+
+            margin:
+                12px 0 0;
+
+            color: #dbe1da;
+
+            font-size: 14px;
         }
 
-        footer {
-            background: #111827;
-            color: #d1d5db;
-            margin-top: 60px;
+
+        /* ====================================================
+           CARDS
+           ==================================================== */
+
+        .mine-card {
+
+            background:
+                var(--white);
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                16px;
+
+            box-shadow:
+                0 7px 22px rgba(24,32,25,.07);
+
+            overflow:
+                hidden;
+
+            transition:
+                .2s ease;
         }
 
-        .nav-link {
-            font-weight: 500;
+
+        .mine-card:hover {
+
+            transform:
+                translateY(-3px);
+
+            box-shadow:
+                0 12px 28px rgba(24,32,25,.11);
         }
 
-        .nav-link.active {
-            font-weight: 700;
+
+        .mine-card-header {
+
+            padding:
+                16px 20px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--mine-green),
+                    var(--mine-dark-2)
+                );
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: 800;
+        }
+
+
+        .mine-card-body {
+
+            padding:
+                20px;
+        }
+
+
+        /* ====================================================
+           GRID
+           ==================================================== */
+
+        .mine-grid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap:
+                20px;
+        }
+
+
+        .mine-grid-2 {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap:
+                20px;
+        }
+
+
+        /* ====================================================
+           BADGES
+           ==================================================== */
+
+        .mine-badge {
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            gap:
+                5px;
+
+            padding:
+                5px 10px;
+
+            border-radius:
+                20px;
+
+            font-size:
+                11px;
+
+            font-weight:
+                800;
+        }
+
+
+        .badge-active {
+
+            background:
+                #e7f5ec;
+
+            color:
+                var(--success);
+        }
+
+
+        .badge-gugur {
+
+            background:
+                #f9e7e5;
+
+            color:
+                var(--danger);
+        }
+
+
+        .badge-laterite {
+
+            background:
+                #f7ead4;
+
+            color:
+                #8a5a13;
+        }
+
+
+        /* ====================================================
+           BUTTON
+           ==================================================== */
+
+        .mine-button {
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            gap:
+                7px;
+
+            padding:
+                10px 17px;
+
+            border:
+                none;
+
+            border-radius:
+                9px;
+
+            background:
+                var(--mine-green);
+
+            color:
+                white;
+
+            font-size:
+                13px;
+
+            font-weight:
+                750;
+
+            transition:
+                .2s ease;
+        }
+
+
+        .mine-button:hover {
+
+            background:
+                var(--laterite);
+
+            color:
+                white;
+
+            transform:
+                translateY(-1px);
+        }
+
+
+        /* ====================================================
+           TABLE
+           ==================================================== */
+
+        .mine-table-wrap {
+
+            width:
+                100%;
+
+            overflow-x:
+                auto;
+
+            border-radius:
+                14px;
+
+            box-shadow:
+                0 6px 20px rgba(24,32,25,.06);
+        }
+
+
+        .mine-table {
+
+            width:
+                100%;
+
+            border-collapse:
+                collapse;
+
+            background:
+                white;
+
+            min-width:
+                650px;
+        }
+
+
+        .mine-table th {
+
+            padding:
+                14px 15px;
+
+            background:
+                var(--mine-dark);
+
+            color:
+                white;
+
+            text-align:
+                left;
+
+            font-size:
+                12px;
+
+            letter-spacing:
+                .3px;
+        }
+
+
+        .mine-table td {
+
+            padding:
+                13px 15px;
+
+            border-bottom:
+                1px solid #eeeae1;
+
+            font-size:
+                13px;
+        }
+
+
+        .mine-table tbody tr:hover td {
+
+            background:
+                #faf7ef;
+        }
+
+
+        /* ====================================================
+           FOOTER
+           ==================================================== */
+
+        .mine-footer {
+
+            background:
+                var(--mine-dark);
+
+            color:
+                #cbd2cb;
+
+            border-top:
+                4px solid var(--laterite);
+
+            padding:
+                30px 22px;
+        }
+
+
+        .mine-footer-inner {
+
+            max-width:
+                1250px;
+
+            margin:
+                auto;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            gap:
+                20px;
+        }
+
+
+        .mine-footer-title {
+
+            color:
+                white;
+
+            font-weight:
+                800;
+
+            font-size:
+                14px;
+        }
+
+
+        .mine-footer-text {
+
+            margin-top:
+                5px;
+
+            font-size:
+                11px;
+
+            color:
+                #aeb7ae;
+        }
+
+
+        .mine-footer-accent {
+
+            color:
+                var(--laterite-light);
+        }
+
+
+        /* ====================================================
+           RESPONSIVE
+           ==================================================== */
+
+        @media (max-width: 1050px) {
+
+            .mine-nav-container {
+
+                align-items:
+                    flex-start;
+
+                flex-direction:
+                    column;
+            }
+
+            .mine-nav-links {
+
+                width:
+                    100%;
+
+                justify-content:
+                    flex-start;
+            }
+
+            .mine-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+        }
+
+
+        @media (max-width: 700px) {
+
+            .mine-main {
+
+                padding:
+                    22px 14px 40px;
+            }
+
+            .mine-page-header {
+
+                padding:
+                    25px 20px;
+            }
+
+            .mine-grid,
+            .mine-grid-2 {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+            .mine-footer-inner {
+
+                flex-direction:
+                    column;
+
+                align-items:
+                    flex-start;
+            }
+
+            .mine-nav-links a {
+
+                font-size:
+                    11px;
+
+                padding:
+                    7px 8px;
+            }
         }
 
     </style>
 
-    {% block extra_css %}
-    {% endblock %}
+    {% block extra_css %}{% endblock %}
 
 </head>
 
-
 <body>
 
+    <!-- =====================================================
+         NAVBAR
+         ===================================================== -->
 
-<!-- ========================================================= -->
-<!-- NAVBAR -->
-<!-- ========================================================= -->
+    <nav class="mine-navbar">
 
-<nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
+        <div class="mine-nav-container">
 
-    <div class="container">
+            <a href="{% url 'praktikum:home' %}"
+               class="mine-brand">
 
-        <a
-            class="navbar-brand"
-            href="{% url 'praktikum:home' %}"
-        >
-            {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
-        </a>
+                <div class="mine-brand-icon">
+                    ⛏
+                </div>
 
+                <div>
 
-        <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarMain"
-            aria-controls="navbarMain"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-        >
+                    <div class="mine-brand-title">
+                        MINE PLANNING PRACTICUM
+                    </div>
 
-            <span class="navbar-toggler-icon"></span>
+                    <div class="mine-brand-subtitle">
+                        Nickel Laterite • Mining Engineering
+                    </div>
 
-        </button>
+                </div>
 
+            </a>
 
-        <div
-            class="collapse navbar-collapse"
-            id="navbarMain"
-        >
 
-            <ul class="navbar-nav ms-auto">
+            <div class="mine-nav-links">
 
+                <a href="{% url 'praktikum:home' %}">
+                    🏠 Beranda
+                </a>
 
-                <!-- BERANDA -->
+                <a href="{% url 'praktikum:personel' %}">
+                    👷 Personel
+                </a>
 
-                <li class="nav-item">
+                <a href="{% url 'praktikum:kelompok' %}">
+                    👥 Kelompok
+                </a>
 
-                    <a
-                        class="nav-link"
-                        href="{% url 'praktikum:home' %}"
-                    >
-                        Beranda
-                    </a>
+                <a href="{% url 'praktikum:jadwal' %}">
+                    📅 Jadwal
+                </a>
 
-                </li>
+                <a href="{% url 'praktikum:materi' %}">
+                    📚 Materi
+                </a>
 
+                <a href="{% url 'praktikum:absensi' %}">
+                    📝 Absensi
+                </a>
 
-                <!-- PERSONEL -->
+                <a href="{% url 'praktikum:pengumuman' %}">
+                    📢 Pengumuman
+                </a>
 
-                <li class="nav-item">
+                <a href="{% url 'praktikum:tata_tertib' %}">
+                    📜 Tata Tertib
+                </a>
 
-                    <a
-                        class="nav-link"
-                        href="{% url 'praktikum:personel' %}"
-                    >
-                        Personel
-                    </a>
-
-                </li>
-
-
-                <!-- KELOMPOK -->
-
-                <li class="nav-item">
-
-                    <a
-                        class="nav-link"
-                        href="{% url 'praktikum:kelompok' %}"
-                    >
-                        Kelompok
-                    </a>
-
-                </li>
-
-
-                <!-- JADWAL -->
-
-                <li class="nav-item">
-
-                    <a
-                        class="nav-link"
-                        href="{% url 'praktikum:jadwal' %}"
-                    >
-                        Jadwal
-                    </a>
-
-                </li>
-
-
-                <!-- MATERI -->
-
-                <li class="nav-item">
-
-                    <a
-                        class="nav-link"
-                        href="{% url 'praktikum:materi' %}"
-                    >
-                        Materi
-                    </a>
-
-                </li>
-
-
-                <!-- ABSENSI -->
-
-                <li class="nav-item">
-
-                    <a
-                        class="nav-link"
-                        href="{% url 'praktikum:absensi' %}"
-                    >
-                        Absensi
-                    </a>
-
-                </li>
-
-
-                <!-- PENGUMUMAN -->
-
-                <li class="nav-item">
-
-                    <a
-                        class="nav-link"
-                        href="{% url 'praktikum:pengumuman' %}"
-                    >
-                        Pengumuman
-                    </a>
-
-                </li>
-
-
-                <!-- TATA TERTIB -->
-
-                <li class="nav-item">
-
-                    <a
-                        class="nav-link"
-                        href="{% url 'praktikum:tata_tertib' %}"
-                    >
-                        Tata Tertib
-                    </a>
-
-                </li>
-
-
-            </ul>
-
-        </div>
-
-    </div>
-
-</nav>
-
-
-<!-- ========================================================= -->
-<!-- CONTENT -->
-<!-- ========================================================= -->
-
-{% block content %}
-{% endblock %}
-
-
-<!-- ========================================================= -->
-<!-- FOOTER -->
-<!-- ========================================================= -->
-
-<footer class="py-5">
-
-    <div class="container">
-
-        <div class="row g-4">
-
-
-            <div class="col-md-7">
-
-                <h5 class="fw-bold">
-
-                    {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
-
-                </h5>
-
-
-                <p class="mb-0">
-
-                    {{ setting.deskripsi|default:"Sistem Informasi Praktikum Perencanaan Tambang." }}
-
-                </p>
-
-            </div>
-
-
-            <div class="col-md-5">
-
-                <h6 class="fw-bold">
-                    Informasi
-                </h6>
-
-
-                {% if setting.periode %}
-
-                    <p class="mb-1">
-
-                        Periode:
-                        {{ setting.periode }}
-
-                    </p>
-
-                {% endif %}
-
-
-                {% if setting.dosen_pengampu %}
-
-                    <p class="mb-1">
-
-                        Dosen Pengampu:
-                        {{ setting.dosen_pengampu }}
-
-                    </p>
-
-                {% endif %}
-
-
-                {% if setting.kontak %}
-
-                    <p class="mb-0">
-
-                        Kontak:
-                        {{ setting.kontak }}
-
-                    </p>
-
-                {% endif %}
-
+                <a href="{% url 'praktikum:informasi_peserta' %}"
+                   class="nav-highlight">
+                    🎓 Peserta
+                </a>
 
             </div>
 
         </div>
 
-
-        <hr class="my-4">
-
-
-        <div class="d-flex justify-content-between flex-wrap gap-2">
-
-            <small>
-
-                © {% now "Y" %}
-
-                {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
-
-            </small>
+    </nav>
 
 
-            <small>
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
 
-                Sistem Informasi Praktikum
+    <main class="mine-main">
 
-            </small>
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="mine-footer">
+
+        <div class="mine-footer-inner">
+
+            <div>
+
+                <div class="mine-footer-title">
+                    ⛏ MINE PLANNING PRACTICUM
+                </div>
+
+                <div class="mine-footer-text">
+                    Nickel Laterite • Mining Engineering
+                </div>
+
+            </div>
+
+
+            <div class="mine-footer-text">
+
+                {{ setting.periode|default:"2026/2027" }}
+
+                <span class="mine-footer-accent">
+                    • Digging Knowledge, Delivering Competence
+                </span>
+
+            </div>
 
         </div>
 
-    </div>
-
-</footer>
+    </footer>
 
 
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-></script>
-
-
-{% block extra_js %}
-{% endblock %}
-
+    {% block extra_js %}
+    {% endblock %}
 
 </body>
-
 </html>
