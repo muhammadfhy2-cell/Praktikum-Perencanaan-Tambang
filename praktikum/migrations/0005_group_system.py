@@ -5,7 +5,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("praktikum", "0004_absensi_components"),
+        ("praktikum", "0004_absensi_components_laporan"),
     ]
 
     operations = [
