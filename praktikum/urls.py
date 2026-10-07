@@ -81,4 +81,10 @@ urlpatterns = [
         views.upload_laporan,
         name="upload_laporan"
     ),
+
+    path(
+        "laporan/<int:laporan_id>/download-revisi/",
+        views.download_file_revisi,
+        name="download_file_revisi"
+    ),
 ]
