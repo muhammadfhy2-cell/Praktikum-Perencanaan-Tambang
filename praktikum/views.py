@@ -1,7 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import (
+    get_object_or_404,
+    redirect,
+    render,
+)
 
 from .models import (
     Setting,
@@ -18,11 +22,8 @@ from .models import (
 )
 
 
-# =========================================================
-# CONTEXT DASAR WEBSITE
-# =========================================================
-
 def context_base():
+
     setting = Setting.objects.first()
 
     return {
@@ -47,11 +48,8 @@ def context_base():
     }
 
 
-# =========================================================
-# HALAMAN PUBLIK
-# =========================================================
-
 def home(request):
+
     c = context_base()
 
     c.update({
@@ -64,12 +62,18 @@ def home(request):
         "acara": (
             Acara.objects
             .all()
-            .order_by("urutan", "tanggal_mulai")[:6]
+            .order_by(
+                "urutan",
+                "tanggal_mulai"
+            )[:6]
         ),
 
         "kelompok": (
             Kelompok.objects
-            .prefetch_related("mentor", "peserta")
+            .prefetch_related(
+                "mentor",
+                "peserta"
+            )
             .all()
         ),
 
@@ -88,11 +92,15 @@ def home(request):
 
 
 def kelompok(request):
+
     c = context_base()
 
     c["kelompok"] = (
         Kelompok.objects
-        .prefetch_related("mentor", "peserta")
+        .prefetch_related(
+            "mentor",
+            "peserta"
+        )
         .all()
     )
 
@@ -104,6 +112,7 @@ def kelompok(request):
 
 
 def personel(request):
+
     c = context_base()
 
     return render(
@@ -114,12 +123,16 @@ def personel(request):
 
 
 def jadwal(request):
+
     c = context_base()
 
     c["acara"] = (
         Acara.objects
         .all()
-        .order_by("urutan", "tanggal_mulai")
+        .order_by(
+            "urutan",
+            "tanggal_mulai"
+        )
     )
 
     return render(
@@ -130,6 +143,7 @@ def jadwal(request):
 
 
 def materi(request):
+
     c = context_base()
 
     c["materi"] = (
@@ -147,45 +161,30 @@ def materi(request):
 
 
 def absensi(request):
-    c = context_base()
 
-    rows = []
+    c = context_base()
 
     peserta_data = (
         Peserta.objects
         .filter(aktif=True)
         .select_related("kelompok")
-        .order_by("kelompok__nama", "jabatan", "nama")
+        .prefetch_related("absensi")
+        .order_by(
+            "kelompok__nama",
+            "jabatan",
+            "nama"
+        )
     )
 
-    for p in peserta_data:
+    rows = []
 
-        total = (
-            Absensi.objects
-            .filter(peserta=p)
-            .count()
-        )
-
-        hadir = (
-            Absensi.objects
-            .filter(
-                peserta=p,
-                status="H"
-            )
-            .count()
-        )
-
-        pct = (
-            round(hadir / total * 100, 1)
-            if total
-            else 0
-        )
+    for peserta in peserta_data:
 
         rows.append({
-            "peserta": p,
-            "total": total,
-            "hadir": hadir,
-            "pct": pct,
+            "peserta": peserta,
+            "total_acara": peserta.total_acara_absensi,
+            "total_nilai": peserta.total_nilai_absensi,
+            "persentase": peserta.persentase_absensi,
         })
 
     c["rows"] = rows
@@ -198,12 +197,16 @@ def absensi(request):
 
 
 def tata_tertib(request):
+
     c = context_base()
 
     c["items"] = (
         TataTertib.objects
         .filter(aktif=True)
-        .order_by("urutan", "id")
+        .order_by(
+            "urutan",
+            "id"
+        )
     )
 
     return render(
@@ -214,6 +217,7 @@ def tata_tertib(request):
 
 
 def pengumuman(request):
+
     c = context_base()
 
     c["items"] = (
@@ -229,11 +233,8 @@ def pengumuman(request):
     )
 
 
-# =========================================================
-# TUGAS PENDAHULUAN
-# =========================================================
-
 def tugas_pendahuluan(request):
+
     c = context_base()
 
     c["tugas"] = (
@@ -250,23 +251,16 @@ def tugas_pendahuluan(request):
     )
 
 
-# =========================================================
-# LOGIN PESERTA
-# =========================================================
-
 def login_peserta(request):
 
-    # Jika sudah login
     if request.user.is_authenticated:
 
         try:
             request.user.profil_peserta
             return redirect("dashboard_peserta")
-
         except Exception:
             pass
 
-    # Proses login
     if request.method == "POST":
 
         username = request.POST.get(
@@ -279,7 +273,6 @@ def login_peserta(request):
             ""
         )
 
-        # Validasi input
         if not username or not password:
 
             messages.error(
@@ -292,7 +285,6 @@ def login_peserta(request):
                 "praktikum/login.html"
             )
 
-        # Autentikasi Django
         user = authenticate(
             request,
             username=username,
@@ -303,12 +295,9 @@ def login_peserta(request):
 
             try:
                 peserta = user.profil_peserta
-
             except Exception:
                 peserta = None
 
-            # Pastikan user benar-benar terhubung
-            # dengan data Peserta
             if peserta and peserta.aktif:
 
                 login(
@@ -322,8 +311,8 @@ def login_peserta(request):
 
             messages.error(
                 request,
-                "Akun ini belum terhubung dengan data peserta "
-                "atau peserta sedang tidak aktif."
+                "Akun belum terhubung dengan data peserta "
+                "atau peserta tidak aktif."
             )
 
         else:
@@ -339,10 +328,6 @@ def login_peserta(request):
     )
 
 
-# =========================================================
-# LOGOUT PESERTA
-# =========================================================
-
 def logout_peserta(request):
 
     logout(request)
@@ -357,27 +342,18 @@ def logout_peserta(request):
     )
 
 
-# =========================================================
-# DASHBOARD PESERTA
-# =========================================================
-
 @login_required(login_url="/login/")
 def dashboard_peserta(request):
 
-    # Ambil profil peserta berdasarkan
-    # akun yang sedang login
     peserta = get_object_or_404(
-        Peserta.objects.select_related(
+        Peserta.objects
+        .select_related(
             "kelompok",
             "akun"
         ),
         akun=request.user,
         aktif=True,
     )
-
-    # -----------------------------------------------------
-    # TUGAS PENDAHULUAN
-    # -----------------------------------------------------
 
     tugas = (
         TugasPendahuluan.objects
@@ -386,15 +362,9 @@ def dashboard_peserta(request):
         .order_by("-dibuat")
     )
 
-    # -----------------------------------------------------
-    # RIWAYAT LAPORAN PESERTA
-    # -----------------------------------------------------
-
     laporan = (
         LaporanMingguan.objects
-        .filter(
-            peserta=peserta
-        )
+        .filter(peserta=peserta)
         .select_related(
             "kelompok",
             "acara"
@@ -402,33 +372,19 @@ def dashboard_peserta(request):
         .order_by("-uploaded_at")
     )
 
-    # -----------------------------------------------------
-    # STATISTIK LAPORAN
-    # -----------------------------------------------------
-
     total_laporan = laporan.count()
 
-    laporan_acc = (
-        laporan
-        .filter(status="acc")
-        .count()
-    )
+    laporan_acc = laporan.filter(
+        status="acc"
+    ).count()
 
-    laporan_revisi = (
-        laporan
-        .filter(status="revisi")
-        .count()
-    )
+    laporan_revisi = laporan.filter(
+        status="revisi"
+    ).count()
 
-    laporan_menunggu = (
-        laporan
-        .filter(status="menunggu")
-        .count()
-    )
-
-    # -----------------------------------------------------
-    # DAFTAR ACARA
-    # -----------------------------------------------------
+    laporan_menunggu = laporan.filter(
+        status="menunggu"
+    ).count()
 
     acara = (
         Acara.objects
@@ -438,10 +394,6 @@ def dashboard_peserta(request):
             "tanggal_mulai"
         )
     )
-
-    # -----------------------------------------------------
-    # DATA DASHBOARD
-    # -----------------------------------------------------
 
     context = context_base()
 
@@ -463,6 +415,9 @@ def dashboard_peserta(request):
 
         "laporan_menunggu": laporan_menunggu,
 
+        "persentase_absensi": peserta.persentase_absensi,
+
+        "total_acara_absensi": peserta.total_acara_absensi,
     })
 
     return render(
@@ -472,16 +427,12 @@ def dashboard_peserta(request):
     )
 
 
-# =========================================================
-# UPLOAD LAPORAN MINGGUAN
-# =========================================================
-
 @login_required(login_url="/login/")
 def upload_laporan(request):
 
-    # Pastikan user memiliki profil peserta
     peserta = get_object_or_404(
-        Peserta.objects.select_related(
+        Peserta.objects
+        .select_related(
             "kelompok",
             "akun"
         ),
@@ -489,32 +440,23 @@ def upload_laporan(request):
         aktif=True,
     )
 
-    # Upload hanya melalui POST
     if request.method != "POST":
 
         return redirect(
             "dashboard_peserta"
         )
 
-    # -----------------------------------------------------
-    # CEK KELOMPOK
-    # -----------------------------------------------------
-
     if not peserta.kelompok:
 
         messages.error(
             request,
             "Anda belum memiliki kelompok. "
-            "Silakan hubungi admin praktikum."
+            "Silakan hubungi admin."
         )
 
         return redirect(
             "dashboard_peserta"
         )
-
-    # -----------------------------------------------------
-    # AMBIL DATA FORM
-    # -----------------------------------------------------
 
     judul = request.POST.get(
         "judul",
@@ -530,10 +472,6 @@ def upload_laporan(request):
         "file"
     )
 
-    # -----------------------------------------------------
-    # VALIDASI JUDUL
-    # -----------------------------------------------------
-
     if not judul:
 
         messages.error(
@@ -544,10 +482,6 @@ def upload_laporan(request):
         return redirect(
             "dashboard_peserta"
         )
-
-    # -----------------------------------------------------
-    # VALIDASI ACARA
-    # -----------------------------------------------------
 
     if not acara_id:
 
@@ -560,10 +494,6 @@ def upload_laporan(request):
             "dashboard_peserta"
         )
 
-    # -----------------------------------------------------
-    # VALIDASI FILE
-    # -----------------------------------------------------
-
     if not file:
 
         messages.error(
@@ -575,25 +505,15 @@ def upload_laporan(request):
             "dashboard_peserta"
         )
 
-    # -----------------------------------------------------
-    # AMBIL ACARA
-    # -----------------------------------------------------
-
     acara = get_object_or_404(
         Acara,
         id=acara_id
     )
 
-    # -----------------------------------------------------
-    # SIMPAN LAPORAN
-    # -----------------------------------------------------
-
     LaporanMingguan.objects.create(
 
         peserta=peserta,
 
-        # Kelompok otomatis mengambil
-        # dari profil peserta
         kelompok=peserta.kelompok,
 
         acara=acara,
@@ -602,18 +522,12 @@ def upload_laporan(request):
 
         file=file,
 
-        # Semua upload baru masuk
-        # sebagai Menunggu Pemeriksaan
         status="menunggu",
     )
 
-    # -----------------------------------------------------
-    # PESAN BERHASIL
-    # -----------------------------------------------------
-
     messages.success(
         request,
-        "Laporan berhasil diupload dan "
+        "Laporan berhasil dikirim dan "
         "menunggu pemeriksaan admin."
     )
 
