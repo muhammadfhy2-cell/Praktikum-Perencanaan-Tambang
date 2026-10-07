@@ -13,13 +13,14 @@ from .models import (
     Pengumuman,
     Peserta,
     Setting,
+    Staff,
     TataTertib,
     TugasPendahuluan,
 )
 
 
 # ============================================================
-# KONFIGURASI STATUS PESERTA
+# KONFIGURASI
 # ============================================================
 
 ACTIVE_STATUS = [
@@ -29,7 +30,7 @@ ACTIVE_STATUS = [
 
 
 # ============================================================
-# HELPER LOGIN KELOMPOK
+# HELPER KELOMPOK LOGIN
 # ============================================================
 
 def get_kelompok_login(request):
@@ -49,7 +50,7 @@ def get_kelompok_login(request):
 
 
 # ============================================================
-# HELPER LOGIN USER -> KELOMPOK
+# HELPER USER -> KELOMPOK
 # ============================================================
 
 def get_user_kelompok(request):
@@ -67,7 +68,7 @@ def get_user_kelompok(request):
 
 
 # ============================================================
-# HELPER LOGIN PESERTA
+# HELPER USER -> PESERTA
 # ============================================================
 
 def get_peserta_login(request):
@@ -79,7 +80,9 @@ def get_peserta_login(request):
         return (
             Peserta.objects
             .select_related("kelompok")
-            .get(akun=request.user)
+            .get(
+                akun=request.user
+            )
         )
     except Peserta.DoesNotExist:
         return None
@@ -93,12 +96,23 @@ def home(request):
 
     setting = Setting.objects.first()
 
-    # ========================================================
+    # --------------------------------------------------------
+    # STAFF / PERSONEL
+    # --------------------------------------------------------
+
+    staff_list = (
+        Staff.objects
+        .all()
+        .order_by(
+            "jabatan",
+            "urutan",
+            "nama",
+        )
+    )
+
+    # --------------------------------------------------------
     # KELOMPOK
-    # ========================================================
-    # Semua data yang ada di database dibaca.
-    # Tidak difilter aktif agar data admin langsung terbaca.
-    # ========================================================
+    # --------------------------------------------------------
 
     kelompok_list = (
         Kelompok.objects
@@ -106,9 +120,9 @@ def home(request):
         .order_by("nama")
     )
 
-    # ========================================================
-    # ACARA / JADWAL
-    # ========================================================
+    # --------------------------------------------------------
+    # ACARA
+    # --------------------------------------------------------
 
     acara_list = (
         Acara.objects
@@ -119,9 +133,9 @@ def home(request):
         )
     )
 
-    # ========================================================
+    # --------------------------------------------------------
     # MATERI
-    # ========================================================
+    # --------------------------------------------------------
 
     materi_list = (
         Materi.objects
@@ -129,9 +143,9 @@ def home(request):
         .order_by("-uploaded_at")
     )
 
-    # ========================================================
+    # --------------------------------------------------------
     # PENGUMUMAN
-    # ========================================================
+    # --------------------------------------------------------
 
     pengumuman_list = (
         Pengumuman.objects
@@ -139,12 +153,9 @@ def home(request):
         .order_by("-id")
     )
 
-    # ========================================================
+    # --------------------------------------------------------
     # PESERTA
-    # ========================================================
-    # Semua peserta dibaca agar data publik konsisten
-    # dengan data yang dikelola admin.
-    # ========================================================
+    # --------------------------------------------------------
 
     peserta_list = (
         Peserta.objects
@@ -152,65 +163,88 @@ def home(request):
         .select_related("kelompok")
         .order_by(
             "kelompok__nama",
+            "jabatan",
             "nama",
         )
     )
 
-    # ========================================================
+    # --------------------------------------------------------
     # KOORDINATOR
-    # ========================================================
+    # --------------------------------------------------------
+    # Koordinator berasal dari Staff, BUKAN Peserta.
+    # --------------------------------------------------------
 
-    koordinator = None
+    koordinator = (
+        staff_list
+        .filter(
+            jabatan="koordinator"
+        )
+        .first()
+    )
 
-    for person in peserta_list:
+    # --------------------------------------------------------
+    # PENANGGUNG JAWAB
+    # --------------------------------------------------------
 
-        jabatan = str(
-            getattr(
-                person,
-                "jabatan",
-                "",
-            ) or ""
-        ).strip().lower()
+    penanggung_jawab = (
+        staff_list
+        .filter(
+            jabatan="penanggung_jawab"
+        )
+        .first()
+    )
 
-        if "koordinator" in jabatan:
+    # --------------------------------------------------------
+    # ASISTEN
+    # --------------------------------------------------------
 
-            koordinator = person
-            break
+    asisten_list = (
+        staff_list
+        .filter(
+            jabatan="asisten"
+        )
+    )
 
-    # ========================================================
-    # CONTEXT
-    # ========================================================
+    # --------------------------------------------------------
+    # CONTEXT PUBLIK
+    # --------------------------------------------------------
 
     context = {
 
         "setting": setting,
 
-        # Kelompok
+        # STAFF
+        "staff": staff_list,
+        "staff_list": staff_list,
+
+        "personel": staff_list,
+        "personel_list": staff_list,
+
+        "asisten": asisten_list,
+        "asisten_list": asisten_list,
+
+        "koordinator": koordinator,
+        "penanggung_jawab": penanggung_jawab,
+
+        # KELOMPOK
         "kelompok": kelompok_list,
         "kelompok_list": kelompok_list,
 
-        # Acara
+        # ACARA
         "acara": acara_list,
         "acara_list": acara_list,
 
-        # Materi
+        # MATERI
         "materi": materi_list,
         "materi_list": materi_list,
 
-        # Pengumuman
+        # PENGUMUMAN
         "pengumuman": pengumuman_list,
         "pengumuman_list": pengumuman_list,
 
-        # Peserta
+        # PESERTA
         "peserta": peserta_list,
         "peserta_list": peserta_list,
-
-        # Personel
-        "personel": peserta_list,
-        "asisten": peserta_list,
-
-        # Koordinator
-        "koordinator": koordinator,
     }
 
     return render(
@@ -228,21 +262,43 @@ def personel(request):
 
     setting = Setting.objects.first()
 
-    peserta_list = (
-        Peserta.objects
+    staff_list = (
+        Staff.objects
         .all()
-        .select_related("kelompok")
         .order_by(
-            "kelompok__nama",
+            "jabatan",
+            "urutan",
             "nama",
         )
     )
 
     context = {
+
         "setting": setting,
-        "peserta_list": peserta_list,
-        "personel": peserta_list,
-        "asisten": peserta_list,
+
+        "staff": staff_list,
+        "staff_list": staff_list,
+
+        "personel": staff_list,
+        "personel_list": staff_list,
+
+        "asisten": (
+            staff_list.filter(
+                jabatan="asisten"
+            )
+        ),
+
+        "koordinator": (
+            staff_list.filter(
+                jabatan="koordinator"
+            ).first()
+        ),
+
+        "penanggung_jawab": (
+            staff_list.filter(
+                jabatan="penanggung_jawab"
+            ).first()
+        ),
     }
 
     return render(
@@ -267,7 +323,9 @@ def kelompok(request):
     )
 
     context = {
+
         "setting": setting,
+
         "kelompok": kelompok_list,
         "kelompok_list": kelompok_list,
     }
@@ -297,7 +355,9 @@ def jadwal(request):
     )
 
     context = {
+
         "setting": setting,
+
         "acara": acara_list,
         "acara_list": acara_list,
     }
@@ -324,7 +384,9 @@ def materi(request):
     )
 
     context = {
+
         "setting": setting,
+
         "materi": materi_list,
         "materi_list": materi_list,
     }
@@ -351,7 +413,9 @@ def absensi(request):
     )
 
     context = {
+
         "setting": setting,
+
         "kelompok": kelompok_list,
         "kelompok_list": kelompok_list,
     }
@@ -378,7 +442,9 @@ def pengumuman(request):
     )
 
     context = {
+
         "setting": setting,
+
         "pengumuman": pengumuman_list,
         "pengumuman_list": pengumuman_list,
     }
@@ -401,11 +467,16 @@ def tata_tertib(request):
     tata_tertib_list = (
         TataTertib.objects
         .all()
-        .order_by("urutan")
+        .order_by(
+            "urutan",
+            "id",
+        )
     )
 
     context = {
+
         "setting": setting,
+
         "tata_tertib": tata_tertib_list,
         "tata_tertib_list": tata_tertib_list,
     }
@@ -432,7 +503,9 @@ def tugas_pendahuluan(request):
     )
 
     context = {
+
         "setting": setting,
+
         "tugas": tugas_list,
         "tugas_list": tugas_list,
     }
@@ -452,13 +525,13 @@ def informasi_peserta(request):
 
     setting = Setting.objects.first()
 
-    # Semua peserta ditampilkan.
     peserta_list = (
         Peserta.objects
         .all()
         .select_related("kelompok")
         .order_by(
             "kelompok__nama",
+            "jabatan",
             "nama",
         )
     )
@@ -475,14 +548,19 @@ def informasi_peserta(request):
 
     total_gugur = (
         peserta_list
-        .exclude(
-            status_kemajuan__in=ACTIVE_STATUS
+        .filter(
+            status_kemajuan__in=[
+                "gugur",
+                "GUGUR",
+            ]
         )
         .count()
     )
 
     total_kelompok = (
-        peserta_list
+        kelompok_count
+        if False
+        else peserta_list
         .exclude(
             kelompok=None
         )
@@ -764,7 +842,7 @@ def dashboard_peserta(request):
 
 
 # ============================================================
-# UPLOAD LAPORAN MINGGUAN
+# UPLOAD LAPORAN
 # ============================================================
 
 def upload_laporan(request):
