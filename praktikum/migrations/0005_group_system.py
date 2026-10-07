@@ -15,51 +15,9 @@ class Migration(migrations.Migration):
 
         # =====================================================
         # KELOMPOK
+        # Field mentor, logo, progress, catatan SUDAH ADA
+        # dari migration 0001 dan 0002.
         # =====================================================
-
-        migrations.AddField(
-            model_name="kelompok",
-            name="mentor",
-            field=models.ManyToManyField(
-                blank=True,
-                limit_choices_to={
-                    "jabatan__in": [
-                        "penanggung_jawab",
-                        "koordinator",
-                        "asisten",
-                    ],
-                    "aktif": True,
-                },
-                related_name="kelompok_binaan",
-                to="praktikum.staff",
-            ),
-        ),
-
-        migrations.AddField(
-            model_name="kelompok",
-            name="logo",
-            field=models.ImageField(
-                blank=True,
-                null=True,
-                upload_to="logo_kelompok/",
-            ),
-        ),
-
-        migrations.AddField(
-            model_name="kelompok",
-            name="progress",
-            field=models.PositiveIntegerField(
-                default=0,
-            ),
-        ),
-
-        migrations.AddField(
-            model_name="kelompok",
-            name="catatan",
-            field=models.TextField(
-                blank=True,
-            ),
-        ),
 
         migrations.AddField(
             model_name="kelompok",
@@ -83,20 +41,8 @@ class Migration(migrations.Migration):
 
         # =====================================================
         # PESERTA
+        # jabatan SUDAH ADA dari migration 0002.
         # =====================================================
-
-        migrations.AddField(
-            model_name="peserta",
-            name="jabatan",
-            field=models.CharField(
-                choices=[
-                    ("ketua", "Ketua"),
-                    ("anggota", "Anggota"),
-                ],
-                default="anggota",
-                max_length=20,
-            ),
-        ),
 
         migrations.AddField(
             model_name="peserta",
@@ -133,6 +79,7 @@ class Migration(migrations.Migration):
 
         # =====================================================
         # ACARA
+        # pembawa_acara SUDAH ADA dari migration 0003.
         # =====================================================
 
         migrations.AddField(
@@ -143,23 +90,6 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
                 related_name="acara_penanggung_jawab",
-                to="praktikum.staff",
-            ),
-        ),
-
-        migrations.AddField(
-            model_name="acara",
-            name="pembawa_acara",
-            field=models.ManyToManyField(
-                blank=True,
-                limit_choices_to={
-                    "jabatan__in": [
-                        "koordinator",
-                        "asisten",
-                    ],
-                    "aktif": True,
-                },
-                related_name="acara_dibawakan",
                 to="praktikum.staff",
             ),
         ),
