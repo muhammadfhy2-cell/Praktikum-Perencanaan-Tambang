@@ -3,9 +3,6 @@ from django.urls import path
 from . import views
 
 
-app_name = "praktikum"
-
-
 urlpatterns = [
     # ============================================================
     # PUBLIC
@@ -19,6 +16,7 @@ urlpatterns = [
     path("absensi/", views.absensi, name="absensi"),
     path("tata-tertib/", views.tata_tertib, name="tata_tertib"),
     path("pengumuman/", views.pengumuman, name="pengumuman"),
+
     path(
         "tugas-pendahuluan/",
         views.tugas_pendahuluan,
