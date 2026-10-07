@@ -1,12 +1,22 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Login Peserta - Praktikum Perencanaan Tambang</title>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Login Peserta
+    </title>
+
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -14,66 +24,78 @@
         body {
             margin: 0;
             min-height: 100vh;
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
+
             display: flex;
-            align-items: center;
             justify-content: center;
-            color: #1f2937;
+            align-items: center;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f4f6f8;
+            color: #111827;
         }
 
         .login-container {
-            width: 100%;
-            max-width: 420px;
-            padding: 20px;
+            width: min(430px, 92%);
         }
 
         .login-card {
             background: white;
-            border-radius: 18px;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 14px;
+
             padding: 35px;
-            box-shadow: 0 15px 40px rgba(0,0,0,.08);
+
+            box-shadow:
+                0 10px 30px
+                rgba(0, 0, 0, .06);
         }
 
         .logo {
-            width: 70px;
-            height: 70px;
-            border-radius: 18px;
-            background: #111827;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 28px;
-            font-weight: bold;
+            text-align: center;
+            margin-bottom: 25px;
         }
 
-        h1 {
-            text-align: center;
+        .logo h1 {
             margin: 0;
-            font-size: 24px;
+            font-size: 25px;
         }
 
-        .subtitle {
-            text-align: center;
+        .logo p {
             color: #6b7280;
-            margin: 10px 0 28px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
         }
 
         label {
             display: block;
+
             margin-bottom: 7px;
-            font-weight: 600;
+
+            font-size: 14px;
+
+            font-weight: 700;
         }
 
         input {
             width: 100%;
-            padding: 13px;
+
+            padding: 12px;
+
             border: 1px solid #d1d5db;
-            border-radius: 10px;
-            margin-bottom: 18px;
-            font-size: 15px;
+
+            border-radius: 7px;
+
+            font-size: 14px;
         }
 
         input:focus {
@@ -83,100 +105,171 @@
 
         button {
             width: 100%;
-            border: 0;
-            padding: 14px;
-            border-radius: 10px;
+
+            padding: 12px;
+
+            border: none;
+
+            border-radius: 8px;
+
             background: #111827;
+
             color: white;
+
             font-size: 15px;
-            font-weight: bold;
+
+            font-weight: 700;
+
             cursor: pointer;
         }
 
         button:hover {
-            opacity: .9;
+            opacity: .88;
         }
 
-        .alert {
-            background: #fee2e2;
-            color: #991b1b;
+        .message {
             padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 14px;
+
+            margin-bottom: 15px;
+
+            background: #fee2e2;
+
+            color: #991b1b;
+
+            border-radius: 7px;
+
+            font-size: 13px;
+
+            line-height: 1.5;
         }
 
         .back {
             display: block;
-            text-align: center;
+
             margin-top: 20px;
+
+            text-align: center;
+
             color: #6b7280;
+
+            font-size: 13px;
+
             text-decoration: none;
-            font-size: 14px;
         }
+
     </style>
+
 </head>
+
 
 <body>
 
+
 <div class="login-container">
+
 
     <div class="login-card">
 
+
         <div class="logo">
-            PT
+
+            <h1>
+                Login Peserta
+            </h1>
+
+            <p>
+                Praktikum Perencanaan Tambang
+            </p>
+
         </div>
 
-        <h1>Login Peserta</h1>
 
-        <div class="subtitle">
-            Praktikum Perencanaan Tambang
-        </div>
 
         {% if messages %}
+
             {% for message in messages %}
-                <div class="alert">
+
+                <div class="message">
+
                     {{ message }}
+
                 </div>
+
             {% endfor %}
+
         {% endif %}
 
-        <form method="POST">
+
+
+        <form
+            method="POST"
+            action="{% url 'login_peserta' %}"
+        >
 
             {% csrf_token %}
 
-            <label>Username</label>
 
-            <input
-                type="text"
-                name="username"
-                placeholder="Masukkan username"
-                required
-                autofocus
-            >
+            <div class="form-group">
 
-            <label>Password</label>
+                <label for="username">
+                    Username
+                </label>
 
-            <input
-                type="password"
-                name="password"
-                placeholder="Masukkan password"
-                required
-            >
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Masukkan username"
+                    autocomplete="username"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Masukkan password"
+                    autocomplete="current-password"
+                    required
+                >
+
+            </div>
+
 
             <button type="submit">
+
                 Masuk ke Dashboard
+
             </button>
+
 
         </form>
 
-        <a href="/" class="back">
-            ← Kembali ke Website
+
+        <a
+            href="/"
+            class="back"
+        >
+
+            ← Kembali ke halaman utama
+
         </a>
+
 
     </div>
 
 </div>
 
+
 </body>
+
 </html>
