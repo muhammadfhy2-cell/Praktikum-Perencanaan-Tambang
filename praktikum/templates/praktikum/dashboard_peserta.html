@@ -11,8 +11,10 @@
     >
 
     <title>
-        Dashboard Peserta
+        Dashboard Peserta -
+        {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
     </title>
+
 
     <style>
 
@@ -20,204 +22,837 @@
             box-sizing: border-box;
         }
 
+
         body {
             margin: 0;
             font-family:
                 Arial,
                 Helvetica,
                 sans-serif;
-            background: #f5f7fa;
+
+            background: #f4f6f8;
             color: #111827;
         }
 
-        .container {
-            max-width: 1250px;
-            margin: 40px auto;
-            padding: 0 25px;
+
+        a {
+            color: inherit;
         }
 
-        .topbar {
+
+        .navbar {
+            background: #111827;
+            color: white;
+            padding: 18px 30px;
+
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+
+            gap: 20px;
         }
 
-        h1 {
-            margin: 0;
-            font-size: 38px;
+
+        .navbar-brand {
+            font-size: 20px;
+            font-weight: 800;
         }
 
-        .logout {
-            text-decoration: none;
-            padding: 10px 18px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+
+        .user-name {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+
+        .logout-button {
+            display: inline-block;
+
+            padding: 9px 15px;
+
+            border-radius: 7px;
+
+            background: white;
             color: #111827;
-            background: white;
+
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 700;
         }
 
-        .profile {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 25px;
+
+        .logout-button:hover {
+            opacity: 0.85;
+        }
+
+
+        .container {
+            width: min(1400px, 94%);
+
+            margin: 35px auto 60px;
+        }
+
+
+        .welcome {
             margin-bottom: 25px;
         }
 
+
+        .welcome h1 {
+            margin: 0;
+
+            font-size: 36px;
+            line-height: 1.2;
+        }
+
+
+        .welcome p {
+            margin-top: 8px;
+
+            color: #6b7280;
+
+            font-size: 16px;
+        }
+
+
+        /* =========================
+           MESSAGES
+        ========================= */
+
+        .messages {
+            margin-bottom: 25px;
+        }
+
+
+        .message {
+            padding: 14px 17px;
+
+            border-radius: 9px;
+
+            margin-bottom: 10px;
+
+            background: white;
+
+            border: 1px solid #d1d5db;
+
+            font-weight: 600;
+        }
+
+
+        /* =========================
+           PROFILE
+        ========================= */
+
+        .profile-card {
+            background: white;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 12px;
+
+            padding: 25px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .profile-title {
+            margin: 0 0 20px;
+
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+
         .profile-grid {
             display: grid;
+
             grid-template-columns:
                 repeat(
                     auto-fit,
                     minmax(220px, 1fr)
                 );
+
             gap: 18px;
         }
 
-        .label {
-            font-size: 13px;
+
+        .profile-item {
+            padding: 15px;
+
+            background: #f9fafb;
+
+            border-radius: 9px;
+
+            border: 1px solid #e5e7eb;
+        }
+
+
+        .profile-label {
             color: #6b7280;
-            margin-bottom: 5px;
+
+            font-size: 13px;
+
+            margin-bottom: 6px;
         }
 
-        .value {
+
+        .profile-value {
             font-weight: 700;
+
+            font-size: 16px;
+
+            line-height: 1.5;
         }
 
-        .stats {
+
+        /* =========================
+           STATISTICS
+        ========================= */
+
+        .stats-grid {
             display: grid;
+
             grid-template-columns:
                 repeat(
                     auto-fit,
                     minmax(180px, 1fr)
                 );
-            gap: 15px;
+
+            gap: 16px;
+
             margin-bottom: 25px;
         }
 
-        .stat {
+
+        .stat-card {
             background: white;
+
             border: 1px solid #e5e7eb;
+
             border-radius: 12px;
-            padding: 20px;
+
+            padding: 22px;
         }
+
+
+        .stat-label {
+            color: #6b7280;
+
+            font-size: 14px;
+
+            margin-bottom: 8px;
+        }
+
 
         .stat-number {
             font-size: 30px;
-            font-weight: 700;
+
+            font-weight: 800;
         }
 
-        .section {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 25px;
+
+        /* =========================
+           TWO COLUMN
+        ========================= */
+
+        .two-column {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                minmax(0, 1fr);
+
+            gap: 25px;
+
             margin-bottom: 25px;
         }
 
-        .section h2 {
-            margin-top: 0;
+
+        .card {
+            background: white;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 12px;
+
+            padding: 25px;
+
+            margin-bottom: 25px;
         }
 
-        .form-row {
-            margin-bottom: 15px;
+
+        .card h2 {
+            margin: 0 0 20px;
+
+            font-size: 22px;
         }
 
-        label {
+
+        .card-description {
+            color: #6b7280;
+
+            font-size: 14px;
+
+            margin-top: -10px;
+
+            margin-bottom: 20px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =========================
+           UPLOAD
+        ========================= */
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+
+        .form-label {
             display: block;
+
+            font-weight: 700;
+
+            font-size: 14px;
+
             margin-bottom: 7px;
-            font-weight: 700;
         }
 
-        input,
-        select {
+
+        input[type="text"],
+        input[type="file"],
+        select,
+        textarea {
+
             width: 100%;
-            padding: 12px;
+
+            padding: 11px 12px;
+
             border: 1px solid #d1d5db;
+
             border-radius: 7px;
-            font-size: 15px;
+
+            background: white;
+
+            font-family: inherit;
+
+            font-size: 14px;
         }
 
-        button {
-            padding: 12px 20px;
+
+        input[type="text"]:focus,
+        input[type="file"]:focus,
+        select:focus,
+        textarea:focus {
+
+            outline: none;
+
+            border-color: #111827;
+        }
+
+
+        .upload-button {
+
+            width: 100%;
+
             border: none;
-            border-radius: 7px;
+
+            padding: 12px 18px;
+
             background: #111827;
+
             color: white;
-            cursor: pointer;
-            font-weight: 700;
-        }
 
-        .report {
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 18px;
-            margin-bottom: 15px;
-        }
-
-        .report h3 {
-            margin-top: 0;
-        }
-
-        .status {
-            display: inline-block;
-            padding: 7px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .waiting {
-            background: #f3f4f6;
-            color: #374151;
-        }
-
-        .approved {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .revision {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .note {
-            margin-top: 15px;
-            padding: 15px;
-            background: #fff7ed;
-            border-left: 4px solid #f59e0b;
-        }
-
-        .file-revision {
-            margin-top: 15px;
-            padding: 15px;
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
             border-radius: 8px;
-        }
 
-        .file-revision a {
-            display: inline-block;
-            margin-top: 10px;
-            text-decoration: none;
+            font-size: 15px;
+
             font-weight: 700;
-            color: #166534;
+
+            cursor: pointer;
         }
 
-        .task {
-            padding: 15px;
+
+        .upload-button:hover {
+            opacity: 0.88;
+        }
+
+
+        .file-note {
+
+            margin-top: 8px;
+
+            color: #6b7280;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           TASK
+        ========================= */
+
+        .task-item {
+
             border: 1px solid #e5e7eb;
+
             border-radius: 9px;
+
+            padding: 17px;
+
+            margin-bottom: 12px;
+
+            background: #fafafa;
+        }
+
+
+        .task-title {
+
+            font-size: 16px;
+
+            font-weight: 800;
+
+            margin-bottom: 7px;
+        }
+
+
+        .task-event {
+
+            font-size: 13px;
+
+            color: #6b7280;
+
+            margin-bottom: 10px;
+        }
+
+
+        .task-question {
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+            white-space: pre-line;
+
             margin-bottom: 12px;
         }
 
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            background: #eef2ff;
+
+        .task-deadline {
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+
+        .task-file {
+
+            display: inline-block;
+
+            margin-top: 10px;
+
+            padding: 8px 12px;
+
+            border-radius: 6px;
+
+            background: #e5e7eb;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+
+        /* =========================
+           REPORT HISTORY
+        ========================= */
+
+        .report-item {
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 10px;
+
+            padding: 20px;
+
+            margin-bottom: 15px;
+
+            background: white;
+        }
+
+
+        .report-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+
+            gap: 15px;
+
+            margin-bottom: 12px;
+        }
+
+
+        .report-title {
+
+            font-size: 17px;
+
+            font-weight: 800;
+
+            margin-bottom: 5px;
+        }
+
+
+        .report-meta {
+
+            color: #6b7280;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+
+        .status {
+
+            display: inline-block;
+
+            padding: 7px 11px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            white-space: nowrap;
+        }
+
+
+        .status-menunggu {
+
+            background: #fef3c7;
+
+            color: #92400e;
+        }
+
+
+        .status-acc {
+
+            background: #dcfce7;
+
+            color: #166534;
+        }
+
+
+        .status-revisi {
+
+            background: #fee2e2;
+
+            color: #991b1b;
+        }
+
+
+        .report-file {
+
+            display: inline-block;
+
+            margin-top: 12px;
+
+            padding: 9px 13px;
+
+            border-radius: 7px;
+
+            background: #111827;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+
+        .report-file:hover {
+
+            opacity: 0.85;
+        }
+
+
+        /* =========================
+           REVISION
+        ========================= */
+
+        .revision-box {
+
+            margin-top: 17px;
+
+            padding: 18px;
+
+            border-radius: 9px;
+
+            background: #fff7ed;
+
+            border: 1px solid #fed7aa;
+        }
+
+
+        .revision-title {
+
+            font-size: 15px;
+
+            font-weight: 800;
+
+            color: #9a3412;
+
+            margin-bottom: 8px;
+        }
+
+
+        .revision-note {
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+            white-space: pre-line;
+
+            color: #431407;
+        }
+
+
+        .download-button {
+
+            display: inline-block;
+
+            margin-top: 14px;
+
+            padding: 10px 15px;
+
+            background: #111827;
+
+            color: white !important;
+
+            text-decoration: none;
+
+            border-radius: 7px;
+
+            font-size: 13px;
+
+            font-weight: 800;
+        }
+
+
+        .download-button:hover {
+
+            opacity: 0.85;
+        }
+
+
+        .revision-info {
+
+            margin-top: 10px;
+
+            color: #7c2d12;
+
+            font-size: 12px;
+        }
+
+
+        /* =========================
+           SCHEDULE
+        ========================= */
+
+        .schedule-item {
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 9px;
+
+            padding: 17px;
+
+            margin-bottom: 12px;
+
+            background: #fafafa;
+        }
+
+
+        .schedule-title {
+
+            font-size: 16px;
+
+            font-weight: 800;
+
+            margin-bottom: 7px;
+        }
+
+
+        .schedule-subtitle {
+
+            font-size: 13px;
+
+            color: #6b7280;
+
+            margin-bottom: 12px;
+        }
+
+
+        .schedule-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(150px, 1fr)
+                );
+
+            gap: 12px;
+        }
+
+
+        .schedule-info {
+
+            font-size: 13px;
+
+            line-height: 1.5;
+        }
+
+
+        .schedule-label {
+
+            display: block;
+
+            color: #6b7280;
+
+            font-size: 12px;
+
+            margin-bottom: 3px;
+        }
+
+
+        .mc-name {
+
+            font-weight: 700;
+        }
+
+
+        /* =========================
+           EMPTY
+        ========================= */
+
+        .empty {
+
+            padding: 20px;
+
+            background: #f9fafb;
+
+            border: 1px dashed #d1d5db;
+
+            border-radius: 9px;
+
+            color: #6b7280;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        .footer {
+
+            text-align: center;
+
+            color: #6b7280;
+
+            font-size: 13px;
+
+            padding: 30px 10px 0;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 850px) {
+
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+
+            .navbar {
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+
+            .navbar-right {
+                width: 100%;
+
+                justify-content: space-between;
+            }
+
+
+            .welcome h1 {
+                font-size: 30px;
+            }
+
+
+            .report-header {
+                flex-direction: column;
+            }
+
+        }
+
+
+        @media (max-width: 500px) {
+
+            .container {
+                width: 92%;
+            }
+
+
+            .navbar {
+                padding: 16px 18px;
+            }
+
+
+            .card,
+            .profile-card,
+            .stat-card {
+                padding: 18px;
+            }
+
+
+            .welcome h1 {
+                font-size: 27px;
+            }
+
         }
 
     </style>
@@ -227,251 +862,345 @@
 
 <body>
 
-<div class="container">
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar">
+
+    <div class="navbar-brand">
+
+        {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+
+    </div>
 
 
-    <div class="topbar">
+    <div class="navbar-right">
 
-        <h1>
-            Dashboard Peserta
-        </h1>
+        <div class="user-name">
+
+            {% if peserta %}
+                {{ peserta.nama }}
+            {% else %}
+                Peserta
+            {% endif %}
+
+        </div>
+
 
         <a
             href="{% url 'logout_peserta' %}"
-            class="logout"
+            class="logout-button"
         >
             Keluar
         </a>
 
     </div>
 
+</nav>
 
-    {% if messages %}
+
+
+<div class="container">
+
+
+<!-- =====================================================
+     WELCOME
+===================================================== -->
+
+<div class="welcome">
+
+    <h1>
+        Dashboard Peserta
+    </h1>
+
+    <p>
+        Selamat datang,
+        <strong>
+            {{ peserta.nama }}
+        </strong>.
+        Kelola tugas dan laporan praktikum Anda melalui halaman ini.
+    </p>
+
+</div>
+
+
+
+<!-- =====================================================
+     MESSAGES
+===================================================== -->
+
+{% if messages %}
+
+    <div class="messages">
 
         {% for message in messages %}
 
-            <div class="alert">
+            <div class="message">
+
                 {{ message }}
+
             </div>
 
         {% endfor %}
 
-    {% endif %}
-
-
-    <!-- PROFIL -->
-
-    <div class="profile">
-
-        <h2>
-            Profil Peserta
-        </h2>
-
-        <div class="profile-grid">
-
-            <div>
-
-                <div class="label">
-                    Nama
-                </div>
-
-                <div class="value">
-                    {{ peserta.nama }}
-                </div>
-
-            </div>
-
-
-            <div>
-
-                <div class="label">
-                    NIM
-                </div>
-
-                <div class="value">
-                    {{ peserta.nim|default:"-" }}
-                </div>
-
-            </div>
-
-
-            <div>
-
-                <div class="label">
-                    Kelompok
-                </div>
-
-                <div class="value">
-
-                    {% if peserta.kelompok %}
-                        {{ peserta.kelompok.nama }}
-                    {% else %}
-                        Belum ditentukan
-                    {% endif %}
-
-                </div>
-
-            </div>
-
-
-            <div>
-
-                <div class="label">
-                    Status
-                </div>
-
-                <div class="value">
-                    {{ peserta.get_jabatan_display }}
-                </div>
-
-            </div>
-
-        </div>
-
     </div>
 
+{% endif %}
 
-    <!-- STATISTIK -->
 
-    <div class="stats">
 
-        <div class="stat">
+<!-- =====================================================
+     PROFILE
+===================================================== -->
 
-            <div class="label">
-                Total Laporan
+<div class="profile-card">
+
+    <h2 class="profile-title">
+        Profil Peserta
+    </h2>
+
+
+    <div class="profile-grid">
+
+
+        <div class="profile-item">
+
+            <div class="profile-label">
+                Nama Lengkap
             </div>
 
-            <div class="stat-number">
-                {{ total_laporan }}
-            </div>
-
-        </div>
-
-
-        <div class="stat">
-
-            <div class="label">
-                Menunggu
-            </div>
-
-            <div class="stat-number">
-                {{ laporan_menunggu }}
-            </div>
-
-        </div>
-
-
-        <div class="stat">
-
-            <div class="label">
-                ACC
-            </div>
-
-            <div class="stat-number">
-                {{ laporan_acc }}
+            <div class="profile-value">
+                {{ peserta.nama }}
             </div>
 
         </div>
 
 
-        <div class="stat">
+        <div class="profile-item">
 
-            <div class="label">
-                Perlu Revisi
+            <div class="profile-label">
+                NIM
             </div>
 
-            <div class="stat-number">
-                {{ laporan_revisi }}
-            </div>
+            <div class="profile-value">
 
-        </div>
+                {{ peserta.nim|default:"-" }}
 
-
-        <div class="stat">
-
-            <div class="label">
-                Absensi
-            </div>
-
-            <div class="stat-number">
-                {{ persentase_absensi }}%
             </div>
 
         </div>
 
-    </div>
 
+        <div class="profile-item">
 
-    <!-- TUGAS -->
+            <div class="profile-label">
+                Kelompok
+            </div>
 
-    <div class="section">
+            <div class="profile-value">
 
-        <h2>
-            Tugas Pendahuluan
-        </h2>
+                {% if peserta.kelompok %}
 
+                    {{ peserta.kelompok.nama }}
 
-        {% for tugas_item in tugas %}
+                {% else %}
 
-            <div class="task">
-
-                <strong>
-                    {{ tugas_item.judul }}
-                </strong>
-
-                <p>
-                    Acara:
-                    {{ tugas_item.acara.nama }}
-                </p>
-
-                <p>
-                    {{ tugas_item.soal }}
-                </p>
-
-                {% if tugas_item.file %}
-
-                    <a
-                        href="{{ tugas_item.file.url }}"
-                        target="_blank"
-                    >
-                        Download File Tugas
-                    </a>
+                    Belum ditentukan
 
                 {% endif %}
 
             </div>
 
-        {% empty %}
+        </div>
 
-            <p>
-                Belum ada tugas pendahuluan.
-            </p>
 
-        {% endfor %}
+        <div class="profile-item">
+
+            <div class="profile-label">
+                Jabatan
+            </div>
+
+            <div class="profile-value">
+
+                {{ peserta.get_jabatan_display }}
+
+            </div>
+
+        </div>
+
+
+        <div class="profile-item">
+
+            <div class="profile-label">
+                Mentor / Pembimbing
+            </div>
+
+            <div class="profile-value">
+
+                {% if peserta.kelompok %}
+
+                    {% for mentor in peserta.kelompok.mentor %}
+
+                        {{ mentor.nama }}
+
+                        {% if not forloop.last %}
+                            ,
+                        {% endif %}
+
+                    {% empty %}
+
+                        Belum ditentukan
+
+                    {% endfor %}
+
+                {% else %}
+
+                    Belum ditentukan
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <div class="profile-item">
+
+            <div class="profile-label">
+                Persentase Absensi
+            </div>
+
+            <div class="profile-value">
+
+                {{ persentase_absensi|default:0 }}%
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     STATISTICS
+===================================================== -->
+
+<div class="stats-grid">
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Total Laporan
+        </div>
+
+        <div class="stat-number">
+            {{ total_laporan|default:0 }}
+        </div>
 
     </div>
 
 
-    <!-- UPLOAD -->
+    <div class="stat-card">
 
-    <div class="section">
+        <div class="stat-label">
+            Menunggu Pemeriksaan
+        </div>
+
+        <div class="stat-number">
+            {{ laporan_menunggu|default:0 }}
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Disetujui / ACC
+        </div>
+
+        <div class="stat-number">
+            {{ laporan_acc|default:0 }}
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Perlu Revisi
+        </div>
+
+        <div class="stat-number">
+            {{ laporan_revisi|default:0 }}
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-label">
+            Persentase Absensi
+        </div>
+
+        <div class="stat-number">
+            {{ persentase_absensi|default:0 }}%
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     UPLOAD + TUGAS
+===================================================== -->
+
+<div class="two-column">
+
+
+    <!-- ===============================
+         UPLOAD LAPORAN
+    ================================ -->
+
+    <div class="card">
 
         <h2>
             Upload Laporan Mingguan
         </h2>
 
+        <div class="card-description">
+
+            Kirim laporan mingguan Anda.
+            Laporan akan diperiksa oleh admin
+            sebelum mendapatkan status ACC atau Revisi.
+
+        </div>
+
+
         <form
             method="POST"
-            enctype="multipart/form-data"
             action="{% url 'upload_laporan' %}"
+            enctype="multipart/form-data"
         >
 
             {% csrf_token %}
 
 
-            <div class="form-row">
+            <div class="form-group">
 
-                <label>
+                <label class="form-label">
                     Judul Laporan
                 </label>
 
@@ -485,9 +1214,9 @@
             </div>
 
 
-            <div class="form-row">
+            <div class="form-group">
 
-                <label>
+                <label class="form-label">
                     Acara / Minggu
                 </label>
 
@@ -500,12 +1229,25 @@
                         -- Pilih Acara --
                     </option>
 
+
                     {% for acara_item in acara %}
 
                         <option
                             value="{{ acara_item.id }}"
                         >
+
                             {{ acara_item.nama }}
+
+                            {% if acara_item.sub_acara %}
+                                - {{ acara_item.sub_acara }}
+                            {% endif %}
+
+                        </option>
+
+                    {% empty %}
+
+                        <option value="">
+                            Belum ada acara
                         </option>
 
                     {% endfor %}
@@ -515,9 +1257,9 @@
             </div>
 
 
-            <div class="form-row">
+            <div class="form-group">
 
-                <label>
+                <label class="form-label">
                     File Laporan
                 </label>
 
@@ -527,132 +1269,512 @@
                     required
                 >
 
+                <div class="file-note">
+
+                    Pastikan file laporan yang dikirim
+                    merupakan versi terbaru.
+
+                </div>
+
             </div>
 
 
-            <button type="submit">
-                Kirim Laporan
+            <button
+                type="submit"
+                class="upload-button"
+            >
+
+                Upload Laporan
+
             </button>
+
 
         </form>
 
     </div>
 
 
-    <!-- RIWAYAT -->
 
-    <div class="section">
+    <!-- ===============================
+         TUGAS PENDAHULUAN
+    ================================ -->
+
+    <div class="card">
 
         <h2>
-            Riwayat Laporan
+            Tugas Pendahuluan
         </h2>
 
+        <div class="card-description">
 
-        {% for laporan_item in laporan %}
+            Daftar tugas pendahuluan yang diberikan
+            dalam kegiatan praktikum.
 
-            <div class="report">
-
-                <h3>
-                    {{ laporan_item.judul }}
-                </h3>
-
-                <p>
-                    Acara:
-                    {{ laporan_item.acara.nama }}
-                </p>
-
-                <p>
-                    Dikirim:
-                    {{ laporan_item.uploaded_at|date:"d F Y H:i" }}
-                </p>
+        </div>
 
 
-                {% if laporan_item.status == "menunggu" %}
+        {% for tugas_item in tugas %}
 
-                    <span class="status waiting">
-                        MENUNGGU PEMERIKSAAN
-                    </span>
+            <div class="task-item">
 
 
-                {% elif laporan_item.status == "acc" %}
+                <div class="task-title">
 
-                    <span class="status approved">
-                        ✓ DISETUJUI / ACC
+                    {{ tugas_item.judul }}
+
+                </div>
+
+
+                {% if tugas_item.acara %}
+
+                    <div class="task-event">
+
+                        Acara:
+                        <strong>
+                            {{ tugas_item.acara.nama }}
+                        </strong>
+
+                    </div>
+
+                {% endif %}
+
+
+                <div class="task-question">
+
+                    {{ tugas_item.soal }}
+
+                </div>
+
+
+                {% if tugas_item.deadline %}
+
+                    <div class="task-deadline">
+
+                        Deadline:
+                        {{ tugas_item.deadline|date:"d F Y H:i" }}
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if tugas_item.file %}
+
+                    <a
+                        href="{{ tugas_item.file.url }}"
+                        target="_blank"
+                        class="task-file"
+                    >
+
+                        Download File Tugas
+
+                    </a>
+
+                {% endif %}
+
+
+            </div>
+
+
+        {% empty %}
+
+            <div class="empty">
+
+                Belum ada tugas pendahuluan.
+
+            </div>
+
+        {% endfor %}
+
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     RIWAYAT LAPORAN
+===================================================== -->
+
+<div class="card">
+
+    <h2>
+        Riwayat Laporan Mingguan
+    </h2>
+
+    <div class="card-description">
+
+        Pantau status laporan yang telah Anda kirim.
+        Jika laporan perlu diperbaiki, admin dapat
+        mengirimkan file revisi melalui halaman ini.
+
+    </div>
+
+
+
+    {% for laporan_item in laporan %}
+
+        <div class="report-item">
+
+
+            <div class="report-header">
+
+
+                <div>
+
+                    <div class="report-title">
+
+                        {{ laporan_item.judul }}
+
+                    </div>
+
+
+                    <div class="report-meta">
+
+                        {% if laporan_item.acara %}
+
+                            Acara:
+                            <strong>
+                                {{ laporan_item.acara.nama }}
+                            </strong>
+
+                            <br>
+
+                        {% endif %}
+
+
+                        Kelompok:
+
+                        {% if laporan_item.kelompok %}
+
+                            {{ laporan_item.kelompok.nama }}
+
+                        {% else %}
+
+                            -
+
+                        {% endif %}
+
+
+                        <br>
+
+
+                        Dikirim:
+
+                        {{ laporan_item.uploaded_at|date:"d F Y H:i" }}
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- STATUS -->
+
+                {% if laporan_item.status == "acc" %}
+
+                    <span class="status status-acc">
+
+                        DISETUJUI / ACC
+
                     </span>
 
 
                 {% elif laporan_item.status == "revisi" %}
 
-                    <span class="status revision">
-                        ⚠ PERLU REVISI
+                    <span class="status status-revisi">
+
+                        PERLU REVISI
+
                     </span>
+
+
+                {% else %}
+
+                    <span class="status status-menunggu">
+
+                        MENUNGGU PEMERIKSAAN
+
+                    </span>
+
+                {% endif %}
+
+
+            </div>
+
+
+
+            <!-- FILE LAPORAN AWAL -->
+
+            {% if laporan_item.file %}
+
+                <a
+                    href="{{ laporan_item.file.url }}"
+                    target="_blank"
+                    class="report-file"
+                >
+
+                    ↓ Lihat / Download Laporan
+
+                </a>
+
+            {% endif %}
+
+
+
+            <!-- =================================================
+                 BLOK REVISI
+            ================================================== -->
+
+            {% if laporan_item.status == "revisi" %}
+
+                <div class="revision-box">
+
+
+                    <div class="revision-title">
+
+                        ⚠ Laporan Memerlukan Revisi
+
+                    </div>
 
 
                     {% if laporan_item.catatan_admin %}
 
-                        <div class="note">
+                        <div class="revision-note">
 
                             <strong>
                                 Catatan Admin:
                             </strong>
 
-                            <br><br>
+                            <br>
 
                             {{ laporan_item.catatan_admin }}
 
                         </div>
 
-                    {% endif %}
+                    {% else %}
 
+                        <div class="revision-note">
 
-                    {% if laporan_item.file_revisi %}
-
-                        <div class="file-revision">
-
-                            <strong>
-                                File Revisi dari Admin
-                            </strong>
-
-                            <br>
-
-                            <a
-                                href="{{ laporan_item.file_revisi.url }}"
-                                target="_blank"
-                            >
-                                Download File Revisi
-                            </a>
+                            Admin meminta Anda melakukan
+                            revisi pada laporan ini.
 
                         </div>
 
                     {% endif %}
 
-                {% endif %}
 
 
-                <p style="margin-top:15px;">
+                    {% if laporan_item.file_revisi %}
 
-                    <a
-                        href="{{ laporan_item.file.url }}"
-                        target="_blank"
-                    >
-                        Lihat File yang Dikirim
-                    </a>
+                        <a
+                            href="{% url 'download_file_revisi' laporan_item.id %}"
+                            class="download-button"
+                        >
 
-                </p>
+                            ↓ Download File Revisi dari Admin
 
-            </div>
+                        </a>
 
-        {% empty %}
 
-            <p>
-                Belum ada laporan mingguan.
-            </p>
+                        <div class="revision-info">
 
-        {% endfor %}
+                            Gunakan file revisi dari admin
+                            sebagai acuan untuk memperbaiki laporan Anda.
+
+                        </div>
+
+
+                    {% else %}
+
+                        <div class="revision-info">
+
+                            File revisi dari admin belum tersedia.
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+            {% endif %}
+
+
+        </div>
+
+
+    {% empty %}
+
+        <div class="empty">
+
+            Anda belum mengirimkan laporan mingguan.
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+
+
+<!-- =====================================================
+     JADWAL ACARA
+===================================================== -->
+
+<div class="card">
+
+    <h2>
+        Jadwal Kegiatan Praktikum
+    </h2>
+
+    <div class="card-description">
+
+        Jadwal kegiatan praktikum yang tersedia.
 
     </div>
 
+
+
+    {% for acara_item in acara %}
+
+        <div class="schedule-item">
+
+
+            <div class="schedule-title">
+
+                {{ acara_item.nama }}
+
+            </div>
+
+
+            {% if acara_item.sub_acara %}
+
+                <div class="schedule-subtitle">
+
+                    {{ acara_item.sub_acara }}
+
+                </div>
+
+            {% endif %}
+
+
+
+            <div class="schedule-grid">
+
+
+                <div class="schedule-info">
+
+                    <span class="schedule-label">
+                        Tanggal
+                    </span>
+
+                    {{ acara_item.tanggal_mulai|date:"d F Y" }}
+
+                </div>
+
+
+                <div class="schedule-info">
+
+                    <span class="schedule-label">
+                        Waktu
+                    </span>
+
+                    {{ acara_item.tanggal_mulai|date:"H:i" }}
+
+                    {% if acara_item.tanggal_selesai %}
+
+                        -
+                        {{ acara_item.tanggal_selesai|date:"H:i" }}
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="schedule-info">
+
+                    <span class="schedule-label">
+                        Lokasi
+                    </span>
+
+                    {{ acara_item.lokasi|default:"-" }}
+
+                </div>
+
+
+                <div class="schedule-info">
+
+                    <span class="schedule-label">
+                        Pembawa Acara
+                    </span>
+
+
+                    {% for mc in acara_item.pembawa_acara.all %}
+
+                        <span class="mc-name">
+
+                            {{ mc.nama }}
+
+                        </span>
+
+                        {% if not forloop.last %}
+                            ,
+                        {% endif %}
+
+                    {% empty %}
+
+                        Belum ditentukan
+
+                    {% endfor %}
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+    {% empty %}
+
+        <div class="empty">
+
+            Belum ada jadwal kegiatan.
+
+        </div>
+
+    {% endfor %}
+
 </div>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<div class="footer">
+
+    {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+
+    <br>
+
+    {% if setting.periode %}
+
+        Periode {{ setting.periode }}
+
+    {% endif %}
+
+</div>
+
+
+</div>
+
 
 </body>
 
