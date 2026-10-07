@@ -1,77 +1,139 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>
         {% block title %}
-        {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+            Praktikum Perencanaan Tambang
         {% endblock %}
     </title>
 
-    <meta name="theme-color" content="#182019">
+    <meta
+        name="description"
+        content="Sistem Informasi Praktikum Perencanaan Tambang"
+    >
+
+    <!-- =====================================================
+         BOOTSTRAP
+    ====================================================== -->
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- =====================================================
+         BOOTSTRAP ICONS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <!-- =====================================================
+         GOOGLE FONT
+    ====================================================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         STYLE UTAMA
+    ====================================================== -->
 
     <style>
 
         :root {
-            --mine-dark: #182019;
-            --mine-dark-2: #222d25;
-            --mine-green: #314a35;
-            --mine-green-light: #49684e;
 
-            --laterite: #c98528;
-            --laterite-light: #e5b35c;
+            --mine-dark: #10251b;
+            --mine-green: #173c2b;
+            --mine-green-2: #21543c;
 
-            --cream: #fbfaf6;
-            --sand: #f1eee6;
+            --nickel: #d6a84f;
+            --nickel-light: #e8c979;
+
+            --charcoal: #1b211e;
+            --surface: #f5f3ed;
+            --surface-2: #ebe8df;
+
             --white: #ffffff;
+            --muted: #6c746e;
 
-            --text-dark: #20251f;
-            --text-muted: #6b716b;
+            --border: rgba(16, 37, 27, 0.10);
 
-            --border: #e2ddd1;
+            --shadow:
+                0 12px 35px rgba(16, 37, 27, 0.08);
 
-            --danger: #a63d32;
-            --success: #25804b;
+            --shadow-hover:
+                0 18px 45px rgba(16, 37, 27, 0.14);
+
+            --radius: 18px;
         }
 
 
-        * {
-            box-sizing: border-box;
-        }
-
+        /* ==================================================
+           GLOBAL
+        ================================================== */
 
         html {
             scroll-behavior: smooth;
         }
 
-
         body {
 
             margin: 0;
 
+            font-family: "Inter", sans-serif;
+
+            color: var(--charcoal);
+
             background:
                 linear-gradient(
                     180deg,
-                    #fbfaf6 0%,
-                    #f1eee6 100%
+                    #ffffff 0%,
+                    #f7f6f1 55%,
+                    #f1efe8 100%
                 );
 
-            color: var(--text-dark);
+            min-height: 100vh;
+        }
 
-            font-family:
-                "Segoe UI",
-                Arial,
-                Helvetica,
-                sans-serif;
 
-            line-height: 1.6;
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+
+            font-family: "Space Grotesk", sans-serif;
+
+            color: var(--mine-dark);
+
+            font-weight: 700;
         }
 
 
@@ -80,269 +142,645 @@
         }
 
 
-        /* ====================================================
+        /* ==================================================
            NAVBAR
-           ==================================================== */
+        ================================================== */
 
-        .mine-navbar {
-
-            position: sticky;
-
-            top: 0;
-
-            z-index: 999;
+        .main-navbar {
 
             background:
                 linear-gradient(
                     135deg,
                     var(--mine-dark),
-                    var(--mine-dark-2)
+                    var(--mine-green)
                 );
 
             border-bottom:
-                3px solid var(--laterite);
+                1px solid rgba(255,255,255,0.08);
 
             box-shadow:
-                0 5px 20px rgba(0,0,0,.18);
+                0 5px 25px rgba(0,0,0,0.10);
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 1030;
         }
 
 
-        .mine-nav-container {
+        .navbar-brand {
 
-            max-width: 1250px;
+            font-family: "Space Grotesk", sans-serif;
 
-            margin: auto;
+            font-weight: 700;
 
-            padding: 13px 22px;
+            color: white !important;
 
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 20px;
+            letter-spacing: -0.3px;
         }
 
 
-        .mine-brand {
+        .brand-icon {
 
-            display: flex;
+            width: 42px;
 
-            align-items: center;
+            height: 42px;
 
-            gap: 11px;
-
-            color: white;
-
-            min-width: 240px;
-        }
-
-
-        .mine-brand-icon {
-
-            width: 43px;
-            height: 43px;
-
-            border-radius: 11px;
-
-            display: flex;
+            display: inline-flex;
 
             align-items: center;
+
             justify-content: center;
+
+            border-radius: 12px;
 
             background:
                 linear-gradient(
                     135deg,
-                    var(--laterite),
-                    var(--laterite-light)
+                    var(--nickel),
+                    var(--nickel-light)
                 );
 
-            color: white;
+            color: var(--mine-dark);
 
-            font-size: 22px;
+            font-size: 21px;
+
+            margin-right: 10px;
 
             box-shadow:
-                0 4px 12px rgba(0,0,0,.25);
+                0 6px 18px rgba(214,168,79,0.25);
         }
 
 
-        .mine-brand-title {
+        .brand-small {
 
-            font-size: 14px;
+            display: block;
 
-            font-weight: 800;
+            font-family: "Inter", sans-serif;
 
-            letter-spacing: .7px;
+            font-size: 9px;
 
-            line-height: 1.2;
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+
+            color: rgba(255,255,255,0.55);
+
+            margin-top: -2px;
         }
 
 
-        .mine-brand-subtitle {
+        .navbar-nav .nav-link {
 
-            margin-top: 3px;
+            color:
+                rgba(255,255,255,0.78) !important;
 
-            color: #cfd6cf;
-
-            font-size: 10px;
-
-            letter-spacing: .5px;
-        }
-
-
-        .mine-nav-links {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: flex-end;
-
-            flex-wrap: wrap;
-
-            gap: 5px;
-        }
-
-
-        .mine-nav-links a {
-
-            color: #dfe5df;
-
-            padding: 8px 10px;
-
-            border-radius: 8px;
-
-            font-size: 12px;
+            font-size: 13px;
 
             font-weight: 600;
 
-            transition: .2s ease;
-        }
-
-
-        .mine-nav-links a:hover {
-
-            background:
-                rgba(255,255,255,.09);
-
-            color:
-                var(--laterite-light);
-
-            transform:
-                translateY(-1px);
-        }
-
-
-        .mine-nav-links .nav-highlight {
-
-            background:
-                var(--laterite);
-
-            color:
-                white;
-        }
-
-
-        .mine-nav-links .nav-highlight:hover {
-
-            background:
-                var(--laterite-light);
-
-            color:
-                var(--mine-dark);
-        }
-
-
-        /* ====================================================
-           MAIN
-           ==================================================== */
-
-        .mine-main {
-
-            min-height: 75vh;
-
-            max-width: 1250px;
-
-            margin: auto;
-
             padding:
-                35px 22px 55px;
+                9px 11px !important;
+
+            border-radius: 9px;
+
+            transition:
+                all 0.2s ease;
         }
 
 
-        /* ====================================================
-           PAGE HEADER
-           ==================================================== */
+        .navbar-nav .nav-link:hover {
 
-        .mine-page-header {
+            color: white !important;
+
+            background:
+                rgba(255,255,255,0.08);
+        }
+
+
+        .navbar-nav .nav-link.active {
+
+            color: var(--nickel-light) !important;
+
+            background:
+                rgba(214,168,79,0.10);
+        }
+
+
+        .nav-login {
+
+            border:
+                1px solid rgba(214,168,79,0.55);
+
+            color: var(--nickel-light) !important;
+
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+        }
+
+
+        .nav-login:hover {
+
+            background: var(--nickel);
+
+            color: var(--mine-dark) !important;
+        }
+
+
+        /* ==================================================
+           PAGE
+        ================================================== */
+
+        .page-wrapper {
+
+            min-height:
+                calc(100vh - 160px);
+        }
+
+
+        /* ==================================================
+           HERO
+        ================================================== */
+
+        .hero {
 
             position: relative;
 
             overflow: hidden;
 
-            margin-bottom: 30px;
-
-            padding: 35px;
-
-            border-radius: 22px;
-
             color: white;
 
             background:
+                radial-gradient(
+                    circle at 85% 20%,
+                    rgba(214,168,79,0.16),
+                    transparent 28%
+                ),
+
+                radial-gradient(
+                    circle at 10% 90%,
+                    rgba(60,130,90,0.20),
+                    transparent 30%
+                ),
+
                 linear-gradient(
                     135deg,
-                    rgba(24,32,25,.98),
-                    rgba(49,74,53,.96)
+                    #0b1d14,
+                    #173c2b 55%,
+                    #10251b
                 );
-
-            box-shadow:
-                0 10px 30px rgba(24,32,25,.15);
         }
 
 
-        .mine-page-header::after {
+        .hero::before {
 
             content: "";
 
             position: absolute;
 
-            right: -80px;
-            bottom: -100px;
+            inset: 0;
 
-            width: 300px;
-            height: 300px;
+            opacity: 0.08;
 
-            border-radius: 50%;
+            background-image:
 
-            border:
-                45px solid rgba(201,133,40,.12);
+                linear-gradient(
+                    135deg,
+                    transparent 0%,
+                    transparent 47%,
+                    rgba(255,255,255,0.25) 48%,
+                    transparent 49%
+                );
+
+            background-size: 90px 90px;
+
+            pointer-events: none;
         }
 
 
-        .mine-eyebrow {
+        .hero-content {
 
             position: relative;
 
             z-index: 2;
+        }
 
-            display: inline-block;
 
-            margin-bottom: 10px;
+        .hero-badge {
 
-            padding: 6px 12px;
+            display: inline-flex;
 
-            border-radius: 20px;
+            align-items: center;
+
+            gap: 7px;
+
+            padding:
+                8px 13px;
+
+            border-radius: 999px;
 
             background:
-                rgba(201,133,40,.18);
+                rgba(214,168,79,0.13);
+
+            border:
+                1px solid rgba(214,168,79,0.35);
+
+            color: var(--nickel-light);
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            letter-spacing: 0.7px;
+
+            text-transform: uppercase;
+        }
+
+
+        .hero-title {
+
+            color: white;
+
+            font-size:
+                clamp(2.2rem, 5vw, 4.4rem);
+
+            line-height: 1.02;
+
+            letter-spacing: -2px;
+        }
+
+
+        .hero-title span {
+
+            color: var(--nickel-light);
+        }
+
+
+        .hero-description {
 
             color:
-                var(--laterite-light);
+                rgba(255,255,255,0.72);
+
+            max-width: 700px;
+
+            line-height: 1.8;
+        }
+
+
+        /* ==================================================
+           SECTION
+        ================================================== */
+
+        .section-label {
+
+            color: var(--nickel);
 
             font-size: 11px;
 
             font-weight: 800;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 8px;
+        }
+
+
+        .section-title {
+
+            font-size:
+                clamp(1.7rem, 3vw, 2.5rem);
+
+            margin-bottom: 10px;
+        }
+
+
+        .section-description {
+
+            color: var(--muted);
+
+            max-width: 650px;
+        }
+
+
+        /* ==================================================
+           CARD
+        ================================================== */
+
+        .mine-card {
+
+            background: white;
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                var(--radius);
+
+            box-shadow:
+                var(--shadow);
+
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease;
+
+            overflow: hidden;
+        }
+
+
+        .mine-card:hover {
+
+            transform:
+                translateY(-4px);
+
+            box-shadow:
+                var(--shadow-hover);
+        }
+
+
+        .mine-card-header {
+
+            padding: 20px 22px;
+
+            border-bottom:
+                1px solid var(--border);
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #ffffff,
+                    #faf9f5
+                );
+        }
+
+
+        .mine-card-body {
+
+            padding: 22px;
+        }
+
+
+        /* ==================================================
+           ICON BOX
+        ================================================== */
+
+        .icon-box {
+
+            width: 48px;
+
+            height: 48px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 14px;
+
+            background:
+                rgba(214,168,79,0.12);
+
+            color: #a47b25;
+
+            font-size: 21px;
+        }
+
+
+        /* ==================================================
+           BUTTON
+        ================================================== */
+
+        .btn-mine {
+
+            border: 0;
+
+            border-radius: 11px;
+
+            padding:
+                11px 18px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--nickel),
+                    var(--nickel-light)
+                );
+
+            color: var(--mine-dark);
+
+            box-shadow:
+                0 8px 20px rgba(214,168,79,0.20);
+
+            transition:
+                all 0.2s ease;
+        }
+
+
+        .btn-mine:hover {
+
+            transform:
+                translateY(-2px);
+
+            color: var(--mine-dark);
+
+            box-shadow:
+                0 12px 25px rgba(214,168,79,0.30);
+        }
+
+
+        .btn-outline-mine {
+
+            border:
+                1px solid var(--mine-green);
+
+            border-radius: 11px;
+
+            padding:
+                10px 17px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            color: var(--mine-green);
+
+            background: transparent;
+        }
+
+
+        .btn-outline-mine:hover {
+
+            background:
+                var(--mine-green);
+
+            color: white;
+        }
+
+
+        /* ==================================================
+           BADGE
+        ================================================== */
+
+        .badge-active {
+
+            background:
+                rgba(25,135,84,0.12);
+
+            color:
+                #157347;
+
+            border:
+                1px solid rgba(25,135,84,0.18);
+        }
+
+
+        .badge-danger {
+
+            background:
+                rgba(220,53,69,0.10);
+
+            color:
+                #b02a37;
+
+            border:
+                1px solid rgba(220,53,69,0.16);
+        }
+
+
+        .badge-nickel {
+
+            background:
+                rgba(214,168,79,0.13);
+
+            color:
+                #8c681f;
+
+            border:
+                1px solid rgba(214,168,79,0.20);
+        }
+
+
+        /* ==================================================
+           TABLE
+        ================================================== */
+
+        .mine-table {
+
+            margin: 0;
+
+            font-size: 13px;
+        }
+
+
+        .mine-table thead th {
+
+            background:
+                var(--mine-dark);
+
+            color:
+                rgba(255,255,255,0.90);
+
+            border: 0;
+
+            font-size: 11px;
+
+            letter-spacing: 0.7px;
+
+            text-transform: uppercase;
+
+            white-space: nowrap;
+
+            padding:
+                14px 16px;
+        }
+
+
+        .mine-table tbody td {
+
+            padding:
+                14px 16px;
+
+            border-color:
+                rgba(16,37,27,0.07);
+
+            vertical-align: middle;
+        }
+
+
+        .mine-table tbody tr {
+
+            transition:
+                background 0.2s ease;
+        }
+
+
+        .mine-table tbody tr:hover {
+
+            background:
+                #faf9f4;
+        }
+
+
+        /* ==================================================
+           STAT CARD
+        ================================================== */
+
+        .stat-card {
+
+            position: relative;
+
+            background: white;
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                var(--radius);
+
+            padding: 23px;
+
+            box-shadow:
+                var(--shadow);
+
+            overflow: hidden;
+        }
+
+
+        .stat-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 90px;
+
+            height: 90px;
+
+            right: -30px;
+
+            bottom: -35px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(214,168,79,0.09);
+        }
+
+
+        .stat-label {
+
+            color: var(--muted);
+
+            font-size: 11px;
+
+            font-weight: 700;
 
             letter-spacing: 1px;
 
@@ -350,608 +788,589 @@
         }
 
 
-        .mine-page-title {
+        .stat-number {
 
-            position: relative;
+            color: var(--mine-dark);
 
-            z-index: 2;
+            font-family: "Space Grotesk", sans-serif;
 
-            margin: 0;
+            font-size: 32px;
 
-            font-size:
-                clamp(28px, 4vw, 44px);
+            font-weight: 700;
 
-            font-weight: 850;
-
-            line-height: 1.15;
+            margin-top: 5px;
         }
 
 
-        .mine-page-description {
+        /* ==================================================
+           ALERT / MESSAGE
+        ================================================== */
 
-            position: relative;
+        .messages-container {
 
-            z-index: 2;
+            position: fixed;
 
-            max-width: 760px;
+            top: 90px;
 
-            margin:
-                12px 0 0;
+            right: 20px;
 
-            color: #dbe1da;
+            width:
+                min(400px, calc(100% - 40px));
 
-            font-size: 14px;
+            z-index: 2000;
         }
 
 
-        /* ====================================================
-           CARDS
-           ==================================================== */
+        /* ==================================================
+           FOOTER
+        ================================================== */
 
-        .mine-card {
+        .main-footer {
+
+            margin-top: 70px;
 
             background:
-                var(--white);
+                var(--mine-dark);
 
-            border:
-                1px solid var(--border);
-
-            border-radius:
-                16px;
-
-            box-shadow:
-                0 7px 22px rgba(24,32,25,.07);
-
-            overflow:
-                hidden;
-
-            transition:
-                .2s ease;
+            color:
+                rgba(255,255,255,0.70);
         }
 
 
-        .mine-card:hover {
-
-            transform:
-                translateY(-3px);
-
-            box-shadow:
-                0 12px 28px rgba(24,32,25,.11);
-        }
-
-
-        .mine-card-header {
-
-            padding:
-                16px 20px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--mine-green),
-                    var(--mine-dark-2)
-                );
+        .footer-title {
 
             color: white;
 
-            font-size: 14px;
+            font-family: "Space Grotesk", sans-serif;
 
-            font-weight: 800;
+            font-weight: 700;
         }
 
 
-        .mine-card-body {
-
-            padding:
-                20px;
-        }
-
-
-        /* ====================================================
-           GRID
-           ==================================================== */
-
-        .mine-grid {
-
-            display:
-                grid;
-
-            grid-template-columns:
-                repeat(3, 1fr);
-
-            gap:
-                20px;
-        }
-
-
-        .mine-grid-2 {
-
-            display:
-                grid;
-
-            grid-template-columns:
-                repeat(2, 1fr);
-
-            gap:
-                20px;
-        }
-
-
-        /* ====================================================
-           BADGES
-           ==================================================== */
-
-        .mine-badge {
-
-            display:
-                inline-flex;
-
-            align-items:
-                center;
-
-            gap:
-                5px;
-
-            padding:
-                5px 10px;
-
-            border-radius:
-                20px;
-
-            font-size:
-                11px;
-
-            font-weight:
-                800;
-        }
-
-
-        .badge-active {
-
-            background:
-                #e7f5ec;
+        .footer-link {
 
             color:
-                var(--success);
-        }
+                rgba(255,255,255,0.60);
 
-
-        .badge-gugur {
-
-            background:
-                #f9e7e5;
-
-            color:
-                var(--danger);
-        }
-
-
-        .badge-laterite {
-
-            background:
-                #f7ead4;
-
-            color:
-                #8a5a13;
-        }
-
-
-        /* ====================================================
-           BUTTON
-           ==================================================== */
-
-        .mine-button {
-
-            display:
-                inline-flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            gap:
-                7px;
-
-            padding:
-                10px 17px;
-
-            border:
-                none;
-
-            border-radius:
-                9px;
-
-            background:
-                var(--mine-green);
-
-            color:
-                white;
-
-            font-size:
-                13px;
-
-            font-weight:
-                750;
+            font-size: 13px;
 
             transition:
-                .2s ease;
+                color 0.2s ease;
         }
 
 
-        .mine-button:hover {
-
-            background:
-                var(--laterite);
+        .footer-link:hover {
 
             color:
-                white;
-
-            transform:
-                translateY(-1px);
+                var(--nickel-light);
         }
 
 
-        /* ====================================================
-           TABLE
-           ==================================================== */
-
-        .mine-table-wrap {
-
-            width:
-                100%;
-
-            overflow-x:
-                auto;
-
-            border-radius:
-                14px;
-
-            box-shadow:
-                0 6px 20px rgba(24,32,25,.06);
-        }
-
-
-        .mine-table {
-
-            width:
-                100%;
-
-            border-collapse:
-                collapse;
-
-            background:
-                white;
-
-            min-width:
-                650px;
-        }
-
-
-        .mine-table th {
-
-            padding:
-                14px 15px;
-
-            background:
-                var(--mine-dark);
-
-            color:
-                white;
-
-            text-align:
-                left;
-
-            font-size:
-                12px;
-
-            letter-spacing:
-                .3px;
-        }
-
-
-        .mine-table td {
-
-            padding:
-                13px 15px;
-
-            border-bottom:
-                1px solid #eeeae1;
-
-            font-size:
-                13px;
-        }
-
-
-        .mine-table tbody tr:hover td {
-
-            background:
-                #faf7ef;
-        }
-
-
-        /* ====================================================
-           FOOTER
-           ==================================================== */
-
-        .mine-footer {
-
-            background:
-                var(--mine-dark);
-
-            color:
-                #cbd2cb;
+        .footer-bottom {
 
             border-top:
-                4px solid var(--laterite);
-
-            padding:
-                30px 22px;
-        }
-
-
-        .mine-footer-inner {
-
-            max-width:
-                1250px;
-
-            margin:
-                auto;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                space-between;
-
-            gap:
-                20px;
-        }
-
-
-        .mine-footer-title {
+                1px solid rgba(255,255,255,0.08);
 
             color:
-                white;
+                rgba(255,255,255,0.42);
 
-            font-weight:
-                800;
-
-            font-size:
-                14px;
+            font-size: 12px;
         }
 
 
-        .mine-footer-text {
-
-            margin-top:
-                5px;
-
-            font-size:
-                11px;
-
-            color:
-                #aeb7ae;
-        }
-
-
-        .mine-footer-accent {
-
-            color:
-                var(--laterite-light);
-        }
-
-
-        /* ====================================================
+        /* ==================================================
            RESPONSIVE
-           ==================================================== */
+        ================================================== */
 
-        @media (max-width: 1050px) {
+        @media (max-width: 991px) {
 
-            .mine-nav-container {
+            .navbar-nav {
 
-                align-items:
-                    flex-start;
+                padding-top: 12px;
 
-                flex-direction:
-                    column;
+                padding-bottom: 12px;
             }
 
-            .mine-nav-links {
+            .navbar-nav .nav-link {
+
+                padding:
+                    10px 12px !important;
+            }
+
+            .nav-login {
+
+                margin-top: 8px;
+
+                display: inline-block;
+
+                width: fit-content;
+            }
+        }
+
+
+        @media (max-width: 576px) {
+
+            .hero {
+
+                text-align: center;
+            }
+
+            .hero-description {
+
+                margin-left: auto;
+
+                margin-right: auto;
+            }
+
+            .hero-title {
+
+                letter-spacing: -1px;
+            }
+
+            .messages-container {
+
+                right: 10px;
 
                 width:
-                    100%;
-
-                justify-content:
-                    flex-start;
-            }
-
-            .mine-grid {
-
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
-        }
-
-
-        @media (max-width: 700px) {
-
-            .mine-main {
-
-                padding:
-                    22px 14px 40px;
-            }
-
-            .mine-page-header {
-
-                padding:
-                    25px 20px;
-            }
-
-            .mine-grid,
-            .mine-grid-2 {
-
-                grid-template-columns:
-                    1fr;
-            }
-
-            .mine-footer-inner {
-
-                flex-direction:
-                    column;
-
-                align-items:
-                    flex-start;
-            }
-
-            .mine-nav-links a {
-
-                font-size:
-                    11px;
-
-                padding:
-                    7px 8px;
+                    calc(100% - 20px);
             }
         }
 
     </style>
 
-    {% block extra_css %}{% endblock %}
+    {% block extra_css %}
+    {% endblock %}
 
 </head>
 
+
 <body>
 
-    <!-- =====================================================
-         NAVBAR
-         ===================================================== -->
 
-    <nav class="mine-navbar">
+<!-- =========================================================
+     NAVBAR
+========================================================== -->
 
-        <div class="mine-nav-container">
+<nav class="navbar navbar-expand-lg main-navbar">
 
-            <a href="{% url 'praktikum:home' %}"
-               class="mine-brand">
+    <div class="container">
 
-                <div class="mine-brand-icon">
-                    ⛏
-                </div>
+        <a
+            class="navbar-brand d-flex align-items-center"
+            href="{% url 'praktikum:home' %}"
+        >
 
-                <div>
+            <span class="brand-icon">
+                <i class="bi bi-cone-striped"></i>
+            </span>
 
-                    <div class="mine-brand-title">
-                        MINE PLANNING PRACTICUM
+            <span>
+
+                Praktikum
+                <strong>Tambang</strong>
+
+                <span class="brand-small">
+                    Mine Planning System
+                </span>
+
+            </span>
+
+        </a>
+
+
+        <button
+            class="navbar-toggler border-0 shadow-none"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+
+            <i
+                class="bi bi-list text-white fs-2"
+            ></i>
+
+        </button>
+
+
+        <div
+            class="collapse navbar-collapse"
+            id="mainNavbar"
+        >
+
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="{% url 'praktikum:home' %}"
+                    >
+                        <i class="bi bi-house-door me-1"></i>
+                        Beranda
+                    </a>
+
+                </li>
+
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="{% url 'praktikum:personel' %}"
+                    >
+                        <i class="bi bi-people me-1"></i>
+                        Personel
+                    </a>
+
+                </li>
+
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="{% url 'praktikum:kelompok' %}"
+                    >
+                        <i class="bi bi-diagram-3 me-1"></i>
+                        Kelompok
+                    </a>
+
+                </li>
+
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="{% url 'praktikum:jadwal' %}"
+                    >
+                        <i class="bi bi-calendar3 me-1"></i>
+                        Jadwal
+                    </a>
+
+                </li>
+
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="{% url 'praktikum:materi' %}"
+                    >
+                        <i class="bi bi-book me-1"></i>
+                        Materi
+                    </a>
+
+                </li>
+
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="{% url 'praktikum:absensi' %}"
+                    >
+                        <i class="bi bi-clipboard-check me-1"></i>
+                        Absensi
+                    </a>
+
+                </li>
+
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="{% url 'praktikum:pengumuman' %}"
+                    >
+                        <i class="bi bi-megaphone me-1"></i>
+                        Pengumuman
+                    </a>
+
+                </li>
+
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="{% url 'praktikum:tata_tertib' %}"
+                    >
+                        <i class="bi bi-shield-check me-1"></i>
+                        Tata Tertib
+                    </a>
+
+                </li>
+
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="{% url 'praktikum:informasi_peserta' %}"
+                    >
+                        <i class="bi bi-person-vcard me-1"></i>
+                        Peserta
+                    </a>
+
+                </li>
+
+
+                <li class="nav-item ms-lg-2">
+
+                    <a
+                        class="nav-link nav-login"
+                        href="{% url 'praktikum:login_kelompok' %}"
+                    >
+
+                        <i class="bi bi-box-arrow-in-right me-1"></i>
+
+                        Login
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<!-- =========================================================
+     DJANGO MESSAGES
+========================================================== -->
+
+{% if messages %}
+
+<div class="messages-container">
+
+    {% for message in messages %}
+
+    <div
+        class="alert
+        {% if message.tags == 'error' %}
+            alert-danger
+        {% elif message.tags == 'success' %}
+            alert-success
+        {% elif message.tags == 'warning' %}
+            alert-warning
+        {% else %}
+            alert-info
+        {% endif %}
+        alert-dismissible fade show shadow-sm"
+        role="alert"
+    >
+
+        {{ message }}
+
+        <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+        ></button>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endif %}
+
+
+<!-- =========================================================
+     CONTENT
+========================================================== -->
+
+<main class="page-wrapper">
+
+    {% block content %}
+    {% endblock %}
+
+</main>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================== -->
+
+<footer class="main-footer">
+
+    <div class="container py-5">
+
+        <div class="row g-4">
+
+            <div class="col-lg-5">
+
+                <div class="d-flex align-items-center mb-3">
+
+                    <span class="brand-icon">
+
+                        <i class="bi bi-cone-striped"></i>
+
+                    </span>
+
+                    <div>
+
+                        <div class="footer-title">
+                            Praktikum Perencanaan Tambang
+                        </div>
+
+                        <small>
+                            Mine Planning System
+                        </small>
+
                     </div>
 
-                    <div class="mine-brand-subtitle">
-                        Nickel Laterite • Mining Engineering
-                    </div>
+                </div>
+
+                <p class="small mb-0">
+
+                    Sistem informasi praktikum untuk
+                    mendukung pengelolaan peserta,
+                    kelompok, jadwal, materi, absensi,
+                    laporan, dan kegiatan praktikum
+                    perencanaan tambang.
+
+                </p>
+
+            </div>
+
+
+            <div class="col-6 col-lg-3">
+
+                <div class="footer-title mb-3">
+                    Navigasi
+                </div>
+
+                <div class="d-flex flex-column gap-2">
+
+                    <a
+                        class="footer-link"
+                        href="{% url 'praktikum:home' %}"
+                    >
+                        Beranda
+                    </a>
+
+                    <a
+                        class="footer-link"
+                        href="{% url 'praktikum:personel' %}"
+                    >
+                        Personel
+                    </a>
+
+                    <a
+                        class="footer-link"
+                        href="{% url 'praktikum:kelompok' %}"
+                    >
+                        Kelompok
+                    </a>
+
+                    <a
+                        class="footer-link"
+                        href="{% url 'praktikum:jadwal' %}"
+                    >
+                        Jadwal
+                    </a>
+
+                    <a
+                        class="footer-link"
+                        href="{% url 'praktikum:informasi_peserta' %}"
+                    >
+                        Informasi Peserta
+                    </a>
 
                 </div>
 
-            </a>
+            </div>
 
 
-            <div class="mine-nav-links">
+            <div class="col-6 col-lg-4">
 
-                <a href="{% url 'praktikum:home' %}">
-                    🏠 Beranda
-                </a>
+                <div class="footer-title mb-3">
+                    Area Kelompok
+                </div>
 
-                <a href="{% url 'praktikum:personel' %}">
-                    👷 Personel
-                </a>
+                <div class="d-flex flex-column gap-2">
 
-                <a href="{% url 'praktikum:kelompok' %}">
-                    👥 Kelompok
-                </a>
+                    <a
+                        class="footer-link"
+                        href="{% url 'praktikum:login_kelompok' %}"
+                    >
+                        Login Kelompok
+                    </a>
 
-                <a href="{% url 'praktikum:jadwal' %}">
-                    📅 Jadwal
-                </a>
+                    <a
+                        class="footer-link"
+                        href="{% url 'praktikum:dashboard_kelompok' %}"
+                    >
+                        Dashboard Kelompok
+                    </a>
 
-                <a href="{% url 'praktikum:materi' %}">
-                    📚 Materi
-                </a>
+                    <a
+                        class="footer-link"
+                        href="{% url 'praktikum:upload_laporan' %}"
+                    >
+                        Upload Laporan
+                    </a>
 
-                <a href="{% url 'praktikum:absensi' %}">
-                    📝 Absensi
-                </a>
-
-                <a href="{% url 'praktikum:pengumuman' %}">
-                    📢 Pengumuman
-                </a>
-
-                <a href="{% url 'praktikum:tata_tertib' %}">
-                    📜 Tata Tertib
-                </a>
-
-                <a href="{% url 'praktikum:informasi_peserta' %}"
-                   class="nav-highlight">
-                    🎓 Peserta
-                </a>
+                </div>
 
             </div>
 
         </div>
 
-    </nav>
+    </div>
 
 
-    <!-- =====================================================
-         MAIN CONTENT
-         ===================================================== -->
+    <div class="footer-bottom">
 
-    <main class="mine-main">
+        <div class="container py-3">
 
-        {% block content %}
-        {% endblock %}
+            <div
+                class="d-flex flex-column flex-md-row justify-content-between gap-2"
+            >
 
-    </main>
+                <span>
+                    © {% now "Y" %}
+                    Praktikum Perencanaan Tambang
+                </span>
 
-
-    <!-- =====================================================
-         FOOTER
-         ===================================================== -->
-
-    <footer class="mine-footer">
-
-        <div class="mine-footer-inner">
-
-            <div>
-
-                <div class="mine-footer-title">
-                    ⛏ MINE PLANNING PRACTICUM
-                </div>
-
-                <div class="mine-footer-text">
-                    Nickel Laterite • Mining Engineering
-                </div>
-
-            </div>
-
-
-            <div class="mine-footer-text">
-
-                {{ setting.periode|default:"2026/2027" }}
-
-                <span class="mine-footer-accent">
-                    • Digging Knowledge, Delivering Competence
+                <span>
+                    Built for Mining • Planning • Engineering
                 </span>
 
             </div>
 
         </div>
 
-    </footer>
+    </div>
+
+</footer>
 
 
-    {% block extra_js %}
-    {% endblock %}
+<!-- =========================================================
+     BOOTSTRAP JS
+========================================================== -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
+
+{% block extra_js %}
+{% endblock %}
+
 
 </body>
+
 </html>
