@@ -46,8 +46,11 @@
                 #111827,
                 #374151
             );
+
             color: white;
+
             border-radius: 0 0 28px 28px;
+
             padding: 70px 0;
         }
 
@@ -69,7 +72,7 @@
         .card {
             border: none;
             border-radius: 16px;
-            box-shadow: 0 5px 20px rgba(0,0,0,.06);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, .06);
         }
 
         .progress {
@@ -93,12 +96,18 @@
 
     </style>
 
-    {% block extra_css %}{% endblock %}
+    {% block extra_css %}
+    {% endblock %}
 
 </head>
 
+
 <body>
 
+
+<!-- ========================================================= -->
+<!-- NAVBAR -->
+<!-- ========================================================= -->
 
 <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
 
@@ -121,7 +130,9 @@
             aria-expanded="false"
             aria-label="Toggle navigation"
         >
+
             <span class="navbar-toggler-icon"></span>
+
         </button>
 
 
@@ -132,77 +143,118 @@
 
             <ul class="navbar-nav ms-auto">
 
+
+                <!-- BERANDA -->
+
                 <li class="nav-item">
+
                     <a
                         class="nav-link"
                         href="{% url 'praktikum:home' %}"
                     >
                         Beranda
                     </a>
+
                 </li>
 
+
+                <!-- PERSONEL -->
+
                 <li class="nav-item">
+
                     <a
                         class="nav-link"
                         href="{% url 'praktikum:personel' %}"
                     >
                         Personel
                     </a>
+
                 </li>
 
+
+                <!-- KELOMPOK -->
+
                 <li class="nav-item">
+
                     <a
                         class="nav-link"
                         href="{% url 'praktikum:kelompok' %}"
                     >
                         Kelompok
                     </a>
+
                 </li>
 
+
+                <!-- JADWAL -->
+
                 <li class="nav-item">
+
                     <a
                         class="nav-link"
                         href="{% url 'praktikum:jadwal' %}"
                     >
                         Jadwal
                     </a>
+
                 </li>
 
+
+                <!-- MATERI -->
+
                 <li class="nav-item">
+
                     <a
                         class="nav-link"
                         href="{% url 'praktikum:materi' %}"
                     >
                         Materi
                     </a>
+
                 </li>
 
+
+                <!-- ABSENSI -->
+
                 <li class="nav-item">
+
                     <a
                         class="nav-link"
                         href="{% url 'praktikum:absensi' %}"
                     >
                         Absensi
                     </a>
+
                 </li>
 
+
+                <!-- PENGUMUMAN -->
+
                 <li class="nav-item">
+
                     <a
                         class="nav-link"
                         href="{% url 'praktikum:pengumuman' %}"
                     >
                         Pengumuman
                     </a>
+
                 </li>
 
+
+                <!-- TATA TERTIB -->
+
                 <li class="nav-item">
+
                     <a
                         class="nav-link"
                         href="{% url 'praktikum:tata_tertib' %}"
                     >
                         Tata Tertib
                     </a>
+
                 </li>
+
 
             </ul>
 
@@ -213,10 +265,17 @@
 </nav>
 
 
-{% block content %}
+<!-- ========================================================= -->
+<!-- CONTENT -->
+<!-- ========================================================= -->
 
+{% block content %}
 {% endblock %}
 
+
+<!-- ========================================================= -->
+<!-- FOOTER -->
+<!-- ========================================================= -->
 
 <footer class="py-5">
 
@@ -224,14 +283,20 @@
 
         <div class="row g-4">
 
+
             <div class="col-md-7">
 
                 <h5 class="fw-bold">
+
                     {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+
                 </h5>
 
+
                 <p class="mb-0">
+
                     {{ setting.deskripsi|default:"Sistem Informasi Praktikum Perencanaan Tambang." }}
+
                 </p>
 
             </div>
@@ -243,23 +308,42 @@
                     Informasi
                 </h6>
 
+
                 {% if setting.periode %}
+
                     <p class="mb-1">
-                        Periode: {{ setting.periode }}
+
+                        Periode:
+                        {{ setting.periode }}
+
                     </p>
+
                 {% endif %}
+
 
                 {% if setting.dosen_pengampu %}
+
                     <p class="mb-1">
-                        Dosen Pengampu: {{ setting.dosen_pengampu }}
+
+                        Dosen Pengampu:
+                        {{ setting.dosen_pengampu }}
+
                     </p>
+
                 {% endif %}
 
+
                 {% if setting.kontak %}
+
                     <p class="mb-0">
-                        Kontak: {{ setting.kontak }}
+
+                        Kontak:
+                        {{ setting.kontak }}
+
                     </p>
+
                 {% endif %}
+
 
             </div>
 
@@ -272,12 +356,18 @@
         <div class="d-flex justify-content-between flex-wrap gap-2">
 
             <small>
+
                 © {% now "Y" %}
+
                 {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+
             </small>
 
+
             <small>
+
                 Sistem Informasi Praktikum
+
             </small>
 
         </div>
@@ -291,7 +381,10 @@
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 ></script>
 
-{% block extra_js %}{% endblock %}
+
+{% block extra_js %}
+{% endblock %}
+
 
 </body>
 
