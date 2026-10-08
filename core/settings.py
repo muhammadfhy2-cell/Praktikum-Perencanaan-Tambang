@@ -42,7 +42,10 @@ SECRET_KEY = os.getenv(
     "django-insecure-praktikum-perencanaan-tambang-development-key",
 )
 
-DEBUG = os.getenv("DEBUG", "False").strip().lower() in {
+DEBUG = os.getenv(
+    "DEBUG",
+    "False",
+).strip().lower() in {
     "1",
     "true",
     "yes",
@@ -175,7 +178,9 @@ WSGI_APPLICATION = "core.wsgi.application"
 # DATABASE
 # ============================================================
 
-DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+).strip()
 
 if DATABASE_URL:
 
@@ -281,7 +286,7 @@ STORAGES = {
     "staticfiles": {
         "BACKEND": (
             "whitenoise.storage."
-            "CompressedManifestStaticFilesStorage"
+            "CompressedStaticFilesStorage"
         ),
     },
 }
@@ -357,41 +362,50 @@ MESSAGE_STORAGE = (
     "django.contrib.messages.storage.session."
     "SessionStorage"
 )
+
+
 # ============================================================
 # LOGGING
 # ============================================================
 
 LOGGING = {
     "version": 1,
+
     "disable_existing_loggers": False,
+
     "formatters": {
         "django": {
             "format": "[{asctime}] {levelname} {name}: {message}",
             "style": "{",
         },
     },
+
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
             "formatter": "django",
         },
     },
+
     "loggers": {
         "django": {
             "handlers": ["console"],
             "level": "ERROR",
             "propagate": False,
         },
+
         "django.request": {
             "handlers": ["console"],
             "level": "ERROR",
             "propagate": False,
         },
+
         "django.server": {
             "handlers": ["console"],
             "level": "ERROR",
             "propagate": False,
         },
+
         "praktikum": {
             "handlers": ["console"],
             "level": "ERROR",
