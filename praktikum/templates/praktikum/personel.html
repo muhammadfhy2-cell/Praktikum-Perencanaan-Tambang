@@ -10,23 +10,45 @@ Personel | Praktikum Perencanaan Tambang
     <div class="container">
         <div class="eyebrow">TIM PRAKTIKUM</div>
 
-        <h1>Personel Praktikum</h1>
+```
+    <h1>Personel Praktikum</h1>
 
-        <p>
-            Tim yang bertanggung jawab dalam pelaksanaan,
-            koordinasi, pembimbingan, dan pengelolaan
-            Praktikum Perencanaan Tambang.
-        </p>
-    </div>
+    <p>
+        Tim yang bertanggung jawab dalam pelaksanaan,
+        koordinasi, pembimbingan, dan pengelolaan
+        Praktikum Perencanaan Tambang.
+    </p>
+</div>
+```
+
 </section>
-
 
 <section class="content-section">
     <div class="container">
 
-        {% if penanggung_jawab %}
+```
+    <!-- =====================================================
+         PENANGGUNG JAWAB PRAKTIKUM
+         ===================================================== -->
 
-        <div class="featured-staff">
+    <div class="section-title featured-section-title">
+
+        <span>LEADERSHIP</span>
+
+        <h2>
+            Penanggung Jawab Praktikum
+        </h2>
+
+    </div>
+
+
+    {% if penanggung_jawab %}
+
+    <div class="featured-staff-grid">
+
+        {% for x in penanggung_jawab %}
+
+        <article class="featured-staff">
 
             <div class="staff-badge">
                 PJ
@@ -39,162 +61,221 @@ Personel | Praktikum Perencanaan Tambang
                 </span>
 
                 <h2>
-                    {{ penanggung_jawab.nama }}
+                    {{ x.nama }}
                 </h2>
 
-                {% if penanggung_jawab.kontak %}
+                {% if x.kontak %}
                 <p>
-                    📞 {{ penanggung_jawab.kontak }}
+                    📞 {{ x.kontak }}
                 </p>
                 {% endif %}
 
             </div>
 
-        </div>
+        </article>
 
-        {% endif %}
-
-
-        <!-- KOORDINATOR -->
-
-        <div class="section-title">
-
-            <span>COORDINATION</span>
-
-            <h2>
-                Koordinator Asisten Dosen
-            </h2>
-
-        </div>
-
-
-        <div class="staff-grid">
-
-            {% for x in koordinator %}
-
-            <article class="staff-card">
-
-                <div class="staff-avatar">
-                    {{ x.nama|first|upper }}
-                </div>
-
-                <div class="staff-information">
-
-                    <span class="badge badge-green">
-                        Koordinator
-                    </span>
-
-                    <h3>
-                        {{ x.nama }}
-                    </h3>
-
-                    {% if x.kontak %}
-                    <p>
-                        📞 {{ x.kontak }}
-                    </p>
-                    {% endif %}
-
-                </div>
-
-            </article>
-
-            {% empty %}
-
-            <div class="empty-card">
-                <div class="empty-icon">👤</div>
-
-                <strong>
-                    Belum ada koordinator aktif.
-                </strong>
-
-                <span>
-                    Data dapat ditambahkan melalui Django Admin.
-                </span>
-            </div>
-
-            {% endfor %}
-
-        </div>
-
-
-        <!-- ASISTEN -->
-
-        <div class="section-title">
-
-            <span>FIELD SUPPORT</span>
-
-            <h2>
-                Asisten Dosen
-            </h2>
-
-        </div>
-
-
-        <div class="staff-grid">
-
-            {% for x in asisten %}
-
-            <article class="staff-card">
-
-                <div class="staff-avatar">
-                    {{ x.nama|first|upper }}
-                </div>
-
-                <div class="staff-information">
-
-                    <span class="badge badge-gray">
-                        Asisten Dosen
-                    </span>
-
-                    <h3>
-                        {{ x.nama }}
-                    </h3>
-
-                    {% if x.kontak %}
-                    <p>
-                        📞 {{ x.kontak }}
-                    </p>
-                    {% endif %}
-
-                </div>
-
-            </article>
-
-            {% empty %}
-
-            <div class="empty-card">
-                <div class="empty-icon">⛏</div>
-
-                <strong>
-                    Belum ada asisten aktif.
-                </strong>
-
-                <span>
-                    Data dapat ditambahkan melalui Django Admin.
-                </span>
-            </div>
-
-            {% endfor %}
-
-        </div>
+        {% endfor %}
 
     </div>
+
+    {% else %}
+
+    <div class="empty-card leadership-empty">
+
+        <div class="empty-icon">
+            👤
+        </div>
+
+        <strong>
+            Belum ada Penanggung Jawab Praktikum aktif.
+        </strong>
+
+        <span>
+            Data dapat ditambahkan melalui Django Admin.
+        </span>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         KOORDINATOR
+         ===================================================== -->
+
+    <div class="section-title">
+
+        <span>COORDINATION</span>
+
+        <h2>
+            Koordinator Asisten Dosen
+        </h2>
+
+    </div>
+
+
+    <div class="staff-grid">
+
+        {% for x in koordinator %}
+
+        <article class="staff-card">
+
+            <div class="staff-avatar">
+                {{ x.nama|first|upper }}
+            </div>
+
+            <div class="staff-information">
+
+                <span class="badge badge-green">
+                    Koordinator
+                </span>
+
+                <h3>
+                    {{ x.nama }}
+                </h3>
+
+                {% if x.kontak %}
+                <p>
+                    📞 {{ x.kontak }}
+                </p>
+                {% endif %}
+
+            </div>
+
+        </article>
+
+        {% empty %}
+
+        <div class="empty-card">
+
+            <div class="empty-icon">
+                👤
+            </div>
+
+            <strong>
+                Belum ada koordinator aktif.
+            </strong>
+
+            <span>
+                Data dapat ditambahkan melalui Django Admin.
+            </span>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- =====================================================
+         ASISTEN DOSEN
+         ===================================================== -->
+
+    <div class="section-title">
+
+        <span>FIELD SUPPORT</span>
+
+        <h2>
+            Asisten Dosen
+        </h2>
+
+    </div>
+
+
+    <div class="staff-grid">
+
+        {% for x in asisten %}
+
+        <article class="staff-card">
+
+            <div class="staff-avatar">
+                {{ x.nama|first|upper }}
+            </div>
+
+            <div class="staff-information">
+
+                <span class="badge badge-gray">
+                    Asisten Dosen
+                </span>
+
+                <h3>
+                    {{ x.nama }}
+                </h3>
+
+                {% if x.kontak %}
+                <p>
+                    📞 {{ x.kontak }}
+                </p>
+                {% endif %}
+
+            </div>
+
+        </article>
+
+        {% empty %}
+
+        <div class="empty-card">
+
+            <div class="empty-icon">
+                ⛏
+            </div>
+
+            <strong>
+                Belum ada asisten aktif.
+            </strong>
+
+            <span>
+                Data dapat ditambahkan melalui Django Admin.
+            </span>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+```
+
 </section>
 
-
 <style>
+
+/* ============================================================
+   PENANGGUNG JAWAB
+   ============================================================ */
+
+.featured-section-title {
+    margin-top: 0;
+}
+
+.featured-staff-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(320px, 1fr)
+        );
+
+    gap: 18px;
+
+    margin-bottom: 55px;
+}
+
 
 .featured-staff {
     position: relative;
 
     display: flex;
+
     align-items: center;
 
     gap: 24px;
 
-    padding: 30px;
+    min-height: 145px;
 
-    margin-bottom: 55px;
+    padding: 30px;
 
     border-radius: 24px;
 
@@ -216,7 +297,20 @@ Personel | Praktikum Perencanaan Tambang
 
     box-shadow:
         0 20px 50px rgba(16,37,27,.18);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
 }
+
+
+.featured-staff:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 25px 55px rgba(16,37,27,.23);
+}
+
 
 .featured-staff::after {
     content: "";
@@ -231,11 +325,16 @@ Personel | Praktikum Perencanaan Tambang
 
     border-radius: 50%;
 
-    border: 50px solid rgba(214,168,79,.06);
+    border:
+        50px solid rgba(214,168,79,.06);
+
+    pointer-events: none;
 }
+
 
 .staff-badge {
     position: relative;
+
     z-index: 2;
 
     width: 82px;
@@ -244,6 +343,7 @@ Personel | Praktikum Perencanaan Tambang
     min-width: 82px;
 
     display: grid;
+
     place-items: center;
 
     border-radius: 22px;
@@ -260,21 +360,33 @@ Personel | Praktikum Perencanaan Tambang
         0 10px 30px rgba(0,0,0,.18);
 }
 
+
 .featured-content {
     position: relative;
+
     z-index: 2;
+
+    min-width: 0;
 }
+
 
 .featured-content h2 {
-    margin: 8px 0;
+    margin: 9px 0 0;
 
-    font-size: 28px;
+    color: #ffffff;
+
+    font-size: 25px;
+
+    line-height: 1.25;
 
     font-weight: 800;
+
+    word-break: break-word;
 }
 
+
 .featured-content p {
-    margin-top: 5px;
+    margin-top: 8px;
 
     color: #d6e2da;
 
@@ -282,9 +394,14 @@ Personel | Praktikum Perencanaan Tambang
 }
 
 
+/* ============================================================
+   SECTION TITLE
+   ============================================================ */
+
 .section-title {
     margin: 45px 0 20px;
 }
+
 
 .section-title span {
     display: block;
@@ -302,14 +419,23 @@ Personel | Praktikum Perencanaan Tambang
     text-transform: uppercase;
 }
 
+
 .section-title h2 {
+    margin: 0;
+
     color: #173c2b;
 
     font-size: 28px;
 
+    line-height: 1.25;
+
     font-weight: 800;
 }
 
+
+/* ============================================================
+   STAFF GRID
+   ============================================================ */
 
 .staff-grid {
     display: grid;
@@ -324,12 +450,18 @@ Personel | Praktikum Perencanaan Tambang
 }
 
 
+/* ============================================================
+   STAFF CARD
+   ============================================================ */
+
 .staff-card {
     display: flex;
 
     align-items: center;
 
     gap: 16px;
+
+    min-width: 0;
 
     padding: 21px;
 
@@ -349,6 +481,7 @@ Personel | Praktikum Perencanaan Tambang
         border-color .2s ease;
 }
 
+
 .staff-card:hover {
     transform: translateY(-5px);
 
@@ -359,6 +492,10 @@ Personel | Praktikum Perencanaan Tambang
 }
 
 
+/* ============================================================
+   AVATAR
+   ============================================================ */
+
 .staff-avatar {
     width: 60px;
     height: 60px;
@@ -366,6 +503,7 @@ Personel | Praktikum Perencanaan Tambang
     min-width: 60px;
 
     display: grid;
+
     place-items: center;
 
     border-radius: 18px;
@@ -385,9 +523,14 @@ Personel | Praktikum Perencanaan Tambang
 }
 
 
+/* ============================================================
+   INFORMATION
+   ============================================================ */
+
 .staff-information {
     min-width: 0;
 }
+
 
 .staff-information h3 {
     margin-top: 7px;
@@ -396,8 +539,13 @@ Personel | Praktikum Perencanaan Tambang
 
     font-size: 17px;
 
+    line-height: 1.3;
+
     font-weight: 800;
+
+    word-break: break-word;
 }
+
 
 .staff-information p {
     margin-top: 5px;
@@ -405,8 +553,67 @@ Personel | Praktikum Perencanaan Tambang
     color: #6b756e;
 
     font-size: 12px;
+
+    word-break: break-word;
 }
 
+
+/* ============================================================
+   BADGE
+   ============================================================ */
+
+.badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    width: fit-content;
+
+    padding:
+        5px
+        9px;
+
+    border-radius: 999px;
+
+    font-size: 9px;
+
+    line-height: 1;
+
+    font-weight: 900;
+
+    letter-spacing: .7px;
+
+    text-transform: uppercase;
+}
+
+
+.badge-gold {
+    background: rgba(214,168,79,.18);
+
+    color: #f0d58a;
+
+    border:
+        1px solid rgba(214,168,79,.28);
+}
+
+
+.badge-green {
+    background: #e5f0e9;
+
+    color: #21543c;
+}
+
+
+.badge-gray {
+    background: #edf0ee;
+
+    color: #5e6962;
+}
+
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
 
 .empty-card {
     grid-column: 1 / -1;
@@ -435,17 +642,25 @@ Personel | Praktikum Perencanaan Tambang
     text-align: center;
 }
 
+
+.leadership-empty {
+    margin-bottom: 55px;
+}
+
+
 .empty-icon {
     margin-bottom: 8px;
 
     font-size: 34px;
 }
 
+
 .empty-card strong {
     color: #173c2b;
 
     font-size: 15px;
 }
+
 
 .empty-card span {
     margin-top: 5px;
@@ -454,7 +669,22 @@ Personel | Praktikum Perencanaan Tambang
 }
 
 
-@media(max-width:600px) {
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media(max-width: 700px) {
+
+    .featured-staff-grid {
+        grid-template-columns: 1fr;
+
+        margin-bottom: 45px;
+    }
+
+}
+
+
+@media(max-width: 600px) {
 
     .featured-staff {
         align-items: flex-start;
@@ -462,7 +692,10 @@ Personel | Praktikum Perencanaan Tambang
         padding: 22px;
 
         gap: 16px;
+
+        min-height: 0;
     }
+
 
     .staff-badge {
         width: 62px;
@@ -475,12 +708,41 @@ Personel | Praktikum Perencanaan Tambang
         font-size: 19px;
     }
 
+
     .featured-content h2 {
         font-size: 21px;
     }
 
+
+    .section-title {
+        margin-top: 38px;
+    }
+
+
     .section-title h2 {
         font-size: 23px;
+    }
+
+
+    .staff-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .staff-card {
+        padding: 18px;
+    }
+
+
+    .staff-avatar {
+        width: 54px;
+        height: 54px;
+
+        min-width: 54px;
+
+        border-radius: 16px;
+
+        font-size: 19px;
     }
 
 }
