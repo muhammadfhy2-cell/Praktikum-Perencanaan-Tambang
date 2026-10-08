@@ -1,20 +1,19 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
 
     <meta charset="UTF-8">
-
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
 
     <title>
-        Dashboard {{ kelompok.nama }}
-        | Praktikum Perencanaan Tambang
+        Dashboard {{ kelompok.nama }} -
+        {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
     </title>
-
 
     <style>
 
@@ -24,416 +23,306 @@
 
         body {
             margin: 0;
-
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-
+            font-family: Arial, Helvetica, sans-serif;
             background: #f1f5f9;
-
-            color: #0f172a;
+            color: #1e293b;
         }
 
-
-        /* =====================================================
-           HEADER
-        ===================================================== */
-
-        header {
+        .navbar {
             background: #0f172a;
-
             color: white;
-
-            padding: 20px 30px;
-
+            padding: 16px 25px;
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
-
             gap: 20px;
         }
 
-
-        .brand h1 {
-            margin: 0;
-
-            font-size: 20px;
+        .brand {
+            font-size: 18px;
+            font-weight: bold;
         }
 
-
-        .brand p {
-            margin: 5px 0 0;
-
+        .brand small {
+            display: block;
+            font-size: 11px;
+            font-weight: normal;
             color: #cbd5e1;
-
-            font-size: 13px;
+            margin-top: 4px;
         }
-
 
         .logout {
-            display: inline-block;
-
-            padding: 10px 16px;
-
-            border-radius: 8px;
-
             background: #dc2626;
-
             color: white;
-
             text-decoration: none;
-
+            padding: 9px 14px;
+            border-radius: 8px;
             font-size: 13px;
-
-            font-weight: 600;
+            font-weight: bold;
         }
-
-
-        .logout:hover {
-            background: #b91c1c;
-        }
-
-
-        /* =====================================================
-           CONTAINER
-        ===================================================== */
 
         .container {
             width: min(1200px, 94%);
-
             margin: 30px auto;
         }
 
-
-        /* =====================================================
-           WELCOME
-        ===================================================== */
-
         .welcome {
             background: white;
-
+            border-radius: 16px;
             padding: 25px;
-
-            border-radius: 14px;
-
-            margin-bottom: 24px;
-
-            box-shadow:
-                0 4px 15px
-                rgba(15, 23, 42, 0.06);
+            margin-bottom: 22px;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.06);
         }
 
-
-        .welcome h2 {
+        .welcome h1 {
             margin: 0 0 8px;
-
-            font-size: 25px;
+            font-size: 28px;
+            color: #0f172a;
         }
-
 
         .welcome p {
             margin: 0;
-
             color: #64748b;
-
-            line-height: 1.6;
         }
 
-
-        /* =====================================================
-           STATISTICS
-        ===================================================== */
-
-        .stats {
+        .grid {
             display: grid;
-
-            grid-template-columns:
-                repeat(
-                    auto-fit,
-                    minmax(190px, 1fr)
-                );
-
+            grid-template-columns: repeat(4, 1fr);
             gap: 16px;
-
             margin-bottom: 25px;
         }
 
-
-        .stat {
+        .stat-card {
             background: white;
-
-            padding: 22px;
-
+            padding: 20px;
             border-radius: 14px;
-
-            box-shadow:
-                0 4px 15px
-                rgba(15, 23, 42, 0.06);
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.06);
         }
-
 
         .stat-title {
             color: #64748b;
-
             font-size: 13px;
-
             margin-bottom: 8px;
         }
 
-
         .stat-value {
-            font-size: 27px;
-
-            font-weight: 700;
+            color: #0f172a;
+            font-size: 25px;
+            font-weight: bold;
         }
-
-
-        /* =====================================================
-           SECTION
-        ===================================================== */
 
         .section {
             background: white;
-
-            padding: 25px;
-
-            border-radius: 14px;
-
-            margin-bottom: 25px;
-
-            box-shadow:
-                0 4px 15px
-                rgba(15, 23, 42, 0.06);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.06);
         }
 
-
-        .section h3 {
-            margin-top: 0;
-
-            margin-bottom: 18px;
-
-            font-size: 19px;
+        .section h2 {
+            margin: 0 0 18px;
+            color: #0f172a;
+            font-size: 20px;
         }
 
-
-        /* =====================================================
-           TABLE
-        ===================================================== */
-
-        .table-wrapper {
-            width: 100%;
-
-            overflow-x: auto;
+        .progress-wrapper {
+            margin-top: 15px;
         }
 
+        .progress-bar {
+            height: 18px;
+            background: #e2e8f0;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #2563eb;
+            border-radius: 20px;
+        }
+
+        .progress-text {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #475569;
+        }
 
         table {
             width: 100%;
-
             border-collapse: collapse;
-
-            min-width: 600px;
         }
-
 
         th,
         td {
             padding: 12px;
-
             border-bottom: 1px solid #e2e8f0;
-
             text-align: left;
-
+            vertical-align: top;
             font-size: 14px;
         }
-
 
         th {
             background: #f8fafc;
-
-            font-weight: 700;
+            color: #334155;
         }
 
-
-        /* =====================================================
-           MENTOR
-        ===================================================== */
+        .badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            background: #e2e8f0;
+            color: #334155;
+        }
 
         .mentor-list {
-            display: grid;
-
-            grid-template-columns:
-                repeat(
-                    auto-fit,
-                    minmax(220px, 1fr)
-                );
-
-            gap: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-
         .mentor {
-            padding: 15px;
-
+            background: #f8fafc;
             border: 1px solid #e2e8f0;
-
+            padding: 10px 13px;
             border-radius: 10px;
         }
 
-
-        .mentor strong {
-            display: block;
-
-            margin-bottom: 5px;
+        .upload-form {
+            display: grid;
+            gap: 13px;
         }
 
-
-        .mentor span {
-            color: #64748b;
-
+        .upload-form label {
             font-size: 13px;
+            font-weight: bold;
+            color: #334155;
         }
 
-
-        /* =====================================================
-           PROGRESS
-        ===================================================== */
-
-        .progress-box {
-            margin-top: 10px;
+        .upload-form input,
+        .upload-form select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: white;
         }
 
+        .button {
+            display: inline-block;
+            border: none;
+            background: #0f172a;
+            color: white;
+            padding: 11px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
 
-        .progress-info {
-            display: flex;
+        .empty {
+            color: #94a3b8;
+            font-size: 14px;
+            padding: 10px 0;
+        }
 
-            justify-content: space-between;
-
-            margin-bottom: 7px;
-
+        .message {
+            padding: 12px 15px;
+            border-radius: 10px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            margin-bottom: 15px;
             font-size: 14px;
         }
 
-
-        .progress-bar {
-            width: 100%;
-
-            height: 12px;
-
-            background: #e2e8f0;
-
-            border-radius: 999px;
-
-            overflow: hidden;
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
         }
 
+        @media (max-width: 900px) {
 
-        .progress-fill {
-            height: 100%;
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
 
-            background: #2563eb;
-
-            width: {{ progress|default:0 }}%;
+            .two-column {
+                grid-template-columns: 1fr;
+            }
         }
 
+        @media (max-width: 600px) {
 
-        /* =====================================================
-           EMPTY
-        ===================================================== */
-
-        .empty {
-            padding: 20px;
-
-            text-align: center;
-
-            color: #64748b;
-
-            background: #f8fafc;
-
-            border-radius: 10px;
-        }
-
-
-        /* =====================================================
-           RESPONSIVE
-        ===================================================== */
-
-        @media (max-width: 700px) {
-
-            header {
+            .navbar {
                 flex-direction: column;
-
                 align-items: flex-start;
             }
 
-            .welcome h2 {
-                font-size: 21px;
+            .grid {
+                grid-template-columns: 1fr;
             }
 
+            .container {
+                width: 92%;
+            }
+
+            .section {
+                padding: 17px;
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 650px;
+            }
         }
 
     </style>
 
 </head>
 
-
 <body>
 
+<!-- ===================================================== -->
+<!-- NAVBAR -->
+<!-- ===================================================== -->
 
-<!-- ==========================================================
-     HEADER
-=========================================================== -->
-
-<header>
+<nav class="navbar">
 
     <div class="brand">
 
-        <h1>
-            Praktikum Perencanaan Tambang
-        </h1>
+        {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
 
-        <p>
+        <small>
             Dashboard Kelompok
-        </p>
+        </small>
 
     </div>
 
-
     <a
-        class="logout"
         href="{% url 'praktikum:logout_kelompok' %}"
+        class="logout"
     >
         Keluar
     </a>
 
-</header>
+</nav>
 
 
-<!-- ==========================================================
-     CONTENT
-=========================================================== -->
+<div class="container">
 
-<main class="container">
-
-
-    <!-- ======================================================
-         MESSAGES
-    ======================================================= -->
+    <!-- ================================================= -->
+    <!-- MESSAGES -->
+    <!-- ================================================= -->
 
     {% if messages %}
 
         {% for message in messages %}
 
-            <div
-                class="section"
-                style="padding: 15px;"
-            >
-
+            <div class="message">
                 {{ message }}
-
             </div>
 
         {% endfor %}
@@ -441,34 +330,52 @@
     {% endif %}
 
 
-    <!-- ======================================================
-         WELCOME
-    ======================================================= -->
+    <!-- ================================================= -->
+    <!-- WELCOME -->
+    <!-- ================================================= -->
 
-    <section class="welcome">
+    <div class="welcome">
 
-        <h2>
+        <h1>
             {{ kelompok.nama }}
-        </h2>
+        </h1>
 
         <p>
             Selamat datang di dashboard kelompok.
-            Gunakan halaman ini untuk memantau anggota,
-            laporan, progres kegiatan, file kelompok,
-            dan konsultasi.
+            Kelola laporan, progress, file, dan konsultasi kelompok
+            melalui halaman ini.
         </p>
 
-    </section>
+        <div class="progress-wrapper">
+
+            <div class="progress-bar">
+
+                <div
+                    class="progress-fill"
+                    style="width: {{ progress }}%;"
+                ></div>
+
+            </div>
+
+            <div class="progress-text">
+
+                Progress kelompok:
+                <strong>{{ progress }}%</strong>
+
+            </div>
+
+        </div>
+
+    </div>
 
 
-    <!-- ======================================================
-         STATISTICS
-    ======================================================= -->
+    <!-- ================================================= -->
+    <!-- STATISTIK -->
+    <!-- ================================================= -->
 
-    <section class="stats">
+    <div class="grid">
 
-
-        <div class="stat">
+        <div class="stat-card">
 
             <div class="stat-title">
                 Jumlah Anggota
@@ -481,7 +388,7 @@
         </div>
 
 
-        <div class="stat">
+        <div class="stat-card">
 
             <div class="stat-title">
                 Laporan Mingguan
@@ -494,20 +401,20 @@
         </div>
 
 
-        <div class="stat">
+        <div class="stat-card">
 
             <div class="stat-title">
-                Progress Kelompok
+                Progress Acara
             </div>
 
             <div class="stat-value">
-                {{ progress|default:0 }}%
+                {{ progress_acara|length }}
             </div>
 
         </div>
 
 
-        <div class="stat">
+        <div class="stat-card">
 
             <div class="stat-title">
                 File Kelompok
@@ -519,257 +426,341 @@
 
         </div>
 
-
-    </section>
-
-
-    <!-- ======================================================
-         PROGRESS
-    ======================================================= -->
-
-    <section class="section">
-
-        <h3>
-            Progress Kelompok
-        </h3>
+    </div>
 
 
-        <div class="progress-box">
+    <!-- ================================================= -->
+    <!-- ANGGOTA & MENTOR -->
+    <!-- ================================================= -->
 
-            <div class="progress-info">
+    <div class="two-column">
 
-                <span>
-                    Kemajuan
-                </span>
+        <div class="section">
 
-                <strong>
-                    {{ progress|default:0 }}%
-                </strong>
+            <h2>
+                Anggota Kelompok
+            </h2>
 
-            </div>
+            {% if anggota %}
 
+                <table>
 
-            <div class="progress-bar">
+                    <thead>
 
-                <div class="progress-fill"></div>
+                        <tr>
+                            <th>No.</th>
+                            <th>Nama</th>
+                            <th>NIM</th>
+                            <th>Jabatan</th>
+                        </tr>
 
-            </div>
+                    </thead>
+
+                    <tbody>
+
+                        {% for peserta in anggota %}
+
+                            <tr>
+
+                                <td>
+                                    {{ forloop.counter }}
+                                </td>
+
+                                <td>
+                                    {{ peserta.nama }}
+                                </td>
+
+                                <td>
+                                    {{ peserta.nim|default:"-" }}
+                                </td>
+
+                                <td>
+                                    <span class="badge">
+                                        {{ peserta.get_jabatan_display }}
+                                    </span>
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            {% else %}
+
+                <div class="empty">
+                    Belum ada anggota kelompok.
+                </div>
+
+            {% endif %}
 
         </div>
 
-    </section>
+
+        <div class="section">
+
+            <h2>
+                Mentor
+            </h2>
+
+            {% if mentor %}
+
+                <div class="mentor-list">
+
+                    {% for item in mentor %}
+
+                        <div class="mentor">
+
+                            <strong>
+                                {{ item.nama }}
+                            </strong>
+
+                            <br>
+
+                            <small>
+                                {{ item.get_jabatan_display }}
+                            </small>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty">
+                    Belum ada mentor yang ditetapkan.
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
 
 
-    <!-- ======================================================
-         MENTOR
-    ======================================================= -->
+    <!-- ================================================= -->
+    <!-- UPLOAD LAPORAN -->
+    <!-- ================================================= -->
 
-    <section class="section">
+    <div class="section">
 
-        <h3>
-            Mentor / Pembimbing
-        </h3>
+        <h2>
+            Upload Laporan Mingguan
+        </h2>
+
+        <form
+            method="post"
+            action="{% url 'praktikum:upload_laporan' %}"
+            enctype="multipart/form-data"
+            class="upload-form"
+        >
+
+            {% csrf_token %}
+
+            <div>
+
+                <label for="judul">
+                    Judul Laporan
+                </label>
+
+                <input
+                    type="text"
+                    id="judul"
+                    name="judul"
+                    placeholder="Contoh: Laporan Mingguan 01"
+                >
+
+            </div>
 
 
-        {% if mentor %}
+            <div>
 
-            <div class="mentor-list">
+                <label for="acara">
+                    Acara
+                </label>
 
-                {% for item in mentor %}
+                <select
+                    id="acara"
+                    name="acara"
+                    required
+                >
 
-                    <div class="mentor">
+                    <option value="">
+                        -- Pilih Acara --
+                    </option>
 
-                        <strong>
+                    {% for item in acara_list %}
+
+                        <option value="{{ item.id }}">
                             {{ item.nama }}
-                        </strong>
 
-                        <span>
-                            {{ item.get_jabatan_display|default:item.jabatan }}
-                        </span>
+                            {% if item.sub_acara %}
+                                - {{ item.sub_acara }}
+                            {% endif %}
 
-                    </div>
+                        </option>
 
-                {% endfor %}
+                    {% endfor %}
 
-            </div>
-
-        {% else %}
-
-            <div class="empty">
-                Belum ada mentor yang ditetapkan.
-            </div>
-
-        {% endif %}
-
-    </section>
-
-
-    <!-- ======================================================
-         ANGGOTA
-    ======================================================= -->
-
-    <section class="section">
-
-        <h3>
-            Anggota Kelompok
-        </h3>
-
-
-        {% if anggota %}
-
-            <div class="table-wrapper">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                No.
-                            </th>
-
-                            <th>
-                                Nama
-                            </th>
-
-                            <th>
-                                Jabatan
-                            </th>
-
-                            <th>
-                                Status
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        {% for item in anggota %}
-
-                            <tr>
-
-                                <td>
-                                    {{ forloop.counter }}
-                                </td>
-
-                                <td>
-                                    {{ item.nama }}
-                                </td>
-
-                                <td>
-                                    {{ item.get_jabatan_display|default:item.jabatan }}
-                                </td>
-
-                                <td>
-                                    Aktif
-                                </td>
-
-                            </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
+                </select>
 
             </div>
 
-        {% else %}
 
-            <div class="empty">
-                Belum ada anggota kelompok.
+            <div>
+
+                <label for="peserta">
+                    Peserta Pengunggah
+                </label>
+
+                <select
+                    id="peserta"
+                    name="peserta"
+                    required
+                >
+
+                    <option value="">
+                        -- Pilih Peserta --
+                    </option>
+
+                    {% for item in anggota %}
+
+                        <option value="{{ item.id }}">
+                            {{ item.nama }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
             </div>
 
-        {% endif %}
 
-    </section>
+            <div>
+
+                <label for="file_laporan">
+                    File Laporan
+                </label>
+
+                <input
+                    type="file"
+                    id="file_laporan"
+                    name="file_laporan"
+                    required
+                >
+
+            </div>
 
 
-    <!-- ======================================================
-         LAPORAN
-    ======================================================= -->
+            <div>
 
-    <section class="section">
+                <button
+                    type="submit"
+                    class="button"
+                >
+                    Upload Laporan
+                </button>
 
-        <h3>
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- LAPORAN -->
+    <!-- ================================================= -->
+
+    <div class="section">
+
+        <h2>
             Laporan Mingguan
-        </h3>
-
+        </h2>
 
         {% if laporan %}
 
-            <div class="table-wrapper">
+            <table>
 
-                <table>
+                <thead>
 
-                    <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Judul</th>
+                        <th>Peserta</th>
+                        <th>Acara</th>
+                        <th>Status</th>
+                        <th>File</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in laporan %}
 
                         <tr>
 
-                            <th>
-                                No.
-                            </th>
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
 
-                            <th>
-                                Judul
-                            </th>
+                            <td>
+                                {{ item.judul }}
+                            </td>
 
-                            <th>
-                                Peserta
-                            </th>
+                            <td>
+                                {% if item.peserta %}
+                                    {{ item.peserta.nama }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
 
-                            <th>
-                                Acara
-                            </th>
+                            <td>
+                                {% if item.acara %}
+                                    {{ item.acara.nama }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
 
-                            <th>
-                                Tanggal Upload
-                            </th>
+                            <td>
+                                <span class="badge">
+                                    {{ item.get_status_display }}
+                                </span>
+                            </td>
+
+                            <td>
+
+                                {% if item.file %}
+
+                                    <a
+                                        href="{{ item.file.url }}"
+                                        target="_blank"
+                                    >
+                                        Lihat File
+                                    </a>
+
+                                {% else %}
+
+                                    -
+
+                                {% endif %}
+
+                            </td>
 
                         </tr>
 
-                    </thead>
+                    {% endfor %}
 
+                </tbody>
 
-                    <tbody>
-
-                        {% for item in laporan %}
-
-                            <tr>
-
-                                <td>
-                                    {{ forloop.counter }}
-                                </td>
-
-                                <td>
-                                    {{ item.judul }}
-                                </td>
-
-                                <td>
-                                    {{ item.peserta }}
-                                </td>
-
-                                <td>
-                                    {{ item.acara }}
-                                </td>
-
-                                <td>
-                                    {{ item.uploaded_at|date:"d M Y H:i" }}
-                                </td>
-
-                            </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            </div>
+            </table>
 
         {% else %}
 
@@ -779,74 +770,73 @@
 
         {% endif %}
 
-    </section>
+    </div>
 
 
-    <!-- ======================================================
-         PROGRESS ACARA
-    ======================================================= -->
+    <!-- ================================================= -->
+    <!-- PROGRESS ACARA -->
+    <!-- ================================================= -->
 
-    <section class="section">
+    <div class="section">
 
-        <h3>
-            Progress Acara
-        </h3>
-
+        <h2>
+            Progress Setiap Acara
+        </h2>
 
         {% if progress_acara %}
 
-            <div class="table-wrapper">
+            <table>
 
-                <table>
+                <thead>
 
-                    <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Acara</th>
+                        <th>Progress</th>
+                        <th>Laporan</th>
+                        <th>Peta</th>
+                        <th>PPT</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in progress_acara %}
 
                         <tr>
 
-                            <th>
-                                No.
-                            </th>
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
 
-                            <th>
-                                Acara
-                            </th>
+                            <td>
+                                {{ item.acara.nama }}
+                            </td>
 
-                            <th>
-                                Progress
-                            </th>
+                            <td>
+                                {{ item.nilai_progress }}%
+                            </td>
+
+                            <td>
+                                {{ item.laporan_acc|yesno:"ACC,-" }}
+                            </td>
+
+                            <td>
+                                {{ item.peta_acc|yesno:"ACC,-" }}
+                            </td>
+
+                            <td>
+                                {{ item.ppt_acc|yesno:"ACC,-" }}
+                            </td>
 
                         </tr>
 
-                    </thead>
+                    {% endfor %}
 
+                </tbody>
 
-                    <tbody>
-
-                        {% for item in progress_acara %}
-
-                            <tr>
-
-                                <td>
-                                    {{ forloop.counter }}
-                                </td>
-
-                                <td>
-                                    {{ item.acara }}
-                                </td>
-
-                                <td>
-                                    {{ item.progress }}%
-                                </td>
-
-                            </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            </div>
+            </table>
 
         {% else %}
 
@@ -856,82 +846,88 @@
 
         {% endif %}
 
-    </section>
+    </div>
 
 
-    <!-- ======================================================
-         FILE KELOMPOK
-    ======================================================= -->
+    <!-- ================================================= -->
+    <!-- FILE KELOMPOK -->
+    <!-- ================================================= -->
 
-    <section class="section">
+    <div class="section">
 
-        <h3>
+        <h2>
             File Kelompok
-        </h3>
-
+        </h2>
 
         {% if file_kelompok %}
 
-            <div class="table-wrapper">
+            <table>
 
-                <table>
+                <thead>
 
-                    <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Nama File</th>
+                        <th>Acara</th>
+                        <th>Jenis</th>
+                        <th>Status</th>
+                        <th>File</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in file_kelompok %}
 
                         <tr>
 
-                            <th>
-                                No.
-                            </th>
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
 
-                            <th>
-                                Nama File
-                            </th>
+                            <td>
+                                {{ item.nama_file }}
+                            </td>
 
-                            <th>
-                                Acara
-                            </th>
+                            <td>
+                                {{ item.acara.nama }}
+                            </td>
 
-                            <th>
-                                Upload
-                            </th>
+                            <td>
+                                {{ item.get_jenis_display }}
+                            </td>
+
+                            <td>
+                                {{ item.get_status_display }}
+                            </td>
+
+                            <td>
+
+                                {% if item.file %}
+
+                                    <a
+                                        href="{{ item.file.url }}"
+                                        target="_blank"
+                                    >
+                                        Lihat File
+                                    </a>
+
+                                {% else %}
+
+                                    -
+
+                                {% endif %}
+
+                            </td>
 
                         </tr>
 
-                    </thead>
+                    {% endfor %}
 
+                </tbody>
 
-                    <tbody>
-
-                        {% for item in file_kelompok %}
-
-                            <tr>
-
-                                <td>
-                                    {{ forloop.counter }}
-                                </td>
-
-                                <td>
-                                    {{ item }}
-                                </td>
-
-                                <td>
-                                    {{ item.acara }}
-                                </td>
-
-                                <td>
-                                    {{ item.uploaded_at|date:"d M Y H:i" }}
-                                </td>
-
-                            </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            </div>
+            </table>
 
         {% else %}
 
@@ -941,74 +937,160 @@
 
         {% endif %}
 
-    </section>
+    </div>
 
 
-    <!-- ======================================================
-         LAPORAN LENGKAP
-    ======================================================= -->
+    <!-- ================================================= -->
+    <!-- DAILY MOM -->
+    <!-- ================================================= -->
 
-    <section class="section">
+    <div class="section">
 
-        <h3>
-            Laporan Lengkap
-        </h3>
+        <h2>
+            Daily MOM
+        </h2>
 
+        {% if daily_mom %}
 
-        {% if laporan_lengkap %}
+            <table>
 
-            <div class="table-wrapper">
+                <thead>
 
-                <table>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Judul</th>
+                        <th>Acara</th>
+                        <th>Dibuat Oleh</th>
+                        <th>Keputusan</th>
+                        <th>Tindak Lanjut</th>
+                    </tr>
 
-                    <thead>
+                </thead>
+
+                <tbody>
+
+                    {% for item in daily_mom %}
 
                         <tr>
 
-                            <th>
-                                No.
-                            </th>
+                            <td>
+                                {{ item.tanggal|date:"d/m/Y" }}
+                            </td>
 
-                            <th>
-                                Data
-                            </th>
+                            <td>
+                                {{ item.judul }}
+                            </td>
 
-                            <th>
-                                Upload
-                            </th>
+                            <td>
+                                {{ item.acara.nama }}
+                            </td>
+
+                            <td>
+
+                                {% if item.dibuat_oleh %}
+                                    {{ item.dibuat_oleh.nama }}
+                                {% else %}
+                                    -
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ item.keputusan|default:"-" }}
+                            </td>
+
+                            <td>
+                                {{ item.tindak_lanjut|default:"-" }}
+                            </td>
 
                         </tr>
 
-                    </thead>
+                    {% endfor %}
 
+                </tbody>
 
-                    <tbody>
+            </table>
 
-                        {% for item in laporan_lengkap %}
+        {% else %}
 
-                            <tr>
-
-                                <td>
-                                    {{ forloop.counter }}
-                                </td>
-
-                                <td>
-                                    {{ item }}
-                                </td>
-
-                                <td>
-                                    {{ item.uploaded_at|date:"d M Y H:i" }}
-                                </td>
-
-                            </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
+            <div class="empty">
+                Belum ada Daily MOM.
             </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- LAPORAN LENGKAP -->
+    <!-- ================================================= -->
+
+    <div class="section">
+
+        <h2>
+            Laporan Lengkap
+        </h2>
+
+        {% if laporan_lengkap %}
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>No.</th>
+                        <th>Judul</th>
+                        <th>Status</th>
+                        <th>File</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in laporan_lengkap %}
+
+                        <tr>
+
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
+
+                            <td>
+                                {{ item.judul }}
+                            </td>
+
+                            <td>
+                                {{ item.get_status_display }}
+                            </td>
+
+                            <td>
+
+                                {% if item.file %}
+
+                                    <a
+                                        href="{{ item.file.url }}"
+                                        target="_blank"
+                                    >
+                                        Lihat File
+                                    </a>
+
+                                {% else %}
+
+                                    -
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
 
         {% else %}
 
@@ -1018,90 +1100,90 @@
 
         {% endif %}
 
-    </section>
+    </div>
 
 
-    <!-- ======================================================
-         KONSULTASI
-    ======================================================= -->
+    <!-- ================================================= -->
+    <!-- KONSULTASI -->
+    <!-- ================================================= -->
 
-    <section class="section">
+    <div class="section">
 
-        <h3>
+        <h2>
             Konsultasi
-        </h3>
-
+        </h2>
 
         {% if konsultasi %}
 
-            <div class="table-wrapper">
+            <table>
 
-                <table>
+                <thead>
 
-                    <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Topik</th>
+                        <th>Peserta</th>
+                        <th>Tujuan</th>
+                        <th>Status</th>
+                        <th>Pertanyaan</th>
+                        <th>Jawaban</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in konsultasi %}
 
                         <tr>
 
-                            <th>
-                                No.
-                            </th>
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
 
-                            <th>
-                                Peserta
-                            </th>
+                            <td>
+                                {{ item.topik }}
+                            </td>
 
-                            <th>
-                                Tujuan
-                            </th>
+                            <td>
 
-                            <th>
-                                Acara
-                            </th>
+                                {% if item.peserta %}
+                                    {{ item.peserta.nama }}
+                                {% else %}
+                                    -
+                                {% endif %}
 
-                            <th>
-                                Tanggal
-                            </th>
+                            </td>
+
+                            <td>
+
+                                {% if item.tujuan %}
+                                    {{ item.tujuan.nama }}
+                                {% else %}
+                                    -
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ item.get_status_display }}
+                            </td>
+
+                            <td>
+                                {{ item.pertanyaan }}
+                            </td>
+
+                            <td>
+                                {{ item.jawaban|default:"Belum dijawab" }}
+                            </td>
 
                         </tr>
 
-                    </thead>
+                    {% endfor %}
 
+                </tbody>
 
-                    <tbody>
-
-                        {% for item in konsultasi %}
-
-                            <tr>
-
-                                <td>
-                                    {{ forloop.counter }}
-                                </td>
-
-                                <td>
-                                    {{ item.peserta }}
-                                </td>
-
-                                <td>
-                                    {{ item.tujuan }}
-                                </td>
-
-                                <td>
-                                    {{ item.acara }}
-                                </td>
-
-                                <td>
-                                    {{ item.dibuat|date:"d M Y H:i" }}
-                                </td>
-
-                            </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            </div>
+            </table>
 
         {% else %}
 
@@ -1111,12 +1193,31 @@
 
         {% endif %}
 
-    </section>
+    </div>
 
 
-</main>
+    <!-- ================================================= -->
+    <!-- CATATAN KELOMPOK -->
+    <!-- ================================================= -->
 
+    {% if kelompok.catatan %}
+
+        <div class="section">
+
+            <h2>
+                Catatan Kelompok
+            </h2>
+
+            <p>
+                {{ kelompok.catatan|linebreaks }}
+            </p>
+
+        </div>
+
+    {% endif %}
+
+
+</div>
 
 </body>
-
 </html>
