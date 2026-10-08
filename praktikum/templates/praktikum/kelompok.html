@@ -1,902 +1,247 @@
-<!DOCTYPE html>
-<html lang="id">
-
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        Kelompok Praktikum — Mine Planning
-    </title>
-
-    <style>
-
-        :root {
-            --mine-dark: #182019;
-            --mine-dark-2: #263228;
-            --mine-green: #314a35;
-            --mine-green-light: #58715a;
-            --laterite: #c98528;
-            --laterite-light: #e5b35c;
-            --cream: #fbfaf6;
-            --sand: #f3eee3;
-            --white: #ffffff;
-            --text: #20251f;
-            --muted: #6d746d;
-            --border: #e1ddd3;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-            background: var(--cream);
-            color: var(--text);
-        }
-
-        /* =========================================
-           HEADER
-        ========================================= */
-
-        .topbar {
-            background: var(--mine-dark);
-            color: white;
-            padding: 18px 0;
-            border-bottom: 4px solid var(--laterite);
-        }
-
-        .topbar-inner {
-            max-width: 1400px;
-            margin: auto;
-            padding: 0 25px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .brand-icon {
-            width: 44px;
-            height: 44px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            background: var(--laterite);
-            border-radius: 12px;
-
-            font-size: 23px;
-        }
-
-        .brand-title {
-            font-size: 17px;
-            font-weight: 800;
-            letter-spacing: .03em;
-        }
-
-        .brand-subtitle {
-            font-size: 11px;
-            color: rgba(255,255,255,.6);
-            margin-top: 2px;
-        }
-
-        .period {
-            padding: 8px 13px;
-            border-radius: 999px;
-
-            background: rgba(255,255,255,.08);
-            border: 1px solid rgba(255,255,255,.14);
-
-            font-size: 12px;
-            color: #f1d49e;
-            font-weight: 700;
-        }
-
-        /* =========================================
-           MAIN
-        ========================================= */
-
-        .container {
-            max-width: 1400px;
-            margin: auto;
-            padding: 60px 25px;
-        }
-
-        .page-kicker {
-            color: var(--laterite);
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: .15em;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        h1 {
-            font-size: 44px;
-            margin: 0;
-            color: var(--mine-dark);
-            font-weight: 800;
-        }
-
-        .subtitle {
-            font-size: 17px;
-            color: var(--muted);
-            margin-top: 12px;
-            margin-bottom: 40px;
-            max-width: 760px;
-            line-height: 1.7;
-        }
-
-        /* =========================================
-           SUMMARY
-        ========================================= */
-
-        .summary {
-            display: grid;
-            grid-template-columns:
-                repeat(
-                    3,
-                    minmax(0, 1fr)
-                );
-
-            gap: 18px;
-            margin-bottom: 40px;
-        }
-
-        .summary-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 22px;
-
-            position: relative;
-            overflow: hidden;
-        }
-
-        .summary-card::before {
-            content: "";
-            position: absolute;
-
-            left: 0;
-            top: 0;
-            bottom: 0;
-
-            width: 5px;
-            background: var(--laterite);
-        }
-
-        .summary-icon {
-            font-size: 25px;
-            margin-bottom: 10px;
-        }
-
-        .summary-number {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--mine-dark);
-        }
-
-        .summary-label {
-            margin-top: 4px;
-            color: var(--muted);
-            font-size: 14px;
-        }
-
-        /* =========================================
-           GROUP CARD
-        ========================================= */
-
-        .group-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            margin-bottom: 28px;
-            overflow: hidden;
-
-            box-shadow:
-                0 8px 28px rgba(25,35,27,.05);
-        }
-
-        .group-header {
-            padding: 26px 28px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--mine-dark),
-                    var(--mine-green)
-                );
-
-            color: white;
-
-            position: relative;
-            overflow: hidden;
-        }
-
-        .group-header::after {
-            content: "";
-            position: absolute;
-
-            width: 260px;
-            height: 260px;
-
-            right: -120px;
-            top: -150px;
-
-            border-radius: 50%;
-
-            background:
-                rgba(201,133,40,.15);
-        }
-
-        .group-header-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        .group-label {
-            display: inline-block;
-
-            padding: 5px 10px;
-
-            background:
-                rgba(255,255,255,.10);
-
-            border:
-                1px solid rgba(255,255,255,.15);
-
-            border-radius: 6px;
-
-            color: #f0d29a;
-
-            font-size: 11px;
-            font-weight: 800;
-
-            text-transform: uppercase;
-            letter-spacing: .08em;
-
-            margin-bottom: 12px;
-        }
-
-        .group-name {
-            font-size: 27px;
-            font-weight: 800;
-            margin-bottom: 10px;
-        }
-
-        .mentor {
-            font-size: 14px;
-            color: rgba(255,255,255,.75);
-        }
-
-        .mentor strong {
-            color: white;
-        }
-
-        /* =========================================
-           CONTENT
-        ========================================= */
-
-        .content {
-            padding: 28px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 800;
-
-            color: var(--mine-dark);
-
-            margin-bottom: 17px;
-        }
-
-        .participant-list {
-            display: grid;
-
-            grid-template-columns:
-                repeat(
-                    auto-fit,
-                    minmax(250px, 1fr)
-                );
-
-            gap: 14px;
-        }
-
-        .participant {
-            background: #faf9f5;
-
-            border:
-                1px solid var(--border);
-
-            border-radius: 12px;
-
-            padding: 17px;
-
-            transition: .2s ease;
-        }
-
-        .participant:hover {
-            transform: translateY(-3px);
-
-            border-color:
-                rgba(201,133,40,.5);
-
-            box-shadow:
-                0 8px 20px rgba(25,35,27,.06);
-        }
-
-        .participant-name {
-            font-size: 16px;
-            font-weight: 800;
-
-            color: var(--mine-dark);
-        }
-
-        .participant-info {
-            margin-top: 7px;
-
-            color: var(--muted);
-
-            font-size: 13px;
-
-            line-height: 1.7;
-        }
-
-        .participant-status {
-            display: inline-block;
-
-            margin-top: 7px;
-
-            padding: 4px 8px;
-
-            border-radius: 6px;
-
-            background:
-                rgba(49,74,53,.10);
-
-            color: var(--mine-green);
-
-            font-size: 11px;
-
-            font-weight: 700;
-        }
-
-        .empty {
-            color: var(--muted);
-            font-style: italic;
-
-            padding: 15px;
-        }
-
-        /* =========================================
-           PROGRESS
-        ========================================= */
-
-        .progress-wrapper {
-            margin-top: 30px;
-
-            padding-top: 25px;
-
-            border-top:
-                1px solid var(--border);
-        }
-
-        .progress-header {
-            display: flex;
-
-            justify-content: space-between;
-            align-items: center;
-
-            margin-bottom: 9px;
-        }
-
-        .progress-title {
-            font-weight: 800;
-            color: var(--mine-dark);
-        }
-
-        .progress-value {
-            color: var(--laterite);
-
-            font-weight: 800;
-        }
-
-        .progress-bar {
-            height: 11px;
-
-            background:
-                #e7e3d9;
-
-            border-radius: 99px;
-
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    var(--mine-green),
-                    var(--laterite)
-                );
-
-            border-radius: 99px;
-
-            transition: width .4s ease;
-        }
-
-        .progress-text {
-            margin-top: 7px;
-
-            font-size: 12px;
-
-            color: var(--muted);
-        }
-
-        /* =========================================
-           CATATAN
-        ========================================= */
-
-        .catatan {
-            margin-top: 22px;
-
-            padding: 17px;
-
-            background:
-                rgba(201,133,40,.08);
-
-            border-left:
-                4px solid var(--laterite);
-
-            border-radius: 9px;
-
-            color: var(--text);
-
-            line-height: 1.7;
-        }
-
-        .catatan strong {
-            color: var(--mine-dark);
-        }
-
-        /* =========================================
-           FOOTER
-        ========================================= */
-
-        .footer {
-            background: var(--mine-dark);
-
-            color:
-                rgba(255,255,255,.65);
-
-            padding: 25px;
-
-            text-align: center;
-
-            font-size: 12px;
-        }
-
-        .footer strong {
-            color: white;
-        }
-
-        /* =========================================
-           RESPONSIVE
-        ========================================= */
-
-        @media (max-width: 850px) {
-
-            .summary {
-                grid-template-columns:
-                    1fr;
-            }
-
-            h1 {
-                font-size: 36px;
-            }
-
-            .topbar-inner {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-        }
-
-        @media (max-width: 600px) {
-
-            .container {
-                padding:
-                    40px 18px;
-            }
-
-            h1 {
-                font-size: 30px;
-            }
-
-            .subtitle {
-                font-size: 15px;
-            }
-
-            .group-header,
-            .content {
-                padding: 20px;
-            }
-
-            .group-name {
-                font-size: 23px;
-            }
-
-        }
-
-    </style>
-
-</head>
-
-
-<body>
-
-
-<!-- =========================================================
-     TOP BAR
-========================================================= -->
-
-<header class="topbar">
-
-    <div class="topbar-inner">
-
-        <div class="brand">
-
-            <div class="brand-icon">
-                ⛏️
-            </div>
-
-            <div>
-
-                <div class="brand-title">
-                    MINE PLANNING PRACTICUM
-                </div>
-
-                <div class="brand-subtitle">
-                    Nickel Laterite • Mining Engineering
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="period">
-            KELOMPOK PRAKTIKUM
-        </div>
-
+{% extends "praktikum/base.html" %}
+
+{% block title %}Kelompok | Praktikum Perencanaan Tambang{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <div class="eyebrow">MINING TEAMS</div>
+        <h1>Kelompok Praktikum</h1>
+        <p>
+            Daftar kelompok dan informasi perkembangan kegiatan praktikum.
+        </p>
     </div>
+</section>
 
-</header>
-
-
-<!-- =========================================================
-     MAIN
-========================================================= -->
-
-<main>
-
+<section class="content-section">
     <div class="container">
 
-        <div class="page-kicker">
-            ⛏ Mine Planning Team
-        </div>
+        <div class="group-grid">
 
-        <h1>
-            Kelompok Praktikum
-        </h1>
+            {% for kelompok in kelompok_list %}
 
-        <div class="subtitle">
+            <article class="group-card">
 
-            Informasi kelompok, mentor, peserta,
-            dan progres pengerjaan praktikum
-            perencanaan tambang nikel.
+                <div class="group-top">
 
-        </div>
+                    {% if kelompok.logo %}
+                        <img src="{{ kelompok.logo.url }}" class="group-logo" alt="{{ kelompok.nama }}">
+                    {% else %}
+                        <div class="group-logo-placeholder">⛏</div>
+                    {% endif %}
 
-
-        <!-- =================================================
-             SUMMARY
-        ================================================== -->
-
-        <div class="summary">
-
-            <div class="summary-card">
-
-                <div class="summary-icon">
-                    👷
-                </div>
-
-                <div class="summary-number">
-                    {{ kelompok|length }}
-                </div>
-
-                <div class="summary-label">
-                    Kelompok Praktikum
-                </div>
-
-            </div>
-
-
-            <div class="summary-card">
-
-                <div class="summary-icon">
-                    🦺
-                </div>
-
-                <div class="summary-number">
-
-                    {% with total=0 %}
-
-                        {{ kelompok|length }}
-
-                    {% endwith %}
-
-                </div>
-
-                <div class="summary-label">
-                    Tim Mine Planning
-                </div>
-
-            </div>
-
-
-            <div class="summary-card">
-
-                <div class="summary-icon">
-                    📊
-                </div>
-
-                <div class="summary-number">
-                    {{ kelompok|length }}
-                </div>
-
-                <div class="summary-label">
-                    Monitoring Kelompok
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- =================================================
-             GROUPS
-        ================================================== -->
-
-        {% for kelompok_item in kelompok %}
-
-        <div class="group-card">
-
-            <!-- HEADER -->
-
-            <div class="group-header">
-
-                <div class="group-header-content">
-
-                    <div class="group-label">
-                        ⛏ Mine Planning Group
+                    <div>
+                        <span class="badge badge-green">Kelompok Aktif</span>
+                        <h2>{{ kelompok.nama }}</h2>
                     </div>
 
-                    <div class="group-name">
-                        {{ kelompok_item.nama }}
+                </div>
+
+
+                <div class="progress-area">
+
+                    <div class="progress-label">
+                        <span>Progress Praktikum</span>
+                        <strong>{{ kelompok.progress_persen }}%</strong>
                     </div>
 
-                    <div class="mentor">
+                    <div class="progress">
+                        <div style="width: {{ kelompok.progress_persen }}%;"></div>
+                    </div>
 
-                        <strong>
-                            Asisten Pembimbing / Mentor:
-                        </strong>
+                </div>
 
-                        {% for mentor in kelompok_item.mentor.all %}
 
-                            {{ mentor.nama }}
+                <div class="group-stats">
 
-                            {% if not forloop.last %}
-                                ,
-                            {% endif %}
+                    <div>
+                        <strong>{{ kelompok.jumlah_anggota }}</strong>
+                        <span>Anggota</span>
+                    </div>
 
+                    <div>
+                        <strong>{{ kelompok.jumlah_event }}</strong>
+                        <span>Kegiatan</span>
+                    </div>
+
+                </div>
+
+
+                {% if kelompok.mentor.all %}
+
+                <div class="mentor-area">
+                    <small>MENTOR</small>
+
+                    <div class="mentor-list">
+                        {% for mentor in kelompok.mentor.all %}
+                            <span>👤 {{ mentor.nama }}</span>
                         {% empty %}
-
-                            Belum ditentukan
-
+                            <span>Belum ditentukan</span>
                         {% endfor %}
-
                     </div>
-
                 </div>
-
-            </div>
-
-
-            <!-- CONTENT -->
-
-            <div class="content">
-
-                <div class="section-title">
-                    👷 Peserta Kelompok
-                </div>
-
-
-                <div class="participant-list">
-
-                    {% for peserta in kelompok_item.peserta.all %}
-
-                        <div class="participant">
-
-                            <div class="participant-name">
-
-                                {{ peserta.nama }}
-
-                            </div>
-
-
-                            <div class="participant-info">
-
-                                {% if peserta.nim %}
-
-                                    NIM:
-                                    {{ peserta.nim }}
-
-                                    <br>
-
-                                {% endif %}
-
-                                <span class="participant-status">
-
-                                    {{ peserta.get_jabatan_display }}
-
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    {% empty %}
-
-                        <div class="empty">
-
-                            Belum ada peserta
-                            pada kelompok ini.
-
-                        </div>
-
-                    {% endfor %}
-
-                </div>
-
-
-                <!-- PROGRESS -->
-
-                <div class="progress-wrapper">
-
-                    <div class="progress-header">
-
-                        <div class="progress-title">
-                            📊 Progress Pengerjaan
-                        </div>
-
-                        <div class="progress-value">
-                            {{ kelompok_item.progress }}%
-                        </div>
-
-                    </div>
-
-
-                    <div class="progress-bar">
-
-                        <div
-                            class="progress-fill"
-                            style="
-                                width:
-                                {{ kelompok_item.progress }}%;
-                            "
-                        ></div>
-
-                    </div>
-
-
-                    <div class="progress-text">
-
-                        Progress kegiatan kelompok
-                        dalam praktikum.
-
-                    </div>
-
-                </div>
-
-
-                <!-- CATATAN -->
-
-                {% if kelompok_item.catatan %}
-
-                    <div class="catatan">
-
-                        <strong>
-                            📝 Catatan Kelompok
-                        </strong>
-
-                        <br><br>
-
-                        {{ kelompok_item.catatan }}
-
-                    </div>
 
                 {% endif %}
 
+
+                {% if kelompok.catatan %}
+                <div class="note">
+                    <strong>Catatan:</strong>
+                    {{ kelompok.catatan }}
+                </div>
+                {% endif %}
+
+            </article>
+
+            {% empty %}
+
+            <div class="empty">
+                <div class="empty-icon">⛏</div>
+                Belum ada kelompok aktif.
             </div>
+
+            {% endfor %}
 
         </div>
 
-        {% empty %}
-
-            <div class="group-card">
-
-                <div class="content">
-
-                    <div class="empty">
-
-                        Belum ada data kelompok
-                        yang tersedia.
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        {% endfor %}
-
     </div>
+</section>
 
-</main>
+<style>
+    .group-grid {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        gap: 22px;
+    }
 
+    .group-card {
+        background: white;
+        border: 1px solid #dfe5df;
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 10px 30px rgba(16,37,27,.07);
+    }
 
-<!-- =========================================================
-     FOOTER
-========================================================= -->
+    .group-top {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 25px;
+    }
 
-<footer class="footer">
+    .group-logo,
+    .group-logo-placeholder {
+        width: 70px;
+        height: 70px;
+        min-width: 70px;
+        object-fit: cover;
+        border-radius: 17px;
+        background: #e8eee9;
+    }
 
-    <strong>
-        ⛏ Mine Planning Practicum
-    </strong>
+    .group-logo-placeholder {
+        display: grid;
+        place-items: center;
+        color: #173c2b;
+        font-size: 28px;
+    }
 
-    &nbsp;•&nbsp;
+    .group-top h2 {
+        color: #173c2b;
+        margin-top: 6px;
+        font-size: 22px;
+    }
 
-    Nickel Laterite Mining
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #6b756e;
+        margin-bottom: 7px;
+    }
 
-    &nbsp;•&nbsp;
+    .progress-label strong {
+        color: #173c2b;
+    }
 
-    Mining Engineering
+    .progress {
+        height: 9px;
+        border-radius: 999px;
+        background: #e7ece8;
+        overflow: hidden;
+    }
 
-</footer>
+    .progress div {
+        height: 100%;
+        background: linear-gradient(90deg,#21543c,#d6a84f);
+        border-radius: inherit;
+    }
 
+    .group-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 20px;
+    }
 
-</body>
+    .group-stats div {
+        background: #f5f7f4;
+        padding: 14px;
+        border-radius: 12px;
+    }
 
-</html>
+    .group-stats strong {
+        display: block;
+        font-size: 23px;
+        color: #173c2b;
+    }
+
+    .group-stats span {
+        font-size: 11px;
+        color: #6b756e;
+    }
+
+    .mentor-area {
+        margin-top: 20px;
+    }
+
+    .mentor-area > small {
+        color: #8a6b28;
+        font-weight: 800;
+        font-size: 10px;
+        letter-spacing: 1.5px;
+    }
+
+    .mentor-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-top: 8px;
+    }
+
+    .mentor-list span {
+        background: #edf3ee;
+        color: #31503e;
+        padding: 6px 10px;
+        border-radius: 8px;
+        font-size: 11px;
+    }
+
+    .note {
+        margin-top: 17px;
+        padding: 12px;
+        background: #fff8e7;
+        border-radius: 10px;
+        color: #76602a;
+        font-size: 12px;
+    }
+
+    @media(max-width:700px) {
+        .group-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+{% endblock %}
