@@ -1,580 +1,202 @@
-{% extends 'praktikum/base.html' %}
+{% extends "praktikum/base.html" %}
 
-{% block title %}
-Personel | Praktikum Perencanaan Tambang
-{% endblock %}
-
-{% block extra_css %}
-
-<style>
-
-    /* =========================================================
-       PERSONEL PAGE
-    ========================================================= */
-
-    .personel-page {
-        background:
-            radial-gradient(
-                circle at 85% 10%,
-                rgba(214, 168, 79, 0.08),
-                transparent 30%
-            ),
-            linear-gradient(
-                180deg,
-                #f7faf8 0%,
-                #ffffff 100%
-            );
-        min-height: calc(100vh - 80px);
-    }
-
-    .personel-hero {
-        position: relative;
-        overflow: hidden;
-        padding: 70px 0 55px;
-        background:
-            linear-gradient(
-                135deg,
-                #10251b 0%,
-                #173c2b 55%,
-                #21543c 100%
-            );
-        color: #ffffff;
-    }
-
-    .personel-hero::before {
-        content: "";
-        position: absolute;
-        width: 420px;
-        height: 420px;
-        border-radius: 50%;
-        right: -120px;
-        top: -180px;
-        background: rgba(214, 168, 79, 0.12);
-    }
-
-    .personel-hero::after {
-        content: "";
-        position: absolute;
-        width: 260px;
-        height: 260px;
-        border-radius: 50%;
-        left: -120px;
-        bottom: -170px;
-        background: rgba(255, 255, 255, 0.04);
-    }
-
-    .personel-hero-content {
-        position: relative;
-        z-index: 2;
-    }
-
-    .personel-kicker {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 7px 14px;
-        margin-bottom: 18px;
-        border: 1px solid rgba(214, 168, 79, 0.45);
-        border-radius: 999px;
-        color: #f0ca73;
-        background: rgba(214, 168, 79, 0.08);
-        font-size: 0.78rem;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-    }
-
-    .personel-hero h1 {
-        margin: 0 0 12px;
-        font-size: clamp(2rem, 4vw, 3.4rem);
-        font-weight: 800;
-        letter-spacing: -0.03em;
-    }
-
-    .personel-hero p {
-        max-width: 720px;
-        margin: 0;
-        color: rgba(255, 255, 255, 0.78);
-        font-size: 1.05rem;
-        line-height: 1.8;
-    }
-
-    /* =========================================================
-       CONTENT
-    ========================================================= */
-
-    .personel-content {
-        padding: 55px 0 80px;
-    }
-
-    .personel-card {
-        position: relative;
-        height: 100%;
-        overflow: hidden;
-        border: 1px solid rgba(16, 37, 27, 0.08);
-        border-radius: 22px;
-        background: #ffffff;
-        box-shadow:
-            0 12px 35px rgba(16, 37, 27, 0.07);
-        transition:
-            transform 0.25s ease,
-            box-shadow 0.25s ease;
-    }
-
-    .personel-card:hover {
-        transform: translateY(-5px);
-        box-shadow:
-            0 20px 45px rgba(16, 37, 27, 0.12);
-    }
-
-    .personel-card::before {
-        content: "";
-        display: block;
-        height: 5px;
-        background:
-            linear-gradient(
-                90deg,
-                #173c2b,
-                #d6a84f
-            );
-    }
-
-    .personel-card-body {
-        padding: 30px;
-    }
-
-    .personel-icon {
-        width: 52px;
-        height: 52px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 18px;
-        border-radius: 15px;
-        background: rgba(23, 60, 43, 0.08);
-        color: #173c2b;
-        font-size: 1.35rem;
-    }
-
-    .personel-role {
-        margin-bottom: 8px;
-        color: #8b6a27;
-        font-size: 0.76rem;
-        font-weight: 800;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-    }
-
-    .personel-card h3 {
-        margin-bottom: 16px;
-        color: #10251b;
-        font-size: 1.25rem;
-        font-weight: 800;
-    }
-
-    .personel-name {
-        margin-bottom: 8px;
-        color: #173c2b;
-        font-size: 1.05rem;
-        font-weight: 700;
-    }
-
-    .personel-contact {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        color: #6c757d;
-        font-size: 0.9rem;
-    }
-
-    .personel-empty {
-        padding: 15px 0;
-        color: #8a9390;
-        font-size: 0.92rem;
-    }
-
-    /* =========================================================
-       ASSISTANTS
-    ========================================================= */
-
-    .asisten-section {
-        margin-top: 30px;
-    }
-
-    .asisten-header {
-        margin-bottom: 22px;
-    }
-
-    .asisten-header h2 {
-        margin-bottom: 7px;
-        color: #10251b;
-        font-size: 1.65rem;
-        font-weight: 800;
-    }
-
-    .asisten-header p {
-        margin: 0;
-        color: #6c757d;
-    }
-
-    .asisten-list-card {
-        overflow: hidden;
-        border: 1px solid rgba(16, 37, 27, 0.08);
-        border-radius: 20px;
-        background: #ffffff;
-        box-shadow:
-            0 10px 30px rgba(16, 37, 27, 0.05);
-    }
-
-    .asisten-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        padding: 20px 24px;
-        border-bottom: 1px solid #edf1ee;
-        transition: background 0.2s ease;
-    }
-
-    .asisten-item:last-child {
-        border-bottom: none;
-    }
-
-    .asisten-item:hover {
-        background: #f8faf9;
-    }
-
-    .asisten-left {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .asisten-number {
-        width: 38px;
-        height: 38px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        border-radius: 12px;
-        background: #173c2b;
-        color: #ffffff;
-        font-size: 0.82rem;
-        font-weight: 800;
-    }
-
-    .asisten-name {
-        margin: 0;
-        color: #10251b;
-        font-weight: 700;
-    }
-
-    .asisten-contact {
-        color: #7a8580;
-        font-size: 0.86rem;
-    }
-
-    .asisten-badge {
-        padding: 6px 11px;
-        border-radius: 999px;
-        background: rgba(214, 168, 79, 0.12);
-        color: #8b6a27;
-        font-size: 0.72rem;
-        font-weight: 800;
-        white-space: nowrap;
-    }
-
-    /* =========================================================
-       RESPONSIVE
-    ========================================================= */
-
-    @media (max-width: 767.98px) {
-
-        .personel-hero {
-            padding: 50px 0 42px;
-        }
-
-        .personel-content {
-            padding: 35px 0 55px;
-        }
-
-        .personel-card-body {
-            padding: 24px;
-        }
-
-        .asisten-item {
-            align-items: flex-start;
-            padding: 18px;
-        }
-
-        .asisten-badge {
-            display: none;
-        }
-
-    }
-
-</style>
-
-{% endblock %}
-
+{% block title %}Personel | Praktikum Perencanaan Tambang{% endblock %}
 
 {% block content %}
 
-<div class="personel-page">
+<section class="page-header">
+    <div class="container">
+        <div class="eyebrow">TIM PRAKTIKUM</div>
+        <h1>Personel Praktikum</h1>
+        <p>
+            Tim yang bertanggung jawab dalam pelaksanaan dan pengelolaan
+            Praktikum Perencanaan Tambang.
+        </p>
+    </div>
+</section>
 
-    <!-- =====================================================
-         HERO
-    ====================================================== -->
+<section class="content-section">
+    <div class="container">
 
-    <section class="personel-hero">
+        {% if penanggung_jawab %}
+        <div class="featured-staff">
+            <div class="staff-badge">PJ</div>
+            <div>
+                <span class="badge badge-gold">Penanggung Jawab</span>
+                <h2>{{ penanggung_jawab.nama }}</h2>
 
-        <div class="container">
+                {% if penanggung_jawab.kontak %}
+                    <p>📞 {{ penanggung_jawab.kontak }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
 
-            <div class="personel-hero-content">
 
-                <div class="personel-kicker">
-                    ⛏️ Tim Praktikum
+        <div class="section-title">
+            <span>COORDINATION</span>
+            <h2>Koordinator</h2>
+        </div>
+
+        <div class="staff-grid">
+
+            {% for x in koordinator %}
+            <article class="staff-card">
+                <div class="staff-avatar">
+                    {{ x.nama|first|upper }}
                 </div>
 
-                <h1>
-                    Personel Praktikum
-                </h1>
+                <div>
+                    <span class="badge badge-green">Koordinator</span>
+                    <h3>{{ x.nama }}</h3>
 
-                <p>
-                    Struktur pengelola Praktikum Perencanaan Tambang
-                    yang mendukung pelaksanaan kegiatan, pendampingan,
-                    koordinasi, dan pengawasan praktikum.
-                </p>
-
-            </div>
+                    {% if x.kontak %}
+                        <p>📞 {{ x.kontak }}</p>
+                    {% endif %}
+                </div>
+            </article>
+            {% empty %}
+                <div class="empty">Belum ada koordinator aktif.</div>
+            {% endfor %}
 
         </div>
 
-    </section>
 
+        <div class="section-title">
+            <span>FIELD SUPPORT</span>
+            <h2>Asisten</h2>
+        </div>
 
-    <!-- =====================================================
-         CONTENT
-    ====================================================== -->
+        <div class="staff-grid">
 
-    <section class="personel-content">
-
-        <div class="container">
-
-            <!-- =================================================
-                 STRUKTUR UTAMA
-            ================================================== -->
-
-            <div class="row g-4">
-
-                <!-- PENANGGUNG JAWAB -->
-
-                <div class="col-lg-4">
-
-                    <div class="personel-card">
-
-                        <div class="personel-card-body">
-
-                            <div class="personel-icon">
-                                👷
-                            </div>
-
-                            <div class="personel-role">
-                                Penanggung Jawab
-                            </div>
-
-                            <h3>
-                                Penanggung Jawab Praktikum
-                            </h3>
-
-                            {% if penanggung_jawab %}
-
-                                <div class="personel-name">
-                                    {{ penanggung_jawab.nama }}
-                                </div>
-
-                                {% if penanggung_jawab.kontak %}
-
-                                    <div class="personel-contact">
-                                        📞 {{ penanggung_jawab.kontak }}
-                                    </div>
-
-                                {% endif %}
-
-                            {% else %}
-
-                                <div class="personel-empty">
-                                    Belum ada data penanggung jawab.
-                                </div>
-
-                            {% endif %}
-
-                        </div>
-
-                    </div>
-
+            {% for x in asisten %}
+            <article class="staff-card">
+                <div class="staff-avatar">
+                    {{ x.nama|first|upper }}
                 </div>
 
+                <div>
+                    <span class="badge badge-gray">Asisten</span>
+                    <h3>{{ x.nama }}</h3>
 
-                <!-- KOORDINATOR -->
-
-                <div class="col-lg-4">
-
-                    <div class="personel-card">
-
-                        <div class="personel-card-body">
-
-                            <div class="personel-icon">
-                                🧭
-                            </div>
-
-                            <div class="personel-role">
-                                Koordinasi
-                            </div>
-
-                            <h3>
-                                Koordinator Asisten Dosen
-                            </h3>
-
-                            {% if koordinator %}
-
-                                <div class="personel-name">
-                                    {{ koordinator.nama }}
-                                </div>
-
-                                {% if koordinator.kontak %}
-
-                                    <div class="personel-contact">
-                                        📞 {{ koordinator.kontak }}
-                                    </div>
-
-                                {% endif %}
-
-                            {% else %}
-
-                                <div class="personel-empty">
-                                    Belum ada data koordinator.
-                                </div>
-
-                            {% endif %}
-
-                        </div>
-
-                    </div>
-
+                    {% if x.kontak %}
+                        <p>📞 {{ x.kontak }}</p>
+                    {% endif %}
                 </div>
-
-
-                <!-- JUMLAH ASISTEN -->
-
-                <div class="col-lg-4">
-
-                    <div class="personel-card">
-
-                        <div class="personel-card-body">
-
-                            <div class="personel-icon">
-                                👥
-                            </div>
-
-                            <div class="personel-role">
-                                Tim Pendamping
-                            </div>
-
-                            <h3>
-                                Asisten Dosen
-                            </h3>
-
-                            <div class="personel-name">
-                                {{ asisten_list|length }} Personel
-                            </div>
-
-                            <div class="personel-contact">
-                                Tim pendamping kegiatan praktikum
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- =================================================
-                 DAFTAR ASISTEN
-            ================================================== -->
-
-            <div class="asisten-section">
-
-                <div class="asisten-header">
-
-                    <h2>
-                        Daftar Asisten Dosen
-                    </h2>
-
-                    <p>
-                        Personel yang terlibat dalam pendampingan
-                        dan pelaksanaan kegiatan praktikum.
-                    </p>
-
-                </div>
-
-
-                <div class="asisten-list-card">
-
-                    {% for x in asisten_list %}
-
-                        <div class="asisten-item">
-
-                            <div class="asisten-left">
-
-                                <div class="asisten-number">
-                                    {{ forloop.counter }}
-                                </div>
-
-                                <div>
-
-                                    <p class="asisten-name">
-                                        {{ x.nama }}
-                                    </p>
-
-                                    {% if x.kontak %}
-
-                                        <div class="asisten-contact">
-                                            📞 {{ x.kontak }}
-                                        </div>
-
-                                    {% endif %}
-
-                                </div>
-
-                            </div>
-
-                            <div class="asisten-badge">
-                                ASISTEN DOSEN
-                            </div>
-
-                        </div>
-
-                    {% empty %}
-
-                        <div class="personel-empty text-center py-4">
-                            Belum ada data asisten dosen.
-                        </div>
-
-                    {% endfor %}
-
-                </div>
-
-            </div>
+            </article>
+            {% empty %}
+                <div class="empty">Belum ada asisten aktif.</div>
+            {% endfor %}
 
         </div>
 
-    </section>
+    </div>
+</section>
 
-</div>
+<style>
+    .featured-staff {
+        margin-bottom: 50px;
+        padding: 30px;
+        border-radius: 22px;
+        background: linear-gradient(135deg,#173c2b,#21543c);
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        box-shadow: 0 15px 40px rgba(16,37,27,.18);
+    }
+
+    .featured-staff h2 {
+        margin: 7px 0;
+        font-size: 27px;
+    }
+
+    .featured-staff p {
+        color: #d4e0d8;
+        font-size: 13px;
+    }
+
+    .staff-badge,
+    .staff-avatar {
+        display: grid;
+        place-items: center;
+        font-weight: 900;
+    }
+
+    .staff-badge {
+        width: 75px;
+        height: 75px;
+        border-radius: 20px;
+        background: #d6a84f;
+        color: #10251b;
+        font-size: 24px;
+    }
+
+    .section-title {
+        margin: 35px 0 18px;
+    }
+
+    .section-title span {
+        color: #8a6b28;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 2px;
+    }
+
+    .section-title h2 {
+        color: #173c2b;
+        font-size: 28px;
+    }
+
+    .staff-grid {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 17px;
+    }
+
+    .staff-card {
+        background: white;
+        border: 1px solid #dfe5df;
+        border-radius: 18px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 8px 25px rgba(16,37,27,.06);
+    }
+
+    .staff-avatar {
+        width: 55px;
+        height: 55px;
+        min-width: 55px;
+        border-radius: 15px;
+        background: #e5eee8;
+        color: #173c2b;
+        font-size: 21px;
+    }
+
+    .staff-card h3 {
+        color: #173c2b;
+        margin: 6px 0 2px;
+        font-size: 16px;
+    }
+
+    .staff-card p {
+        color: #6b756e;
+        font-size: 12px;
+    }
+
+    @media(max-width:800px) {
+        .staff-grid {
+            grid-template-columns: repeat(2,1fr);
+        }
+    }
+
+    @media(max-width:550px) {
+        .staff-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 
 {% endblock %}
