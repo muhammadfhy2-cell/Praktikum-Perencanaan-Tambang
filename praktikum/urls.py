@@ -1,7 +1,6 @@
 from django.urls import path
-
 from . import views
-
+from .daily_mom_views import tambah_daily_mom
 
 app_name = "praktikum"
 
@@ -80,7 +79,7 @@ urlpatterns = [
 
 
     # ========================================================
-    # AUTHENTICATION
+    # LOGIN KELOMPOK
     # ========================================================
 
     path(
@@ -110,6 +109,17 @@ urlpatterns = [
         "dashboard/peserta/",
         views.dashboard_peserta,
         name="dashboard_peserta",
+    ),
+
+
+    # ========================================================
+    # DAILY MOM
+    # ========================================================
+
+    path(
+        "dashboard/kelompok/daily-mom/tambah/",
+        tambah_daily_mom,
+        name="tambah_daily_mom",
     ),
 
 
