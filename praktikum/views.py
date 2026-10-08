@@ -305,6 +305,7 @@ def home(request):
 # ============================================================
 
 def personel(request):
+
     setting = get_setting()
 
     staff_list = (
@@ -348,6 +349,7 @@ def personel(request):
     )
 
     context = {
+
         "setting": setting,
 
         "staff": staff_list,
@@ -370,36 +372,120 @@ def personel(request):
         context,
     )
 
+
 # ============================================================
-# KELOMPOK
+# KELOMPOK PUBLIK
 # ============================================================
 
 def kelompok(request):
 
     setting = get_setting()
 
+    # --------------------------------------------------------
+    # DailyMOM publik
+    #
+    # Semua DailyMOM kelompok yang aktif ditampilkan.
+    # Data disimpan ke attribute "public_daily_mom" agar
+    # tidak mengganggu related manager asli "daily_mom".
+    # --------------------------------------------------------
+
+    daily_mom_public = (
+        DailyMOM.objects
+        .select_related(
+            "acara",
+            "dibuat_oleh",
+        )
+        .order_by(
+            "-tanggal",
+            "-dibuat",
+            "-id",
+        )
+    )
+
+    # --------------------------------------------------------
+    # Laporan mingguan publik
+    #
+    # SANGAT PENTING:
+    # Hanya laporan dengan status ACC yang boleh tampil
+    # pada halaman publik.
+    # --------------------------------------------------------
+
+    laporan_acc_public = (
+        LaporanMingguan.objects
+        .filter(
+            status="acc",
+        )
+        .select_related(
+            "peserta",
+            "acara",
+        )
+        .order_by(
+            "-uploaded_at",
+            "-id",
+        )
+    )
+
     kelompok_list = (
         Kelompok.objects
-        .filter(aktif=True)
+        .filter(
+            aktif=True,
+        )
         .prefetch_related(
+
+            # ------------------------------------------------
+            # MENTOR AKTIF
+            # ------------------------------------------------
             Prefetch(
                 "mentor",
-                queryset=Staff.objects.filter(
+                queryset=Staff.objects
+                .filter(
                     aktif=True
+                )
+                .order_by(
+                    "jabatan",
+                    "urutan",
+                    "nama",
                 ),
             ),
+
+            # ------------------------------------------------
+            # PESERTA AKTIF
+            # ------------------------------------------------
             Prefetch(
                 "peserta",
-                queryset=Peserta.objects.filter(
+                queryset=Peserta.objects
+                .filter(
                     aktif=True,
                     status_kemajuan=ACTIVE_STATUS,
-                ).order_by(
+                )
+                .order_by(
                     "jabatan",
                     "nama",
                 ),
             ),
+
+            # ------------------------------------------------
+            # DAILY MOM PUBLIK
+            # ------------------------------------------------
+            Prefetch(
+                "daily_mom",
+                queryset=daily_mom_public,
+                to_attr="public_daily_mom",
+            ),
+
+            # ------------------------------------------------
+            # LAPORAN MINGGUAN PUBLIK
+            # HANYA ACC
+            # ------------------------------------------------
+            Prefetch(
+                "laporan_mingguan",
+                queryset=laporan_acc_public,
+                to_attr="public_laporan_mingguan",
+            ),
         )
-        .order_by("nama")
+        .order_by(
+            "nama",
+        )
     )
 
     context = {
