@@ -5,7 +5,6 @@
 <html lang="id">
 <head>
 
-```
 <meta charset="UTF-8">
 
 <meta
@@ -62,6 +61,10 @@
         border-radius: 8px;
         font-size: 13px;
         font-weight: bold;
+    }
+
+    .logout:hover {
+        background: #b91c1c;
     }
 
     .container {
@@ -156,6 +159,73 @@
 
     .daily-mom-button:hover {
         background: #1e293b;
+    }
+
+    /* =====================================================
+       DAILY MOM ACTION
+       ===================================================== */
+
+    .mom-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+    }
+
+    .mom-edit-button,
+    .mom-delete-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 7px 11px;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        border: none;
+    }
+
+    .mom-edit-button {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+    }
+
+    .mom-edit-button:hover {
+        background: #dbeafe;
+    }
+
+    .mom-delete-button {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+    }
+
+    .mom-delete-button:hover {
+        background: #fee2e2;
+    }
+
+    .mom-content {
+        white-space: pre-line;
+        line-height: 1.6;
+        color: #475569;
+    }
+
+    .mom-date {
+        white-space: nowrap;
+    }
+
+    .mom-title {
+        font-weight: bold;
+        color: #0f172a;
+        margin-bottom: 5px;
+    }
+
+    .mom-small {
+        color: #64748b;
+        font-size: 12px;
     }
 
     .progress-wrapper {
@@ -319,47 +389,52 @@
         .daily-mom-button {
             width: 100%;
         }
+
+        .mom-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .mom-edit-button,
+        .mom-delete-button {
+            width: 100%;
+        }
     }
 
 </style>
-```
 
 </head>
 
 <body>
 
 <!-- ===================================================== -->
-
 <!-- NAVBAR -->
-
 <!-- ===================================================== -->
 
 <nav class="navbar">
 
-```
-<div class="brand">
+    <div class="brand">
 
-    {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+        {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
 
-    <small>
-        Dashboard Kelompok
-    </small>
+        <small>
+            Dashboard Kelompok
+        </small>
 
-</div>
+    </div>
 
-<a
-    href="{% url 'praktikum:logout_kelompok' %}"
-    class="logout"
->
-    Keluar
-</a>
-```
+    <a
+        href="{% url 'praktikum:logout_kelompok' %}"
+        class="logout"
+    >
+        Keluar
+    </a>
 
 </nav>
 
+
 <div class="container">
 
-```
 <!-- ================================================= -->
 <!-- MESSAGES -->
 <!-- ================================================= -->
@@ -1027,8 +1102,10 @@
                     <th>Judul</th>
                     <th>Acara</th>
                     <th>Dibuat Oleh</th>
+                    <th>Isi / Pembahasan</th>
                     <th>Keputusan</th>
                     <th>Tindak Lanjut</th>
+                    <th>Aksi</th>
                 </tr>
 
             </thead>
@@ -1039,23 +1116,42 @@
 
                     <tr>
 
-                        <td>
+                        <td class="mom-date">
                             {{ item.tanggal|date:"d/m/Y" }}
                         </td>
 
+
                         <td>
-                            {{ item.judul }}
+
+                            <div class="mom-title">
+                                {{ item.judul }}
+                            </div>
+
                         </td>
+
 
                         <td>
 
                             {% if item.acara %}
+
                                 {{ item.acara.nama }}
+
+                                {% if item.acara.sub_acara %}
+
+                                    <div class="mom-small">
+                                        {{ item.acara.sub_acara }}
+                                    </div>
+
+                                {% endif %}
+
                             {% else %}
+
                                 -
+
                             {% endif %}
 
                         </td>
+
 
                         <td>
 
@@ -1067,12 +1163,93 @@
 
                         </td>
 
-                        <td>
-                            {{ item.keputusan|default:"-" }}
-                        </td>
 
                         <td>
-                            {{ item.tindak_lanjut|default:"-" }}
+
+                            {% if item.isi %}
+
+                                <div class="mom-content">
+                                    {{ item.isi }}
+                                </div>
+
+                            {% else %}
+
+                                -
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if item.keputusan %}
+
+                                <div class="mom-content">
+                                    {{ item.keputusan }}
+                                </div>
+
+                            {% else %}
+
+                                -
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if item.tindak_lanjut %}
+
+                                <div class="mom-content">
+                                    {{ item.tindak_lanjut }}
+                                </div>
+
+                            {% else %}
+
+                                -
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- ================================= -->
+                        <!-- AKSI DAILY MOM -->
+                        <!-- ================================= -->
+
+                        <td>
+
+                            <div class="mom-actions">
+
+                                <a
+                                    href="{% url 'praktikum:edit_daily_mom' item.id %}"
+                                    class="mom-edit-button"
+                                >
+                                    ✎ Edit
+                                </a>
+
+
+                                <form
+                                    method="post"
+                                    action="{% url 'praktikum:hapus_daily_mom' item.id %}"
+                                    onsubmit="return confirm('Yakin ingin menghapus DailyMOM ini? Data yang dihapus tidak dapat dikembalikan.');"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="mom-delete-button"
+                                    >
+                                        🗑 Hapus
+                                    </button>
+
+                                </form>
+
+                            </div>
+
                         </td>
 
                     </tr>
@@ -1287,7 +1464,7 @@
     </div>
 
 {% endif %}
-```
+
 
 </div>
 
