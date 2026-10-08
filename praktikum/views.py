@@ -305,7 +305,6 @@ def home(request):
 # ============================================================
 
 def personel(request):
-
     setting = get_setting()
 
     staff_list = (
@@ -331,7 +330,10 @@ def personel(request):
         .filter(
             jabatan="koordinator"
         )
-        .first()
+        .order_by(
+            "urutan",
+            "nama",
+        )
     )
 
     asisten_list = (
@@ -346,7 +348,6 @@ def personel(request):
     )
 
     context = {
-
         "setting": setting,
 
         "staff": staff_list,
@@ -356,6 +357,7 @@ def personel(request):
         "personel_list": staff_list,
 
         "penanggung_jawab": penanggung_jawab,
+
         "koordinator": koordinator,
 
         "asisten": asisten_list,
@@ -367,7 +369,6 @@ def personel(request):
         "praktikum/personel.html",
         context,
     )
-
 
 # ============================================================
 # KELOMPOK
