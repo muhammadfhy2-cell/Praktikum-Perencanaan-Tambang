@@ -72,6 +72,12 @@ urlpatterns = [
         name="informasi_peserta",
     ),
 
+    path(
+        "format-dokumen/",
+        views.format_dokumen,
+        name="format_dokumen",
+    ),
+
 
     # ========================================================
     # LOGIN KELOMPOK
@@ -122,4 +128,5 @@ urlpatterns = [
         views.download_file_revisi,
         name="download_file_revisi",
     ),
+
 ]
