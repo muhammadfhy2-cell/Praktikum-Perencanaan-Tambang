@@ -2,15 +2,23 @@
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>
-        Login Kelompok - {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+        Login Kelompok -
+        {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
     </title>
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -18,16 +26,26 @@
         body {
             margin: 0;
             min-height: 100vh;
-            font-family: Arial, Helvetica, sans-serif;
-            background: linear-gradient(
-                135deg,
-                #0f172a,
-                #1e293b,
-                #334155
-            );
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f172a,
+                    #1e293b,
+                    #334155
+                );
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             padding: 20px;
         }
 
@@ -38,47 +56,77 @@
 
         .login-card {
             background: #ffffff;
+
             border-radius: 18px;
+
             padding: 35px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+
+            box-shadow:
+                0 20px 50px
+                rgba(0, 0, 0, 0.25);
         }
 
         .logo {
             width: 80px;
             height: 80px;
-            margin: 0 auto 20px;
+
+            margin:
+                0 auto 20px;
+
             border-radius: 50%;
+
             background: #0f172a;
+
             color: white;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             font-size: 28px;
+
             font-weight: bold;
         }
 
         h1 {
             text-align: center;
+
             margin: 0;
+
             color: #0f172a;
+
             font-size: 25px;
         }
 
         .subtitle {
             text-align: center;
+
             color: #64748b;
+
             font-size: 14px;
-            margin: 10px 0 28px;
+
+            margin:
+                10px 0 28px;
+
             line-height: 1.6;
         }
 
         .message {
             padding: 12px 14px;
+
             border-radius: 10px;
+
             margin-bottom: 18px;
+
             background: #fef2f2;
+
             color: #991b1b;
-            border: 1px solid #fecaca;
+
+            border:
+                1px solid #fecaca;
+
             font-size: 14px;
         }
 
@@ -88,37 +136,60 @@
 
         label {
             display: block;
+
             margin-bottom: 8px;
+
             color: #334155;
+
             font-size: 14px;
+
             font-weight: bold;
         }
 
         input {
             width: 100%;
+
             padding: 13px 14px;
-            border: 1px solid #cbd5e1;
+
+            border:
+                1px solid #cbd5e1;
+
             border-radius: 10px;
+
             font-size: 15px;
+
             outline: none;
+
             transition: 0.2s;
         }
 
         input:focus {
             border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37, 99, 235, 0.12);
         }
 
         .login-button {
             width: 100%;
+
             border: none;
+
             padding: 14px;
+
             border-radius: 10px;
+
             background: #0f172a;
+
             color: white;
+
             font-size: 15px;
+
             font-weight: bold;
+
             cursor: pointer;
+
             transition: 0.2s;
         }
 
@@ -128,10 +199,15 @@
 
         .back-link {
             display: block;
+
             text-align: center;
+
             margin-top: 20px;
+
             color: #475569;
+
             text-decoration: none;
+
             font-size: 14px;
         }
 
@@ -141,22 +217,31 @@
 
         .footer {
             text-align: center;
+
             color: #cbd5e1;
+
             font-size: 12px;
+
             margin-top: 18px;
         }
 
         @media (max-width: 480px) {
+
             .login-card {
-                padding: 25px 20px;
+                padding:
+                    25px 20px;
             }
 
             h1 {
                 font-size: 22px;
             }
+
         }
+
     </style>
+
 </head>
+
 
 <body>
 
@@ -168,27 +253,46 @@
             PT
         </div>
 
-        <h1>Login Kelompok</h1>
+
+        <h1>
+            Login Kelompok
+        </h1>
+
 
         <div class="subtitle">
+
             {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+
             <br>
+
             Silakan masuk menggunakan akun kelompok.
+
         </div>
 
+
         {% if messages %}
+
             {% for message in messages %}
+
                 <div class="message">
                     {{ message }}
                 </div>
+
             {% endfor %}
+
         {% endif %}
 
-        <form method="post">
+
+        <form
+            method="post"
+            action="{% url 'praktikum:login_kelompok' %}"
+        >
 
             {% csrf_token %}
 
+
             <div class="form-group">
+
                 <label for="username">
                     Username Kelompok
                 </label>
@@ -197,13 +301,19 @@
                     type="text"
                     id="username"
                     name="username"
-                    placeholder="Masukkan username"
+                    placeholder="Masukkan username kelompok"
                     autocomplete="username"
+                    autocapitalize="none"
+                    spellcheck="false"
                     required
+                    autofocus
                 >
+
             </div>
 
+
             <div class="form-group">
+
                 <label for="password">
                     Password
                 </label>
@@ -216,7 +326,9 @@
                     autocomplete="current-password"
                     required
                 >
+
             </div>
+
 
             <button
                 type="submit"
@@ -227,6 +339,7 @@
 
         </form>
 
+
         <a
             href="{% url 'praktikum:home' %}"
             class="back-link"
@@ -236,12 +349,20 @@
 
     </div>
 
+
     <div class="footer">
+
         {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
-        · {{ setting.periode|default:"2026/2027" }}
+
+        ·
+
+        {{ setting.periode|default:"2026/2027" }}
+
     </div>
 
 </div>
 
+
 </body>
+
 </html>
