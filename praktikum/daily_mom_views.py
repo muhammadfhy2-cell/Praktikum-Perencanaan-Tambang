@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib import messages
 from django.shortcuts import redirect, render
 
@@ -5,7 +7,6 @@ from .models import Acara, DailyMOM, Kelompok, Peserta
 
 
 def tambah_daily_mom(request):
-
     # ========================================================
     # CEK LOGIN KELOMPOK
     # ========================================================
@@ -17,11 +18,9 @@ def tambah_daily_mom(request):
             request,
             "Silakan login terlebih dahulu."
         )
-
         return redirect(
             "praktikum:login_kelompok"
         )
-
 
     # ========================================================
     # AMBIL KELOMPOK AKTIF
@@ -37,7 +36,6 @@ def tambah_daily_mom(request):
     )
 
     if not kelompok:
-
         request.session.pop(
             "kelompok_id",
             None,
@@ -51,7 +49,6 @@ def tambah_daily_mom(request):
         return redirect(
             "praktikum:login_kelompok"
         )
-
 
     # ========================================================
     # AMBIL KETUA AKTIF
@@ -71,13 +68,11 @@ def tambah_daily_mom(request):
         .first()
     )
 
-
     # ========================================================
     # JIKA BELUM ADA KETUA
     # ========================================================
 
     if not ketua:
-
         messages.error(
             request,
             "Kelompok belum memiliki Ketua aktif. "
@@ -87,7 +82,6 @@ def tambah_daily_mom(request):
         return redirect(
             "praktikum:dashboard_kelompok"
         )
-
 
     # ========================================================
     # DAFTAR ACARA
@@ -101,9 +95,8 @@ def tambah_daily_mom(request):
         )
     )
 
-
     # ========================================================
-    # SIMPAN DAILY MOM
+    # PROSES POST
     # ========================================================
 
     if request.method == "POST":
@@ -138,10 +131,9 @@ def tambah_daily_mom(request):
             ""
         ).strip()
 
-
-        # ----------------------------------------------------
-        # VALIDASI
-        # ----------------------------------------------------
+        # ====================================================
+        # VALIDASI TANGGAL
+        # ====================================================
 
         if not tanggal:
             messages.error(
@@ -159,6 +151,31 @@ def tambah_daily_mom(request):
                 },
             )
 
+        try:
+            tanggal_valid = datetime.strptime(
+                tanggal,
+                "%Y-%m-%d"
+            ).date()
+
+        except ValueError:
+            messages.error(
+                request,
+                "Format tanggal tidak valid."
+            )
+
+            return render(
+                request,
+                "praktikum/daily_mom_tambah.html",
+                {
+                    "kelompok": kelompok,
+                    "ketua": ketua,
+                    "acara_list": acara_list,
+                },
+            )
+
+        # ====================================================
+        # VALIDASI ACARA
+        # ====================================================
 
         if not acara_id:
             messages.error(
@@ -176,6 +193,33 @@ def tambah_daily_mom(request):
                 },
             )
 
+        acara = (
+            Acara.objects
+            .filter(
+                id=acara_id
+            )
+            .first()
+        )
+
+        if not acara:
+            messages.error(
+                request,
+                "Acara yang dipilih tidak ditemukan."
+            )
+
+            return render(
+                request,
+                "praktikum/daily_mom_tambah.html",
+                {
+                    "kelompok": kelompok,
+                    "ketua": ketua,
+                    "acara_list": acara_list,
+                },
+            )
+
+        # ====================================================
+        # VALIDASI JUDUL
+        # ====================================================
 
         if not judul:
             messages.error(
@@ -193,6 +237,9 @@ def tambah_daily_mom(request):
                 },
             )
 
+        # ====================================================
+        # VALIDASI ISI
+        # ====================================================
 
         if not isi:
             messages.error(
@@ -210,43 +257,12 @@ def tambah_daily_mom(request):
                 },
             )
 
-
-        # ----------------------------------------------------
-        # VALIDASI ACARA
-        # ----------------------------------------------------
-
-        acara = (
-            Acara.objects
-            .filter(
-                id=acara_id
-            )
-            .first()
-        )
-
-        if not acara:
-
-            messages.error(
-                request,
-                "Acara yang dipilih tidak ditemukan."
-            )
-
-            return render(
-                request,
-                "praktikum/daily_mom_tambah.html",
-                {
-                    "kelompok": kelompok,
-                    "ketua": ketua,
-                    "acara_list": acara_list,
-                },
-            )
-
-
-        # ----------------------------------------------------
-        # SIMPAN
-        # ----------------------------------------------------
+        # ====================================================
+        # SIMPAN DAILY MOM
+        # ====================================================
 
         DailyMOM.objects.create(
-            tanggal=tanggal,
+            tanggal=tanggal_valid,
             kelompok=kelompok,
             acara=acara,
             judul=judul,
@@ -256,24 +272,21 @@ def tambah_daily_mom(request):
             tindak_lanjut=tindak_lanjut,
         )
 
-
-        # ----------------------------------------------------
-        # NOTIFIKASI
-        # ----------------------------------------------------
+        # ====================================================
+        # NOTIFIKASI BERHASIL
+        # ====================================================
 
         messages.success(
             request,
             "DailyMOM berhasil ditambahkan."
         )
 
-
         return redirect(
             "praktikum:dashboard_kelompok"
         )
 
-
     # ========================================================
-    # FORM
+    # TAMPILKAN FORM
     # ========================================================
 
     return render(
