@@ -1,51 +1,147 @@
 {% extends "praktikum/base.html" %}
 
+{% block title %}Tugas Pendahuluan | Praktikum Perencanaan Tambang{% endblock %}
+
 {% block content %}
 
-<div class="container">
-
-    <h1>Tugas Pendahuluan</h1>
-
-    {% for item in tugas %}
-
-    <div class="card">
-
-        <h2>{{ item.judul }}</h2>
-
+<section class="page-header">
+    <div class="container">
+        <div class="eyebrow">PRE-LAB ASSIGNMENT</div>
+        <h1>Tugas Pendahuluan</h1>
         <p>
-            <strong>Acara:</strong>
-            {{ item.acara.nama }}
+            Daftar tugas pendahuluan yang perlu diselesaikan sebelum kegiatan
+            praktikum.
         </p>
+    </div>
+</section>
 
-        {% if item.deadline %}
-        <p>
-            <strong>Deadline:</strong>
-            {{ item.deadline|date:"d F Y H:i" }}
-        </p>
-        {% endif %}
+<section class="content-section">
+    <div class="container">
 
-        <div>
-            {{ item.soal|linebreaks }}
+        <div class="assignment-grid">
+
+            {% for tugas in tugas_list %}
+
+            <article class="assignment-card">
+
+                <div class="assignment-top">
+                    <div class="assignment-icon">📝</div>
+
+                    <span class="badge badge-green">
+                        Aktif
+                    </span>
+                </div>
+
+                <h2>{{ tugas.judul }}</h2>
+
+                {% if tugas.acara %}
+                    <div class="assignment-event">
+                        📅 {{ tugas.acara.nama }}
+                    </div>
+                {% endif %}
+
+                {% if tugas.deadline %}
+                    <div class="deadline">
+                        ⏰ Deadline:
+                        <strong>{{ tugas.deadline|date:"d M Y H:i" }}</strong>
+                    </div>
+                {% endif %}
+
+                {% if tugas.soal %}
+                    <div class="assignment-description">
+                        {{ tugas.soal|linebreaks }}
+                    </div>
+                {% endif %}
+
+                {% if tugas.file %}
+                    <a href="{{ tugas.file.url }}"
+                       target="_blank"
+                       class="btn">
+                        ⬇ Download Soal
+                    </a>
+                {% endif %}
+
+            </article>
+
+            {% empty %}
+
+            <div class="empty">
+                <div class="empty-icon">📝</div>
+                Belum ada tugas pendahuluan aktif.
+            </div>
+
+            {% endfor %}
+
         </div>
 
-        {% if item.file %}
-        <p>
-            <a href="{{ item.file.url }}" target="_blank">
-                Download File Tugas
-            </a>
-        </p>
-        {% endif %}
-
     </div>
+</section>
 
-    {% empty %}
+<style>
+    .assignment-grid {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        gap: 20px;
+    }
 
-    <p>
-        Belum ada tugas pendahuluan.
-    </p>
+    .assignment-card {
+        background: white;
+        border: 1px solid #dfe5df;
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 9px 27px rgba(16,37,27,.06);
+    }
 
-    {% endfor %}
+    .assignment-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-</div>
+    .assignment-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: #e9f0eb;
+        display: grid;
+        place-items: center;
+        font-size: 22px;
+    }
+
+    .assignment-card h2 {
+        color: #173c2b;
+        font-size: 20px;
+        margin: 18px 0 8px;
+    }
+
+    .assignment-event {
+        color: #8a6b28;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .deadline {
+        margin-top: 13px;
+        padding: 10px;
+        background: #fff8e7;
+        color: #74622d;
+        border-radius: 9px;
+        font-size: 11px;
+    }
+
+    .assignment-description {
+        margin: 17px 0;
+        padding-top: 15px;
+        border-top: 1px solid #edf0ed;
+        color: #606a63;
+        font-size: 13px;
+    }
+
+    @media(max-width:700px) {
+        .assignment-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 
 {% endblock %}
