@@ -1,1 +1,98 @@
-{% extends 'praktikum/base.html' %}{% block content %}<div class="container py-5"><h1>Tata Tertib Praktikum</h1>{% for x in items %}<article class="card p-4 mb-3"><h4>{{ x.judul }}</h4><div style="white-space:pre-line">{{ x.isi }}</div></article>{% empty %}<p>Belum ada tata tertib.</p>{% endfor %}</div>{% endblock %}
+{% extends "praktikum/base.html" %}
+
+{% block title %}Tata Tertib | Praktikum Perencanaan Tambang{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <div class="eyebrow">RULES & REGULATIONS</div>
+        <h1>Tata Tertib Praktikum</h1>
+        <p>
+            Ketentuan yang harus diperhatikan selama mengikuti
+            Praktikum Perencanaan Tambang.
+        </p>
+    </div>
+</section>
+
+<section class="content-section">
+    <div class="container">
+
+        <div class="rules-list">
+
+            {% for item in items %}
+
+            <article class="rule-card">
+
+                <div class="rule-number">
+                    {{ forloop.counter }}
+                </div>
+
+                <div>
+                    <h2>{{ item.judul }}</h2>
+
+                    <div class="rule-content">
+                        {{ item.isi|linebreaks }}
+                    </div>
+                </div>
+
+            </article>
+
+            {% empty %}
+
+            <div class="empty">
+                <div class="empty-icon">📋</div>
+                Belum ada tata tertib aktif.
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+<style>
+    .rules-list {
+        max-width: 950px;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .rule-card {
+        display: flex;
+        gap: 18px;
+        padding: 23px;
+        background: white;
+        border: 1px solid #dfe5df;
+        border-radius: 18px;
+        box-shadow: 0 7px 23px rgba(16,37,27,.05);
+    }
+
+    .rule-number {
+        width: 43px;
+        height: 43px;
+        min-width: 43px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        background: #173c2b;
+        color: #d6a84f;
+        font-weight: 900;
+    }
+
+    .rule-card h2 {
+        color: #173c2b;
+        font-size: 18px;
+        margin-bottom: 6px;
+    }
+
+    .rule-content {
+        color: #606a63;
+        font-size: 13px;
+    }
+</style>
+
+{% endblock %}
