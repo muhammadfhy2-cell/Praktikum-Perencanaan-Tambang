@@ -1,1 +1,149 @@
-{% extends 'praktikum/base.html' %}{% block content %}<div class="container py-5"><h1>Materi & Download</h1><div class="table-responsive"><table class="table table-hover"><thead><tr><th>Materi</th><th>Kategori</th><th>Acara</th><th>Upload</th><th></th></tr></thead><tbody>{% for x in materi %}<tr><td><b>{{ x.judul }}</b><br><small>{{ x.deskripsi }}</small></td><td>{{ x.get_kategori_display }}</td><td>{{ x.acara|default:'-' }}</td><td>{{ x.uploaded_at|date:'d M Y' }}</td><td><a class="btn btn-sm btn-dark" href="{{ x.file.url }}" download>Download</a></td></tr>{% empty %}<tr><td colspan="5">Belum ada materi.</td></tr>{% endfor %}</tbody></table></div></div>{% endblock %}
+{% extends "praktikum/base.html" %}
+
+{% block title %}Materi | Praktikum Perencanaan Tambang{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <div class="eyebrow">LEARNING MATERIAL</div>
+        <h1>Materi Praktikum</h1>
+        <p>
+            Modul, dataset, template, dan dokumen pendukung kegiatan praktikum.
+        </p>
+    </div>
+</section>
+
+<section class="content-section">
+    <div class="container">
+
+        <div class="material-grid">
+
+            {% for materi in materi_list %}
+
+            <article class="material-card">
+
+                <div class="material-icon">
+                    {% if materi.kategori == "modul" %}
+                        📚
+                    {% elif materi.kategori == "dataset" %}
+                        📊
+                    {% elif materi.kategori == "template" %}
+                        📄
+                    {% else %}
+                        📁
+                    {% endif %}
+                </div>
+
+                <div class="material-content">
+
+                    <span class="badge badge-gold">
+                        {{ materi.kategori }}
+                    </span>
+
+                    <h2>{{ materi.judul }}</h2>
+
+                    {% if materi.acara %}
+                        <p class="event">
+                            📅 {{ materi.acara.nama }}
+                        </p>
+                    {% endif %}
+
+                    {% if materi.deskripsi %}
+                        <p>{{ materi.deskripsi }}</p>
+                    {% endif %}
+
+                    {% if materi.file %}
+                        <a href="{{ materi.file.url }}" target="_blank" class="btn">
+                            ⬇ Buka File
+                        </a>
+                    {% endif %}
+
+                    <small>
+                        Upload: {{ materi.uploaded_at|date:"d M Y" }}
+                    </small>
+
+                </div>
+
+            </article>
+
+            {% empty %}
+
+            <div class="empty">
+                <div class="empty-icon">📚</div>
+                Belum ada materi tersedia.
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+<style>
+    .material-grid {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 20px;
+    }
+
+    .material-card {
+        background: white;
+        border: 1px solid #dfe5df;
+        border-radius: 18px;
+        padding: 22px;
+        box-shadow: 0 8px 25px rgba(16,37,27,.06);
+        display: flex;
+        gap: 15px;
+    }
+
+    .material-icon {
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: #e9f0eb;
+        font-size: 23px;
+    }
+
+    .material-content h2 {
+        color: #173c2b;
+        font-size: 17px;
+        margin: 8px 0;
+    }
+
+    .material-content p {
+        color: #6b756e;
+        font-size: 12px;
+        margin-bottom: 12px;
+    }
+
+    .material-content .event {
+        color: #8a6b28;
+        font-weight: 700;
+    }
+
+    .material-content small {
+        display: block;
+        color: #89928c;
+        font-size: 10px;
+        margin-top: 10px;
+    }
+
+    @media(max-width:900px) {
+        .material-grid {
+            grid-template-columns: repeat(2,1fr);
+        }
+    }
+
+    @media(max-width:600px) {
+        .material-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+{% endblock %}
