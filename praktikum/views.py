@@ -47,10 +47,15 @@ GUGUR_STATUS = "gugur"
 def peserta_jabatan_order():
     """
     Menentukan urutan peserta:
+
     1. Ketua
     2. Anggota
 
-    Jika ada data jabatan lain, diletakkan setelahnya.
+    Jika ada jabatan lain, diletakkan setelahnya.
+
+    Untuk peserta dengan jabatan yang sama,
+    urutan dilanjutkan berdasarkan ID sehingga
+    tidak menggunakan urutan alfabet nama.
     """
 
     return Case(
@@ -310,10 +315,12 @@ def home(request):
     # --------------------------------------------------------
     #
     # Urutan:
-    # Kelompok berdasarkan ID
-    # -> Ketua
-    # -> Anggota
-    # -> ID peserta
+    # 1. Kelompok berdasarkan ID
+    # 2. Ketua
+    # 3. Anggota
+    # 4. ID peserta
+    #
+    # Tidak berdasarkan alfabet nama.
     #
 
     peserta_list = (
@@ -347,12 +354,20 @@ def home(request):
         .first()
     )
 
+    # Semua Penanggung Jawab Praktikum aktif.
+    #
+    # Tidak lagi menggunakan .first()
+    # sehingga semua staff dengan jabatan tersebut
+    # dapat ditampilkan pada halaman publik.
     penanggung_jawab = (
         staff_list
         .filter(
             jabatan="penanggung_jawab"
         )
-        .first()
+        .order_by(
+            "urutan",
+            "id",
+        )
     )
 
     asisten_list = (
@@ -444,13 +459,30 @@ def personel(request):
         )
     )
 
+    # --------------------------------------------------------
+    # SEMUA PENANGGUNG JAWAB PRAKTIKUM
+    # --------------------------------------------------------
+    #
+    # Tidak menggunakan .first().
+    #
+    # Semua Staff aktif dengan jabatan
+    # Penanggung Jawab Praktikum akan ditampilkan.
+    #
+
     penanggung_jawab = (
         staff_list
         .filter(
             jabatan="penanggung_jawab"
         )
-        .first()
+        .order_by(
+            "urutan",
+            "id",
+        )
     )
+
+    # --------------------------------------------------------
+    # KOORDINATOR
+    # --------------------------------------------------------
 
     koordinator = (
         staff_list
@@ -462,6 +494,10 @@ def personel(request):
             "id",
         )
     )
+
+    # --------------------------------------------------------
+    # ASISTEN
+    # --------------------------------------------------------
 
     asisten_list = (
         staff_list
@@ -980,6 +1016,8 @@ def informasi_peserta(request):
     # 2. Ketua
     # 3. Anggota
     # 4. ID peserta
+    #
+    # Tidak menggunakan nama.
     #
 
     peserta_list = (
