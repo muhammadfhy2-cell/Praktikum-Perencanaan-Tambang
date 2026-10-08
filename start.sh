@@ -33,17 +33,17 @@ User = get_user_model()
 
 username = os.getenv(
     "DJANGO_SUPERUSER_USERNAME",
-    "asdos_perencanaan_tambang"
+    "asdos_perencanaan_tambang",
 )
 
 email = os.getenv(
     "DJANGO_SUPERUSER_EMAIL",
-    "admin@praktikumperencanaantambang.local"
+    "admin@praktikumperencanaantambang.local",
 )
 
 password = os.getenv(
     "DJANGO_SUPERUSER_PASSWORD",
-    "AdminPraktikum2026!"
+    "AdminPraktikum2026!",
 )
 
 user, created = User.objects.get_or_create(
