@@ -9,6 +9,7 @@ Production-ready configuration:
 - WhiteNoise static files
 - Media files
 - Django authentication
+- Django Admin
 """
 
 from pathlib import Path
@@ -38,13 +39,15 @@ load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = os.getenv(
     "SECRET_KEY",
-    "django-insecure-praktikum-perencanaan-tambang-development-key"
+    "django-insecure-praktikum-perencanaan-tambang-development-key",
 )
 
-DEBUG = os.getenv(
-    "DEBUG",
-    "False"
-).lower() in ("1", "true", "yes", "on")
+DEBUG = os.getenv("DEBUG", "False").strip().lower() in {
+    "1",
+    "true",
+    "yes",
+    "on",
+}
 
 
 # ============================================================
@@ -62,7 +65,7 @@ ALLOWED_HOSTS = [
     host.strip()
     for host in os.getenv(
         "ALLOWED_HOSTS",
-        DEFAULT_ALLOWED_HOSTS
+        DEFAULT_ALLOWED_HOSTS,
     ).split(",")
     if host.strip()
 ]
@@ -81,7 +84,7 @@ CSRF_TRUSTED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "CSRF_TRUSTED_ORIGINS",
-        DEFAULT_CSRF_TRUSTED_ORIGINS
+        DEFAULT_CSRF_TRUSTED_ORIGINS,
     ).split(",")
     if origin.strip()
 ]
@@ -110,14 +113,17 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
 
-    # WhiteNoise untuk static files production
+    # WhiteNoise harus berada setelah SecurityMiddleware
     "whitenoise.middleware.WhiteNoiseMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
+
     "django.middleware.common.CommonMiddleware",
+
     "django.middleware.csrf.CsrfViewMiddleware",
 
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+
     "django.contrib.messages.middleware.MessageMiddleware",
 
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -169,7 +175,7 @@ WSGI_APPLICATION = "core.wsgi.application"
 # DATABASE
 # ============================================================
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 
 if DATABASE_URL:
 
@@ -177,12 +183,18 @@ if DATABASE_URL:
         "default": dj_database_url.parse(
             DATABASE_URL,
             conn_max_age=600,
+            conn_health_checks=True,
             ssl_require=(
                 os.getenv(
                     "DATABASE_SSL_REQUIRE",
-                    "false"
-                ).lower()
-                in ("1", "true", "yes")
+                    "false",
+                ).strip().lower()
+                in {
+                    "1",
+                    "true",
+                    "yes",
+                    "on",
+                }
             ),
         )
     }
@@ -262,8 +274,7 @@ STATICFILES_DIRS = [
 STORAGES = {
     "default": {
         "BACKEND": (
-            "django.core.files.storage."
-            "FileSystemStorage"
+            "django.core.files.storage.FileSystemStorage"
         ),
     },
 
@@ -319,7 +330,7 @@ CSRF_COOKIE_HTTPONLY = False
 
 
 # ============================================================
-# SECURITY PRODUCTION
+# PRODUCTION SECURITY
 # ============================================================
 
 if not DEBUG:
