@@ -78,7 +78,6 @@ urlpatterns = [
         name="format_dokumen",
     ),
 
-
     # ========================================================
     # LOGIN KELOMPOK
     # ========================================================
@@ -94,7 +93,6 @@ urlpatterns = [
         views.logout_kelompok,
         name="logout_kelompok",
     ),
-
 
     # ========================================================
     # DASHBOARD
@@ -112,7 +110,6 @@ urlpatterns = [
         name="dashboard_peserta",
     ),
 
-
     # ========================================================
     # LAPORAN
     # ========================================================
@@ -128,5 +125,4 @@ urlpatterns = [
         views.download_file_revisi,
         name="download_file_revisi",
     ),
-
 ]
