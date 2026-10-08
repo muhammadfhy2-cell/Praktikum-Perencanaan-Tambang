@@ -1,173 +1,709 @@
 {% extends "praktikum/base.html" %}
 
-{% block title %}Informasi Peserta | Praktikum Perencanaan Tambang{% endblock %}
+{% block title %}
+Informasi Peserta | Praktikum Perencanaan Tambang
+{% endblock %}
 
 {% block content %}
 
-<section class="page-header">
-    <div class="container">
-        <div class="eyebrow">PARTICIPANT DATABASE</div>
-        <h1>Informasi Peserta</h1>
-        <p>
-            Daftar peserta Praktikum Perencanaan Tambang beserta status
-            keikutsertaannya.
-        </p>
-    </div>
-</section>
-
-<section class="content-section">
-    <div class="container">
-
-        <div class="participant-summary">
-
-            <div>
-                <span>Total Peserta Aktif</span>
-                <strong>{{ total_aktif }}</strong>
-            </div>
-
-            <div>
-                <span>Total Peserta Gugur</span>
-                <strong>{{ total_gugur }}</strong>
-            </div>
-
-            <div>
-                <span>Total Kelompok</span>
-                <strong>{{ total_kelompok }}</strong>
-            </div>
-
-        </div>
-
-
-        <div class="table-wrap">
-
-            <table>
-
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Nama</th>
-                        <th>NIM</th>
-                        <th>Kelompok</th>
-                        <th>Jabatan</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    {% for peserta in peserta_list %}
-
-                    <tr>
-
-                        <td>{{ forloop.counter }}</td>
-
-                        <td>
-                            <strong>{{ peserta.nama }}</strong>
-                        </td>
-
-                        <td>{{ peserta.nim }}</td>
-
-                        <td>
-                            {% if peserta.kelompok %}
-                                {{ peserta.kelompok.nama }}
-                            {% else %}
-                                —
-                            {% endif %}
-                        </td>
-
-                        <td>
-                            {% if peserta.jabatan == "ketua" %}
-                                Ketua
-                            {% else %}
-                                Anggota
-                            {% endif %}
-                        </td>
-
-                        <td>
-                            {% if peserta.status_kemajuan == "gugur" %}
-                                <span class="badge badge-red">
-                                    Gugur
-                                </span>
-                            {% else %}
-                                <span class="badge badge-green">
-                                    Aktif
-                                </span>
-                            {% endif %}
-                        </td>
-
-                    </tr>
-
-                    {% empty %}
-
-                    <tr>
-                        <td colspan="6">
-                            <div class="empty">
-                                Belum ada data peserta.
-                            </div>
-                        </td>
-                    </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-        <div class="public-note">
-            <strong>Informasi:</strong>
-            Data yang ditampilkan merupakan informasi peserta yang telah
-            dipublikasikan oleh pengelola praktikum.
-        </div>
-
-    </div>
-</section>
-
 <style>
-    .participant-summary {
+
+    .peserta-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px 20px 60px;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .page-header h1 {
+        margin: 0 0 10px;
+        color: #0b5d3b;
+        font-size: 32px;
+        font-weight: 800;
+    }
+
+    .page-header p {
+        margin: 0;
+        color: #666;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    /* ======================================================
+       STATISTIK
+       ====================================================== */
+
+    .stats-grid {
         display: grid;
-        grid-template-columns: repeat(3,1fr);
-        gap: 16px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
         margin-bottom: 25px;
     }
 
-    .participant-summary div {
-        background: white;
-        border: 1px solid #dfe5df;
-        border-radius: 17px;
+    .stat-card {
+        background: #fff;
+        border: 1px solid #e5e5e5;
+        border-radius: 14px;
         padding: 20px;
-        box-shadow: 0 7px 23px rgba(16,37,27,.05);
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
     }
 
-    .participant-summary span {
-        display: block;
-        color: #6b756e;
+    .stat-label {
+        color: #777;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .stat-value {
+        color: #0b5d3b;
+        font-size: 28px;
+        font-weight: 800;
+    }
+
+    /* ======================================================
+       FILTER
+       ====================================================== */
+
+    .filter-card {
+        background: #fff;
+        border: 1px solid #e5e5e5;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
+    }
+
+    .filter-title {
+        margin: 0 0 15px;
+        color: #222;
+        font-size: 16px;
+        font-weight: 800;
+    }
+
+    .filter-form {
+        display: grid;
+        grid-template-columns: 1fr 200px auto;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .search-input,
+    .status-select {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #d8d8d8;
+        border-radius: 9px;
+        padding: 12px 13px;
+        font-size: 13px;
+        outline: none;
+        background: #fff;
+    }
+
+    .search-input:focus,
+    .status-select:focus {
+        border-color: #0b7a4b;
+        box-shadow: 0 0 0 3px rgba(11, 122, 75, 0.08);
+    }
+
+    .search-button {
+        border: none;
+        border-radius: 9px;
+        padding: 12px 20px;
+        background: #0b5d3b;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .search-button:hover {
+        background: #08462d;
+    }
+
+    .reset-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 16px;
+        border-radius: 9px;
+        background: #f2f2f2;
+        color: #555;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        margin-left: 8px;
+    }
+
+    .reset-button:hover {
+        background: #e5e5e5;
+        color: #333;
+    }
+
+    .filter-result {
+        margin-top: 13px;
+        color: #777;
         font-size: 12px;
     }
 
-    .participant-summary strong {
-        display: block;
-        color: #173c2b;
-        font-size: 31px;
-        margin-top: 4px;
+    .filter-result strong {
+        color: #0b5d3b;
     }
 
-    .public-note {
-        margin-top: 18px;
-        padding: 15px 18px;
-        border-left: 4px solid #d6a84f;
-        border-radius: 8px;
-        background: #fff8e7;
-        color: #74622d;
+    /* ======================================================
+       TABEL
+       ====================================================== */
+
+    .table-card {
+        background: #fff;
+        border: 1px solid #e5e5e5;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
+    }
+
+    .table-header {
+        padding: 20px;
+        border-bottom: 1px solid #e8e8e8;
+    }
+
+    .table-header h2 {
+        margin: 0 0 5px;
+        color: #222;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .table-header p {
+        margin: 0;
+        color: #777;
         font-size: 12px;
     }
 
-    @media(max-width:650px) {
-        .participant-summary {
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .peserta-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 750px;
+    }
+
+    .peserta-table th {
+        background: #f5f8f6;
+        color: #555;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        padding: 13px 15px;
+        text-align: left;
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    .peserta-table td {
+        padding: 14px 15px;
+        border-bottom: 1px solid #eeeeee;
+        color: #333;
+        font-size: 13px;
+        vertical-align: middle;
+    }
+
+    .peserta-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .peserta-table tbody tr:hover {
+        background: #fafdfb;
+    }
+
+    .nomor {
+        width: 50px;
+        color: #999 !important;
+        font-weight: 700;
+    }
+
+    .kelompok-name {
+        font-weight: 700;
+        color: #0b5d3b;
+    }
+
+    .peserta-name {
+        font-weight: 700;
+        color: #222;
+    }
+
+    /* ======================================================
+       BADGE JABATAN
+       ====================================================== */
+
+    .jabatan-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .jabatan-ketua {
+        background: #fff2c7;
+        color: #856404;
+    }
+
+    .jabatan-anggota {
+        background: #edf4f0;
+        color: #0b5d3b;
+    }
+
+    /* ======================================================
+       BADGE STATUS
+       ====================================================== */
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .status-aktif {
+        background: #dff4e7;
+        color: #12683f;
+    }
+
+    .status-gugur {
+        background: #fde2e2;
+        color: #a12626;
+    }
+
+    .empty-box {
+        padding: 45px 20px;
+        text-align: center;
+        color: #888;
+        font-size: 13px;
+    }
+
+    .empty-icon {
+        font-size: 32px;
+        margin-bottom: 10px;
+    }
+
+    /* ======================================================
+       RESPONSIVE
+       ====================================================== */
+
+    @media (max-width: 900px) {
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .filter-form {
             grid-template-columns: 1fr;
         }
+
+        .reset-button {
+            margin-left: 0;
+        }
     }
+
+    @media (max-width: 600px) {
+
+        .peserta-page {
+            padding: 20px 14px 45px;
+        }
+
+        .page-header h1 {
+            font-size: 26px;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stat-card {
+            padding: 15px;
+        }
+
+        .stat-value {
+            font-size: 23px;
+        }
+    }
+
 </style>
+
+
+<div class="peserta-page">
+
+    <!-- ==================================================
+         HEADER
+         ================================================== -->
+
+    <div class="page-header">
+
+        <h1>Informasi Peserta</h1>
+
+        <p>
+            Daftar peserta Praktikum Perencanaan Tambang
+            berdasarkan urutan kelompok dan jabatan.
+        </p>
+
+    </div>
+
+
+    <!-- ==================================================
+         STATISTIK
+         ================================================== -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                TOTAL PESERTA
+            </div>
+
+            <div class="stat-value">
+                {{ total_peserta }}
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                PESERTA AKTIF
+            </div>
+
+            <div class="stat-value">
+                {{ total_aktif }}
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                PESERTA GUGUR
+            </div>
+
+            <div class="stat-value">
+                {{ total_gugur }}
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                TOTAL KELOMPOK
+            </div>
+
+            <div class="stat-value">
+                {{ total_kelompok }}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         PENCARIAN DAN FILTER
+         ================================================== -->
+
+    <div class="filter-card">
+
+        <div class="filter-title">
+            🔎 Cari Peserta
+        </div>
+
+        <form
+            method="get"
+            action=""
+            class="filter-form"
+        >
+
+            <input
+                type="text"
+                name="q"
+                class="search-input"
+                placeholder="Cari nama peserta atau nama kelompok..."
+                value="{{ query }}"
+                autocomplete="off"
+            >
+
+            <select
+                name="status"
+                class="status-select"
+            >
+
+                <option
+                    value="semua"
+                    {% if status_filter == "semua" %}
+                        selected
+                    {% endif %}
+                >
+                    Semua Status
+                </option>
+
+                <option
+                    value="aktif"
+                    {% if status_filter == "aktif" %}
+                        selected
+                    {% endif %}
+                >
+                    Aktif
+                </option>
+
+                <option
+                    value="gugur"
+                    {% if status_filter == "gugur" %}
+                        selected
+                    {% endif %}
+                >
+                    Gugur
+                </option>
+
+            </select>
+
+            <div>
+
+                <button
+                    type="submit"
+                    class="search-button"
+                >
+                    Cari
+                </button>
+
+                {% if query or status_filter != "semua" %}
+
+                    <a
+                        href="{% url 'praktikum:informasi_peserta' %}"
+                        class="reset-button"
+                    >
+                        Reset
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </form>
+
+
+        <div class="filter-result">
+
+            Menampilkan
+            <strong>{{ jumlah_hasil }}</strong>
+            peserta
+
+            {% if query %}
+                untuk pencarian
+                <strong>"{{ query }}"</strong>
+            {% endif %}
+
+            {% if status_filter == "aktif" %}
+                dengan status <strong>Aktif</strong>.
+            {% elif status_filter == "gugur" %}
+                dengan status <strong>Gugur</strong>.
+            {% else %}
+                dengan semua status.
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         TABEL PESERTA
+         ================================================== -->
+
+    <div class="table-card">
+
+        <div class="table-header">
+
+            <h2>
+                Daftar Peserta Praktikum
+            </h2>
+
+            <p>
+                Urutan: Kelompok berdasarkan pembuatan,
+                kemudian Ketua, Anggota, dan urutan pembuatan peserta.
+            </p>
+
+        </div>
+
+
+        {% if peserta_list %}
+
+            <div class="table-wrapper">
+
+                <table class="peserta-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                No.
+                            </th>
+
+                            <th>
+                                Kelompok
+                            </th>
+
+                            <th>
+                                Nama Peserta
+                            </th>
+
+                            <th>
+                                Jabatan
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for peserta in peserta_list %}
+
+                            <tr>
+
+                                <td class="nomor">
+                                    {{ forloop.counter }}
+                                </td>
+
+
+                                <td>
+
+                                    {% if peserta.kelompok %}
+
+                                        <span class="kelompok-name">
+                                            {{ peserta.kelompok.nama }}
+                                        </span>
+
+                                    {% else %}
+
+                                        <span>
+                                            -
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="peserta-name">
+                                        {{ peserta.nama }}
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    {% if peserta.jabatan == "ketua" %}
+
+                                        <span
+                                            class="jabatan-badge jabatan-ketua"
+                                        >
+                                            Ketua
+                                        </span>
+
+                                    {% else %}
+
+                                        <span
+                                            class="jabatan-badge jabatan-anggota"
+                                        >
+                                            Anggota
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+
+                                    {% if peserta.status_kemajuan == "aktif" %}
+
+                                        <span
+                                            class="status-badge status-aktif"
+                                        >
+                                            Aktif
+                                        </span>
+
+                                    {% elif peserta.status_kemajuan == "gugur" %}
+
+                                        <span
+                                            class="status-badge status-gugur"
+                                        >
+                                            Gugur
+                                        </span>
+
+                                    {% else %}
+
+                                        <span
+                                            class="status-badge"
+                                        >
+                                            {{ peserta.get_status_kemajuan_display }}
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-box">
+
+                <div class="empty-icon">
+                    🔍
+                </div>
+
+                <div>
+                    Tidak ada peserta yang sesuai dengan pencarian atau filter.
+                </div>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
 
 {% endblock %}
