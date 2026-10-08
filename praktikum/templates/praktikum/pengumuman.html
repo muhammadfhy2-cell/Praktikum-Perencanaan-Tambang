@@ -1,1 +1,117 @@
-{% extends 'praktikum/base.html' %}{% block content %}<div class="container py-5"><h1>Pengumuman</h1>{% for x in items %}<article class="card p-4 mb-3"><small>{{ x.dibuat|date:'d F Y H:i' }}</small><h3>{{ x.judul }}</h3><div style="white-space:pre-line">{{ x.isi }}</div></article>{% empty %}<p>Belum ada pengumuman.</p>{% endfor %}</div>{% endblock %}
+{% extends "praktikum/base.html" %}
+
+{% block title %}Pengumuman | Praktikum Perencanaan Tambang{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <div class="eyebrow">ANNOUNCEMENT</div>
+        <h1>Pengumuman</h1>
+        <p>
+            Informasi dan pemberitahuan terbaru dari pengelola praktikum.
+        </p>
+    </div>
+</section>
+
+<section class="content-section">
+    <div class="container">
+
+        <div class="announcement-list">
+
+            {% for item in items %}
+
+            <article class="announcement-full">
+
+                <div class="announcement-mark">
+                    📢
+                </div>
+
+                <div class="announcement-body">
+
+                    <div class="announcement-meta">
+                        <span class="badge badge-green">Aktif</span>
+                        <span>{{ item.dibuat|date:"d M Y, H:i" }}</span>
+                    </div>
+
+                    <h2>{{ item.judul }}</h2>
+
+                    <div class="announcement-text">
+                        {{ item.isi|linebreaks }}
+                    </div>
+
+                </div>
+
+            </article>
+
+            {% empty %}
+
+            <div class="empty">
+                <div class="empty-icon">📢</div>
+                Belum ada pengumuman aktif.
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+<style>
+    .announcement-list {
+        max-width: 900px;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 17px;
+    }
+
+    .announcement-full {
+        display: flex;
+        gap: 20px;
+        background: white;
+        border: 1px solid #dfe5df;
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 8px 25px rgba(16,37,27,.06);
+    }
+
+    .announcement-mark {
+        width: 55px;
+        height: 55px;
+        min-width: 55px;
+        border-radius: 15px;
+        background: #f8eed5;
+        display: grid;
+        place-items: center;
+        font-size: 23px;
+    }
+
+    .announcement-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #89928c;
+        font-size: 11px;
+    }
+
+    .announcement-body h2 {
+        color: #173c2b;
+        font-size: 21px;
+        margin: 10px 0;
+    }
+
+    .announcement-text {
+        color: #59645d;
+        font-size: 13px;
+    }
+
+    @media(max-width:600px) {
+        .announcement-full {
+            flex-direction: column;
+        }
+    }
+</style>
+
+{% endblock %}
