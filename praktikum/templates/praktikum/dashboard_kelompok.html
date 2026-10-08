@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Dashboard {{ kelompok.nama }}
+        | Praktikum Perencanaan Tambang
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f1f5f9;
+
+            color: #0f172a;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        header {
+            background: #0f172a;
+
+            color: white;
+
+            padding: 20px 30px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+        }
+
+
+        .brand h1 {
+            margin: 0;
+
+            font-size: 20px;
+        }
+
+
+        .brand p {
+            margin: 5px 0 0;
+
+            color: #cbd5e1;
+
+            font-size: 13px;
+        }
+
+
+        .logout {
+            display: inline-block;
+
+            padding: 10px 16px;
+
+            border-radius: 8px;
+
+            background: #dc2626;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+
+        .logout:hover {
+            background: #b91c1c;
+        }
+
+
+        /* =====================================================
+           CONTAINER
+        ===================================================== */
+
+        .container {
+            width: min(1200px, 94%);
+
+            margin: 30px auto;
+        }
+
+
+        /* =====================================================
+           WELCOME
+        ===================================================== */
+
+        .welcome {
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 14px;
+
+            margin-bottom: 24px;
+
+            box-shadow:
+                0 4px 15px
+                rgba(15, 23, 42, 0.06);
+        }
+
+
+        .welcome h2 {
+            margin: 0 0 8px;
+
+            font-size: 25px;
+        }
+
+
+        .welcome p {
+            margin: 0;
+
+            color: #64748b;
+
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           STATISTICS
+        ===================================================== */
+
+        .stats {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(190px, 1fr)
+                );
+
+            gap: 16px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .stat {
+            background: white;
+
+            padding: 22px;
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 4px 15px
+                rgba(15, 23, 42, 0.06);
+        }
+
+
+        .stat-title {
+            color: #64748b;
+
+            font-size: 13px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .stat-value {
+            font-size: 27px;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           SECTION
+        ===================================================== */
+
+        .section {
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 14px;
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 4px 15px
+                rgba(15, 23, 42, 0.06);
+        }
+
+
+        .section h3 {
+            margin-top: 0;
+
+            margin-bottom: 18px;
+
+            font-size: 19px;
+        }
+
+
+        /* =====================================================
+           TABLE
+        ===================================================== */
+
+        .table-wrapper {
+            width: 100%;
+
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 600px;
+        }
+
+
+        th,
+        td {
+            padding: 12px;
+
+            border-bottom: 1px solid #e2e8f0;
+
+            text-align: left;
+
+            font-size: 14px;
+        }
+
+
+        th {
+            background: #f8fafc;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           MENTOR
+        ===================================================== */
+
+        .mentor-list {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(220px, 1fr)
+                );
+
+            gap: 12px;
+        }
+
+
+        .mentor {
+            padding: 15px;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 10px;
+        }
+
+
+        .mentor strong {
+            display: block;
+
+            margin-bottom: 5px;
+        }
+
+
+        .mentor span {
+            color: #64748b;
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           PROGRESS
+        ===================================================== */
+
+        .progress-box {
+            margin-top: 10px;
+        }
+
+
+        .progress-info {
+            display: flex;
+
+            justify-content: space-between;
+
+            margin-bottom: 7px;
+
+            font-size: 14px;
+        }
+
+
+        .progress-bar {
+            width: 100%;
+
+            height: 12px;
+
+            background: #e2e8f0;
+
+            border-radius: 999px;
+
+            overflow: hidden;
+        }
+
+
+        .progress-fill {
+            height: 100%;
+
+            background: #2563eb;
+
+            width: {{ progress|default:0 }}%;
+        }
+
+
+        /* =====================================================
+           EMPTY
+        ===================================================== */
+
+        .empty {
+            padding: 20px;
+
+            text-align: center;
+
+            color: #64748b;
+
+            background: #f8fafc;
+
+            border-radius: 10px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            header {
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            .welcome h2 {
+                font-size: 21px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==========================================================
+     HEADER
+=========================================================== -->
+
+<header>
+
+    <div class="brand">
+
+        <h1>
+            Praktikum Perencanaan Tambang
+        </h1>
+
+        <p>
+            Dashboard Kelompok
+        </p>
+
+    </div>
+
+
+    <a
+        class="logout"
+        href="{% url 'praktikum:logout_kelompok' %}"
+    >
+        Keluar
+    </a>
+
+</header>
+
+
+<!-- ==========================================================
+     CONTENT
+=========================================================== -->
+
+<main class="container">
+
+
+    <!-- ======================================================
+         MESSAGES
+    ======================================================= -->
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div
+                class="section"
+                style="padding: 15px;"
+            >
+
+                {{ message }}
+
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <!-- ======================================================
+         WELCOME
+    ======================================================= -->
+
+    <section class="welcome">
+
+        <h2>
+            {{ kelompok.nama }}
+        </h2>
+
+        <p>
+            Selamat datang di dashboard kelompok.
+            Gunakan halaman ini untuk memantau anggota,
+            laporan, progres kegiatan, file kelompok,
+            dan konsultasi.
+        </p>
+
+    </section>
+
+
+    <!-- ======================================================
+         STATISTICS
+    ======================================================= -->
+
+    <section class="stats">
+
+
+        <div class="stat">
+
+            <div class="stat-title">
+                Jumlah Anggota
+            </div>
+
+            <div class="stat-value">
+                {{ anggota|length }}
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-title">
+                Laporan Mingguan
+            </div>
+
+            <div class="stat-value">
+                {{ laporan|length }}
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-title">
+                Progress Kelompok
+            </div>
+
+            <div class="stat-value">
+                {{ progress|default:0 }}%
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-title">
+                File Kelompok
+            </div>
+
+            <div class="stat-value">
+                {{ file_kelompok|length }}
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- ======================================================
+         PROGRESS
+    ======================================================= -->
+
+    <section class="section">
+
+        <h3>
+            Progress Kelompok
+        </h3>
+
+
+        <div class="progress-box">
+
+            <div class="progress-info">
+
+                <span>
+                    Kemajuan
+                </span>
+
+                <strong>
+                    {{ progress|default:0 }}%
+                </strong>
+
+            </div>
+
+
+            <div class="progress-bar">
+
+                <div class="progress-fill"></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================================
+         MENTOR
+    ======================================================= -->
+
+    <section class="section">
+
+        <h3>
+            Mentor / Pembimbing
+        </h3>
+
+
+        {% if mentor %}
+
+            <div class="mentor-list">
+
+                {% for item in mentor %}
+
+                    <div class="mentor">
+
+                        <strong>
+                            {{ item.nama }}
+                        </strong>
+
+                        <span>
+                            {{ item.get_jabatan_display|default:item.jabatan }}
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+                Belum ada mentor yang ditetapkan.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ======================================================
+         ANGGOTA
+    ======================================================= -->
+
+    <section class="section">
+
+        <h3>
+            Anggota Kelompok
+        </h3>
+
+
+        {% if anggota %}
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                No.
+                            </th>
+
+                            <th>
+                                Nama
+                            </th>
+
+                            <th>
+                                Jabatan
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for item in anggota %}
+
+                            <tr>
+
+                                <td>
+                                    {{ forloop.counter }}
+                                </td>
+
+                                <td>
+                                    {{ item.nama }}
+                                </td>
+
+                                <td>
+                                    {{ item.get_jabatan_display|default:item.jabatan }}
+                                </td>
+
+                                <td>
+                                    Aktif
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+                Belum ada anggota kelompok.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ======================================================
+         LAPORAN
+    ======================================================= -->
+
+    <section class="section">
+
+        <h3>
+            Laporan Mingguan
+        </h3>
+
+
+        {% if laporan %}
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                No.
+                            </th>
+
+                            <th>
+                                Judul
+                            </th>
+
+                            <th>
+                                Peserta
+                            </th>
+
+                            <th>
+                                Acara
+                            </th>
+
+                            <th>
+                                Tanggal Upload
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for item in laporan %}
+
+                            <tr>
+
+                                <td>
+                                    {{ forloop.counter }}
+                                </td>
+
+                                <td>
+                                    {{ item.judul }}
+                                </td>
+
+                                <td>
+                                    {{ item.peserta }}
+                                </td>
+
+                                <td>
+                                    {{ item.acara }}
+                                </td>
+
+                                <td>
+                                    {{ item.uploaded_at|date:"d M Y H:i" }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+                Belum ada laporan mingguan.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ======================================================
+         PROGRESS ACARA
+    ======================================================= -->
+
+    <section class="section">
+
+        <h3>
+            Progress Acara
+        </h3>
+
+
+        {% if progress_acara %}
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                No.
+                            </th>
+
+                            <th>
+                                Acara
+                            </th>
+
+                            <th>
+                                Progress
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for item in progress_acara %}
+
+                            <tr>
+
+                                <td>
+                                    {{ forloop.counter }}
+                                </td>
+
+                                <td>
+                                    {{ item.acara }}
+                                </td>
+
+                                <td>
+                                    {{ item.progress }}%
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+                Belum ada data progress acara.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ======================================================
+         FILE KELOMPOK
+    ======================================================= -->
+
+    <section class="section">
+
+        <h3>
+            File Kelompok
+        </h3>
+
+
+        {% if file_kelompok %}
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                No.
+                            </th>
+
+                            <th>
+                                Nama File
+                            </th>
+
+                            <th>
+                                Acara
+                            </th>
+
+                            <th>
+                                Upload
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for item in file_kelompok %}
+
+                            <tr>
+
+                                <td>
+                                    {{ forloop.counter }}
+                                </td>
+
+                                <td>
+                                    {{ item }}
+                                </td>
+
+                                <td>
+                                    {{ item.acara }}
+                                </td>
+
+                                <td>
+                                    {{ item.uploaded_at|date:"d M Y H:i" }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+                Belum ada file kelompok.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ======================================================
+         LAPORAN LENGKAP
+    ======================================================= -->
+
+    <section class="section">
+
+        <h3>
+            Laporan Lengkap
+        </h3>
+
+
+        {% if laporan_lengkap %}
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                No.
+                            </th>
+
+                            <th>
+                                Data
+                            </th>
+
+                            <th>
+                                Upload
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for item in laporan_lengkap %}
+
+                            <tr>
+
+                                <td>
+                                    {{ forloop.counter }}
+                                </td>
+
+                                <td>
+                                    {{ item }}
+                                </td>
+
+                                <td>
+                                    {{ item.uploaded_at|date:"d M Y H:i" }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+                Belum ada laporan lengkap.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ======================================================
+         KONSULTASI
+    ======================================================= -->
+
+    <section class="section">
+
+        <h3>
+            Konsultasi
+        </h3>
+
+
+        {% if konsultasi %}
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                No.
+                            </th>
+
+                            <th>
+                                Peserta
+                            </th>
+
+                            <th>
+                                Tujuan
+                            </th>
+
+                            <th>
+                                Acara
+                            </th>
+
+                            <th>
+                                Tanggal
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for item in konsultasi %}
+
+                            <tr>
+
+                                <td>
+                                    {{ forloop.counter }}
+                                </td>
+
+                                <td>
+                                    {{ item.peserta }}
+                                </td>
+
+                                <td>
+                                    {{ item.tujuan }}
+                                </td>
+
+                                <td>
+                                    {{ item.acara }}
+                                </td>
+
+                                <td>
+                                    {{ item.dibuat|date:"d M Y H:i" }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+                Belum ada data konsultasi.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+</main>
+
+
+</body>
+
+</html>
