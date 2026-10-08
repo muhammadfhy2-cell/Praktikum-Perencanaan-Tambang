@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Tambah DailyMOM - {{ kelompok.nama }}
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f1f5f9;
+
+            color: #1e293b;
+        }
+
+
+        .navbar {
+
+            background: #0f172a;
+
+            color: white;
+
+            padding: 16px 25px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 20px;
+        }
+
+
+        .brand {
+
+            font-size: 18px;
+
+            font-weight: bold;
+        }
+
+
+        .brand small {
+
+            display: block;
+
+            margin-top: 4px;
+
+            color: #cbd5e1;
+
+            font-size: 11px;
+
+            font-weight: normal;
+        }
+
+
+        .back {
+
+            color: white;
+
+            text-decoration: none;
+
+            background: #334155;
+
+            padding: 9px 14px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+
+            font-weight: bold;
+        }
+
+
+        .container {
+
+            width: min(
+                850px,
+                94%
+            );
+
+            margin: 35px auto;
+        }
+
+
+        .card {
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 28px;
+
+            box-shadow:
+                0 5px 18px
+                rgba(
+                    15,
+                    23,
+                    42,
+                    0.06
+                );
+        }
+
+
+        h1 {
+
+            margin: 0 0 8px;
+
+            color: #0f172a;
+
+            font-size: 27px;
+        }
+
+
+        .subtitle {
+
+            margin: 0 0 25px;
+
+            color: #64748b;
+
+            line-height: 1.6;
+        }
+
+
+        .info {
+
+            background: #f8fafc;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 12px;
+
+            padding: 15px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .info strong {
+
+            color: #0f172a;
+        }
+
+
+        .form-group {
+
+            margin-bottom: 18px;
+        }
+
+
+        label {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #334155;
+
+            font-size: 13px;
+
+            font-weight: bold;
+        }
+
+
+        input,
+        select,
+        textarea {
+
+            width: 100%;
+
+            padding: 12px;
+
+            border:
+                1px solid #cbd5e1;
+
+            border-radius: 9px;
+
+            font-family: inherit;
+
+            font-size: 14px;
+
+            background: white;
+
+            color: #1e293b;
+        }
+
+
+        textarea {
+
+            min-height: 130px;
+
+            resize: vertical;
+        }
+
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+
+            outline: none;
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.10
+                );
+        }
+
+
+        .actions {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 12px;
+
+            margin-top: 25px;
+        }
+
+
+        .button {
+
+            border: none;
+
+            border-radius: 9px;
+
+            padding: 12px 18px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            text-decoration: none;
+
+            font-size: 14px;
+        }
+
+
+        .button-primary {
+
+            background: #0f172a;
+
+            color: white;
+        }
+
+
+        .button-secondary {
+
+            background: #e2e8f0;
+
+            color: #334155;
+        }
+
+
+        .message {
+
+            padding: 12px 15px;
+
+            border-radius: 9px;
+
+            background: #eff6ff;
+
+            color: #1d4ed8;
+
+            margin-bottom: 15px;
+
+            font-size: 14px;
+        }
+
+
+        @media (
+            max-width: 600px
+        ) {
+
+            .navbar {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+
+            .card {
+
+                padding: 20px;
+            }
+
+
+            .actions {
+
+                flex-direction: column;
+            }
+
+
+            .button {
+
+                text-align: center;
+
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<nav class="navbar">
+
+    <div class="brand">
+
+        Praktikum Perencanaan Tambang
+
+        <small>
+            DailyMOM Kelompok
+        </small>
+
+    </div>
+
+
+    <a
+        href="{% url 'praktikum:dashboard_kelompok' %}"
+        class="back"
+    >
+        Kembali ke Dashboard
+    </a>
+
+</nav>
+
+
+<div class="container">
+
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="message">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <div class="card">
+
+        <h1>
+            Tambah DailyMOM
+        </h1>
+
+
+        <p class="subtitle">
+
+            Catat perkembangan,
+            hasil pembahasan,
+            keputusan, dan
+            tindak lanjut kelompok
+            berdasarkan acara praktikum.
+
+        </p>
+
+
+        <div class="info">
+
+            <strong>
+                Kelompok:
+            </strong>
+
+            {{ kelompok.nama }}
+
+            <br>
+
+            <strong>
+                Ketua:
+            </strong>
+
+            {{ ketua.nama }}
+
+        </div>
+
+
+        <form
+            method="post"
+        >
+
+            {% csrf_token %}
+
+
+            <div class="form-group">
+
+                <label for="tanggal">
+                    Tanggal
+                </label>
+
+                <input
+                    type="date"
+                    id="tanggal"
+                    name="tanggal"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="acara">
+                    Acara
+                </label>
+
+                <select
+                    id="acara"
+                    name="acara"
+                    required
+                >
+
+                    <option value="">
+                        -- Pilih Acara --
+                    </option>
+
+
+                    {% for item in acara_list %}
+
+                        <option
+                            value="{{ item.id }}"
+                        >
+
+                            {{ item.nama }}
+
+                            {% if item.sub_acara %}
+                                — {{ item.sub_acara }}
+                            {% endif %}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="judul">
+                    Judul DailyMOM
+                </label>
+
+                <input
+                    type="text"
+                    id="judul"
+                    name="judul"
+                    maxlength="200"
+                    placeholder="Contoh: Evaluasi Progress Acara 01"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="isi">
+                    Isi / Pembahasan
+                </label>
+
+                <textarea
+                    id="isi"
+                    name="isi"
+                    placeholder="Tuliskan pembahasan atau perkembangan kegiatan..."
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="keputusan">
+                    Keputusan
+                </label>
+
+                <textarea
+                    id="keputusan"
+                    name="keputusan"
+                    placeholder="Tuliskan keputusan hasil pembahasan..."
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="tindak_lanjut">
+                    Tindak Lanjut
+                </label>
+
+                <textarea
+                    id="tindak_lanjut"
+                    name="tindak_lanjut"
+                    placeholder="Tuliskan pekerjaan atau tindakan berikutnya..."
+                ></textarea>
+
+            </div>
+
+
+            <div class="actions">
+
+                <a
+                    href="{% url 'praktikum:dashboard_kelompok' %}"
+                    class="button button-secondary"
+                >
+                    Batal
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="button button-primary"
+                >
+                    Simpan DailyMOM
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>
