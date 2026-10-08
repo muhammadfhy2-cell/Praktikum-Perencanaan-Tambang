@@ -272,33 +272,50 @@ def personel(request):
         )
     )
 
+    penanggung_jawab = (
+        staff_list
+        .filter(
+            jabatan="penanggung_jawab"
+        )
+        .first()
+    )
+
+    koordinator = (
+        staff_list
+        .filter(
+            jabatan="koordinator"
+        )
+        .first()
+    )
+
+    asisten_list = (
+        staff_list
+        .filter(
+            jabatan="asisten"
+        )
+        .order_by(
+            "urutan",
+            "nama",
+        )
+    )
+
     context = {
 
         "setting": setting,
 
+        # Semua staff
         "staff": staff_list,
         "staff_list": staff_list,
 
-        "personel": staff_list,
-        "personel_list": staff_list,
+        # Penanggung jawab
+        "penanggung_jawab": penanggung_jawab,
 
-        "asisten": (
-            staff_list.filter(
-                jabatan="asisten"
-            )
-        ),
+        # Koordinator
+        "koordinator": koordinator,
 
-        "koordinator": (
-            staff_list.filter(
-                jabatan="koordinator"
-            ).first()
-        ),
-
-        "penanggung_jawab": (
-            staff_list.filter(
-                jabatan="penanggung_jawab"
-            ).first()
-        ),
+        # Asisten
+        "asisten": asisten_list,
+        "asisten_list": asisten_list,
     }
 
     return render(
@@ -306,7 +323,6 @@ def personel(request):
         "praktikum/personel.html",
         context,
     )
-
 
 # ============================================================
 # KELOMPOK
