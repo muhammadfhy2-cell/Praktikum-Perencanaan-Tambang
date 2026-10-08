@@ -10,6 +10,7 @@ Production-ready configuration:
 - Media files
 - Django authentication
 - Django Admin
+- CSRF protection for production domain
 """
 
 from pathlib import Path
@@ -57,40 +58,65 @@ DEBUG = os.getenv(
 # ALLOWED HOSTS
 # ============================================================
 
-DEFAULT_ALLOWED_HOSTS = (
-    "127.0.0.1,"
-    "localhost,"
-    "praktikumperencanaantambang.velixir.run,"
-    "praktikumperencanaantambang-eu.velixir.run"
-)
-
-ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.getenv(
-        "ALLOWED_HOSTS",
-        DEFAULT_ALLOWED_HOSTS,
-    ).split(",")
-    if host.strip()
+DEFAULT_ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "praktikumperencanaantambang.velixir.run",
+    "praktikumperencanaantambang-eu.velixir.run",
 ]
+
+ENV_ALLOWED_HOSTS = os.getenv(
+    "ALLOWED_HOSTS",
+    "",
+).strip()
+
+if ENV_ALLOWED_HOSTS:
+    ALLOWED_HOSTS = [
+        host.strip()
+        for host in ENV_ALLOWED_HOSTS.split(",")
+        if host.strip()
+    ]
+
+    # Pastikan domain utama tetap diizinkan.
+    for host in DEFAULT_ALLOWED_HOSTS:
+        if host not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(host)
+
+else:
+    ALLOWED_HOSTS = DEFAULT_ALLOWED_HOSTS
 
 
 # ============================================================
 # CSRF TRUSTED ORIGINS
 # ============================================================
 
-DEFAULT_CSRF_TRUSTED_ORIGINS = (
-    "https://praktikumperencanaantambang.velixir.run,"
-    "https://praktikumperencanaantambang-eu.velixir.run"
-)
-
-CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.getenv(
-        "CSRF_TRUSTED_ORIGINS",
-        DEFAULT_CSRF_TRUSTED_ORIGINS,
-    ).split(",")
-    if origin.strip()
+DEFAULT_CSRF_TRUSTED_ORIGINS = [
+    "https://praktikumperencanaantambang.velixir.run",
+    "https://praktikumperencanaantambang-eu.velixir.run",
 ]
+
+ENV_CSRF_TRUSTED_ORIGINS = os.getenv(
+    "CSRF_TRUSTED_ORIGINS",
+    "",
+).strip()
+
+if ENV_CSRF_TRUSTED_ORIGINS:
+
+    CSRF_TRUSTED_ORIGINS = [
+        origin.strip()
+        for origin in ENV_CSRF_TRUSTED_ORIGINS.split(",")
+        if origin.strip()
+    ]
+
+    # Pastikan domain produksi tetap dipercaya
+    # meskipun environment variable di Velixir berbeda.
+    for origin in DEFAULT_CSRF_TRUSTED_ORIGINS:
+        if origin not in CSRF_TRUSTED_ORIGINS:
+            CSRF_TRUSTED_ORIGINS.append(origin)
+
+else:
+
+    CSRF_TRUSTED_ORIGINS = DEFAULT_CSRF_TRUSTED_ORIGINS
 
 
 # ============================================================
@@ -331,7 +357,16 @@ SESSION_SAVE_EVERY_REQUEST = True
 
 SESSION_COOKIE_HTTPONLY = True
 
+SESSION_COOKIE_SAMESITE = "Lax"
+
+
+# ============================================================
+# CSRF COOKIE
+# ============================================================
+
 CSRF_COOKIE_HTTPONLY = False
+
+CSRF_COOKIE_SAMESITE = "Lax"
 
 
 # ============================================================
@@ -340,6 +375,8 @@ CSRF_COOKIE_HTTPONLY = False
 
 if not DEBUG:
 
+    # Velixir menggunakan reverse proxy.
+    # Django perlu mengetahui bahwa koneksi asli menggunakan HTTPS.
     SECURE_PROXY_SSL_HEADER = (
         "HTTP_X_FORWARDED_PROTO",
         "https",
