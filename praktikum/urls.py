@@ -1,6 +1,12 @@
 from django.urls import path
+
 from . import views
-from .daily_mom_views import tambah_daily_mom
+from .daily_mom_views import (
+    tambah_daily_mom,
+    edit_daily_mom,
+    hapus_daily_mom,
+)
+
 
 app_name = "praktikum"
 
@@ -79,7 +85,7 @@ urlpatterns = [
 
 
     # ========================================================
-    # LOGIN KELOMPOK
+    # AUTHENTICATION
     # ========================================================
 
     path(
@@ -122,6 +128,18 @@ urlpatterns = [
         name="tambah_daily_mom",
     ),
 
+    path(
+        "dashboard/kelompok/daily-mom/<int:daily_mom_id>/edit/",
+        edit_daily_mom,
+        name="edit_daily_mom",
+    ),
+
+    path(
+        "dashboard/kelompok/daily-mom/<int:daily_mom_id>/hapus/",
+        hapus_daily_mom,
+        name="hapus_daily_mom",
+    ),
+
 
     # ========================================================
     # LAPORAN
@@ -138,5 +156,4 @@ urlpatterns = [
         views.download_file_revisi,
         name="download_file_revisi",
     ),
-
 ]
