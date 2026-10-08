@@ -25,7 +25,9 @@ Praktikum Perencanaan Tambang | Portal Akademik
     --mine-shadow: 0 25px 70px rgba(0,0,0,.25);
 }
 
-/* HERO */
+/* =========================================================
+   HERO
+========================================================= */
 
 .modern-hero {
     position: relative;
@@ -154,7 +156,9 @@ Praktikum Perencanaan Tambang | Portal Akademik
     border-color: rgba(215,173,85,.5);
 }
 
-/* HERO VISUAL */
+/* =========================================================
+   HERO VISUAL
+========================================================= */
 
 .mining-visual {
     min-height: 430px;
@@ -260,7 +264,9 @@ Praktikum Perencanaan Tambang | Portal Akademik
     left: 40px;
 }
 
-/* STATS */
+/* =========================================================
+   STATS
+========================================================= */
 
 .public-stats {
     margin-top: -38px;
@@ -313,7 +319,9 @@ Praktikum Perencanaan Tambang | Portal Akademik
     font-weight: 700;
 }
 
-/* GENERAL */
+/* =========================================================
+   GENERAL
+========================================================= */
 
 .public-section {
     padding: 90px 0;
@@ -359,7 +367,9 @@ Praktikum Perencanaan Tambang | Portal Akademik
     white-space: nowrap;
 }
 
-/* QUICK ACCESS */
+/* =========================================================
+   QUICK ACCESS
+========================================================= */
 
 .quick-modern-grid {
     display: grid;
@@ -421,7 +431,9 @@ Praktikum Perencanaan Tambang | Portal Akademik
     line-height: 1.6;
 }
 
-/* AGENDA */
+/* =========================================================
+   AGENDA
+========================================================= */
 
 .agenda-modern-grid {
     display: grid;
@@ -462,6 +474,7 @@ Praktikum Perencanaan Tambang | Portal Akademik
 
 .agenda-modern-content {
     min-width: 0;
+    flex: 1;
 }
 
 .agenda-modern-content small {
@@ -475,13 +488,51 @@ Praktikum Perencanaan Tambang | Portal Akademik
 }
 
 .agenda-modern-content p {
-    margin: 0;
+    margin: 4px 0 0;
     color: #7a8580;
     font-size: 12px;
     line-height: 1.6;
 }
 
-/* GROUP SNAPSHOT */
+/* EVENT TEAM */
+
+.agenda-team {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #edf0ee;
+}
+
+.agenda-team-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    color: #68756f;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.agenda-team-label {
+    min-width: 82px;
+    color: #9a782f;
+    font-weight: 800;
+}
+
+.agenda-team-value {
+    color: #5e6a65;
+}
+
+.agenda-mc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* =========================================================
+   GROUP SNAPSHOT
+========================================================= */
 
 .group-modern-grid {
     display: grid;
@@ -534,7 +585,73 @@ Praktikum Perencanaan Tambang | Portal Akademik
     font-size: 11px;
 }
 
-/* ANNOUNCEMENT */
+/* =========================================================
+   DOSEN PENGAMPU
+========================================================= */
+
+.dosen-section {
+    padding: 0 0 90px;
+}
+
+.dosen-card {
+    position: relative;
+    overflow: hidden;
+    padding: 34px 38px;
+    border: 1px solid #e1e7e3;
+    border-radius: 22px;
+    background:
+        radial-gradient(
+            circle at 95% 20%,
+            rgba(215,173,85,.12),
+            transparent 28%
+        ),
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #f5f8f5
+        );
+    box-shadow: 0 18px 50px rgba(7,20,15,.07);
+}
+
+.dosen-card::after {
+    content: "";
+    position: absolute;
+    width: 170px;
+    height: 170px;
+    right: -70px;
+    bottom: -90px;
+    border: 1px solid rgba(164,129,53,.15);
+    border-radius: 50%;
+}
+
+.dosen-kicker {
+    color: #9c7b32;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.dosen-name {
+    margin-top: 8px;
+    color: var(--mine-dark);
+    font-size: clamp(21px, 3vw, 29px);
+    font-weight: 900;
+}
+
+.dosen-period {
+    margin-top: 7px;
+    color: #7b8781;
+    font-size: 12px;
+}
+
+.dosen-empty {
+    color: #8a968f;
+    font-size: 14px;
+}
+
+/* =========================================================
+   ANNOUNCEMENT
+========================================================= */
 
 .modern-announcement {
     position: relative;
@@ -584,7 +701,9 @@ Praktikum Perencanaan Tambang | Portal Akademik
     line-height: 1.7;
 }
 
-/* CTA */
+/* =========================================================
+   CTA
+========================================================= */
 
 .modern-login {
     padding: 90px 0;
@@ -625,7 +744,9 @@ Praktikum Perencanaan Tambang | Portal Akademik
     letter-spacing: 2px;
 }
 
-/* EMPTY */
+/* =========================================================
+   EMPTY
+========================================================= */
 
 .public-empty {
     grid-column: 1 / -1;
@@ -636,9 +757,12 @@ Praktikum Perencanaan Tambang | Portal Akademik
     color: #89938e;
 }
 
-/* RESPONSIVE */
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 
 @media (max-width: 1000px) {
+
     .modern-hero-inner {
         grid-template-columns: 1fr;
     }
@@ -658,6 +782,7 @@ Praktikum Perencanaan Tambang | Portal Akademik
 }
 
 @media (max-width: 700px) {
+
     .modern-hero {
         padding: 70px 0;
     }
@@ -686,6 +811,10 @@ Praktikum Perencanaan Tambang | Portal Akademik
         padding: 65px 0;
     }
 
+    .dosen-section {
+        padding-bottom: 65px;
+    }
+
     .public-stats-grid,
     .quick-modern-grid,
     .agenda-modern-grid,
@@ -704,9 +833,20 @@ Praktikum Perencanaan Tambang | Portal Akademik
         align-items: flex-start;
         padding: 32px;
     }
+
+    .agenda-modern-card {
+        gap: 13px;
+    }
+
+    .agenda-team-label {
+        min-width: 72px;
+    }
+
+    .dosen-card {
+        padding: 28px;
+    }
 }
 </style>
-
 
 <!-- =========================================================
      HERO
@@ -714,82 +854,83 @@ Praktikum Perencanaan Tambang | Portal Akademik
 
 <section class="modern-hero">
 
-    <div class="container modern-hero-inner">
 
-        <div>
+<div class="container modern-hero-inner">
 
-            <div class="modern-kicker">
-                PRAKTIKUM PERENCANAAN TAMBANG
-            </div>
+    <div>
 
-            <h1>
-                Plan.
-                <span>Design.</span>
-                Evaluate.
-            </h1>
-
-            <p class="modern-hero-description">
-                Portal digital resmi untuk mendukung pelaksanaan
-                Praktikum Perencanaan Tambang — mulai dari jadwal,
-                materi, kelompok, personel, tugas, hingga informasi
-                perkembangan praktikum.
-            </p>
-
-            <div class="modern-actions">
-
-                <a
-                    href="{% url 'praktikum:jadwal' %}"
-                    class="modern-btn modern-btn-gold"
-                >
-                    📅 Lihat Jadwal
-                </a>
-
-                <a
-                    href="{% url 'praktikum:kelompok' %}"
-                    class="modern-btn modern-btn-outline"
-                >
-                    ⛏ Lihat Kelompok
-                </a>
-
-            </div>
-
+        <div class="modern-kicker">
+            PRAKTIKUM PERENCANAAN TAMBANG
         </div>
 
+        <h1>
+            Plan.
+            <span>Design.</span>
+            Evaluate.
+        </h1>
 
-        <div class="mining-visual">
+        <p class="modern-hero-description">
+            Portal digital resmi untuk mendukung pelaksanaan
+            Praktikum Perencanaan Tambang — mulai dari jadwal,
+            materi, kelompok, personel, tugas, hingga informasi
+            perkembangan praktikum.
+        </p>
 
-            <div class="mining-ring r1"></div>
-            <div class="mining-ring r2"></div>
-            <div class="mining-ring r3"></div>
+        <div class="modern-actions">
 
-            <div class="mining-core">
-                <div>
-                    <strong>MINING</strong>
-                    <span>PLAN • DESIGN • EVALUATE</span>
-                </div>
-            </div>
+            <a
+                href="{% url 'praktikum:jadwal' %}"
+                class="modern-btn modern-btn-gold"
+            >
+                📅 Lihat Jadwal
+            </a>
 
-            <div class="floating-info one">
-                <strong>📊 Mine Planning</strong>
-                <small>Planning &amp; Design</small>
-            </div>
-
-            <div class="floating-info two">
-                <strong>👥 Mining Teams</strong>
-                <small>Group Collaboration</small>
-            </div>
-
-            <div class="floating-info three">
-                <strong>📚 Learning</strong>
-                <small>Materials &amp; Tasks</small>
-            </div>
+            <a
+                href="{% url 'praktikum:kelompok' %}"
+                class="modern-btn modern-btn-outline"
+            >
+                ⛏ Lihat Kelompok
+            </a>
 
         </div>
 
     </div>
 
-</section>
 
+    <div class="mining-visual">
+
+        <div class="mining-ring r1"></div>
+        <div class="mining-ring r2"></div>
+        <div class="mining-ring r3"></div>
+
+        <div class="mining-core">
+            <div>
+                <strong>MINING</strong>
+                <span>PLAN • DESIGN • EVALUATE</span>
+            </div>
+        </div>
+
+        <div class="floating-info one">
+            <strong>📊 Mine Planning</strong>
+            <small>Planning &amp; Design</small>
+        </div>
+
+        <div class="floating-info two">
+            <strong>👥 Mining Teams</strong>
+            <small>Group Collaboration</small>
+        </div>
+
+        <div class="floating-info three">
+            <strong>📚 Learning</strong>
+            <small>Materials &amp; Tasks</small>
+        </div>
+
+    </div>
+
+</div>
+
+
+</section>
 
 <!-- =========================================================
      STATISTICS
@@ -797,48 +938,49 @@ Praktikum Perencanaan Tambang | Portal Akademik
 
 <section class="public-stats">
 
-    <div class="container">
 
-        <div class="public-stats-grid">
+<div class="container">
 
-            <div class="public-stat">
-                <div class="public-stat-top">
-                    <div class="public-stat-icon">👥</div>
-                </div>
-                <strong>{{ peserta_list|length }}</strong>
-                <span>Peserta Aktif</span>
+    <div class="public-stats-grid">
+
+        <div class="public-stat">
+            <div class="public-stat-top">
+                <div class="public-stat-icon">👥</div>
             </div>
+            <strong>{{ peserta_list|length }}</strong>
+            <span>Peserta Aktif</span>
+        </div>
 
-            <div class="public-stat">
-                <div class="public-stat-top">
-                    <div class="public-stat-icon">⛏</div>
-                </div>
-                <strong>{{ kelompok_list|length }}</strong>
-                <span>Kelompok</span>
+        <div class="public-stat">
+            <div class="public-stat-top">
+                <div class="public-stat-icon">⛏</div>
             </div>
+            <strong>{{ kelompok_list|length }}</strong>
+            <span>Kelompok</span>
+        </div>
 
-            <div class="public-stat">
-                <div class="public-stat-top">
-                    <div class="public-stat-icon">📅</div>
-                </div>
-                <strong>{{ acara_list|length }}</strong>
-                <span>Kegiatan</span>
+        <div class="public-stat">
+            <div class="public-stat-top">
+                <div class="public-stat-icon">📅</div>
             </div>
+            <strong>{{ acara_list|length }}</strong>
+            <span>Kegiatan</span>
+        </div>
 
-            <div class="public-stat">
-                <div class="public-stat-top">
-                    <div class="public-stat-icon">📚</div>
-                </div>
-                <strong>{{ materi_list|length }}</strong>
-                <span>Materi</span>
+        <div class="public-stat">
+            <div class="public-stat-top">
+                <div class="public-stat-icon">📚</div>
             </div>
-
+            <strong>{{ materi_list|length }}</strong>
+            <span>Materi</span>
         </div>
 
     </div>
 
-</section>
+</div>
 
+
+</section>
 
 <!-- =========================================================
      QUICK ACCESS
@@ -846,70 +988,114 @@ Praktikum Perencanaan Tambang | Portal Akademik
 
 <section class="public-section">
 
-    <div class="container">
 
-        <div class="public-heading">
+<div class="container">
 
-            <div>
-                <div class="public-heading-kicker">
-                    QUICK ACCESS
-                </div>
+    <div class="public-heading">
 
-                <h2>Pusat Informasi</h2>
-
-                <p>
-                    Semua kebutuhan informasi praktikum tersedia
-                    dalam satu portal.
-                </p>
+        <div>
+            <div class="public-heading-kicker">
+                QUICK ACCESS
             </div>
 
-        </div>
+            <h2>Pusat Informasi</h2>
 
-
-        <div class="quick-modern-grid">
-
-            <a href="{% url 'praktikum:jadwal' %}" class="quick-modern-card">
-                <div class="quick-modern-icon">📅</div>
-                <strong>Jadwal Praktikum</strong>
-                <span>Timeline, agenda dan kegiatan praktikum.</span>
-            </a>
-
-            <a href="{% url 'praktikum:materi' %}" class="quick-modern-card">
-                <div class="quick-modern-icon">📚</div>
-                <strong>Materi</strong>
-                <span>Modul, materi pembelajaran dan file pendukung.</span>
-            </a>
-
-            <a href="{% url 'praktikum:kelompok' %}" class="quick-modern-card">
-                <div class="quick-modern-icon">⛏</div>
-                <strong>Kelompok</strong>
-                <span>Daftar kelompok, ketua, anggota dan mentor.</span>
-            </a>
-
-            <a href="{% url 'praktikum:personel' %}" class="quick-modern-card">
-                <div class="quick-modern-icon">👤</div>
-                <strong>Personel</strong>
-                <span>Penanggung jawab, koordinator dan asisten dosen.</span>
-            </a>
-
-            <a href="{% url 'praktikum:tugas_pendahuluan' %}" class="quick-modern-card">
-                <div class="quick-modern-icon">📝</div>
-                <strong>Tugas Pendahuluan</strong>
-                <span>Informasi tugas dan ketentuan pengumpulan.</span>
-            </a>
-
-            <a href="{% url 'praktikum:format_dokumen' %}" class="quick-modern-card">
-                <div class="quick-modern-icon">📄</div>
-                <strong>Format Dokumen</strong>
-                <span>Template laporan dan dokumen praktikum.</span>
-            </a>
-
+            <p>
+                Semua kebutuhan informasi praktikum tersedia
+                dalam satu portal.
+            </p>
         </div>
 
     </div>
 
+
+    <div class="quick-modern-grid">
+
+        <a href="{% url 'praktikum:jadwal' %}" class="quick-modern-card">
+            <div class="quick-modern-icon">📅</div>
+            <strong>Jadwal Praktikum</strong>
+            <span>Timeline, agenda dan kegiatan praktikum.</span>
+        </a>
+
+        <a href="{% url 'praktikum:materi' %}" class="quick-modern-card">
+            <div class="quick-modern-icon">📚</div>
+            <strong>Materi</strong>
+            <span>Modul, materi pembelajaran dan file pendukung.</span>
+        </a>
+
+        <a href="{% url 'praktikum:kelompok' %}" class="quick-modern-card">
+            <div class="quick-modern-icon">⛏</div>
+            <strong>Kelompok</strong>
+            <span>Daftar kelompok, ketua, anggota dan mentor.</span>
+        </a>
+
+        <a href="{% url 'praktikum:personel' %}" class="quick-modern-card">
+            <div class="quick-modern-icon">👤</div>
+            <strong>Personel</strong>
+            <span>Penanggung jawab, koordinator dan asisten dosen.</span>
+        </a>
+
+        <a href="{% url 'praktikum:tugas_pendahuluan' %}" class="quick-modern-card">
+            <div class="quick-modern-icon">📝</div>
+            <strong>Tugas Pendahuluan</strong>
+            <span>Informasi tugas dan ketentuan pengumpulan.</span>
+        </a>
+
+        <a href="{% url 'praktikum:format_dokumen' %}" class="quick-modern-card">
+            <div class="quick-modern-icon">📄</div>
+            <strong>Format Dokumen</strong>
+            <span>Template laporan dan dokumen praktikum.</span>
+        </a>
+
+    </div>
+
+</div>
+
+
 </section>
 
+<!-- =========================================================
+     DOSEN PENGAMPU
+========================================================= -->
+
+<section class="dosen-section">
+
+
+<div class="container">
+
+    <div class="dosen-card">
+
+        <div class="dosen-kicker">
+            DOSEN PENGAMPU
+        </div>
+
+        {% if setting and setting.dosen_pengampu %}
+
+            <div class="dosen-name">
+                {{ setting.dosen_pengampu }}
+            </div>
+
+            {% if setting.periode %}
+                <div class="dosen-period">
+                    Praktikum Perencanaan Tambang ·
+                    Periode {{ setting.periode }}
+                </div>
+            {% endif %}
+
+        {% else %}
+
+            <div class="dosen-empty">
+                Data dosen pengampu belum diatur oleh administrator.
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+</section>
 
 <!-- =========================================================
      AGENDA
@@ -917,91 +1103,147 @@ Praktikum Perencanaan Tambang | Portal Akademik
 
 <section class="public-section soft">
 
-    <div class="container">
 
-        <div class="public-heading">
+<div class="container">
 
-            <div>
-                <div class="public-heading-kicker">
-                    TIMELINE
-                </div>
+    <div class="public-heading">
 
-                <h2>Agenda Praktikum</h2>
-
-                <p>
-                    Kegiatan terbaru yang telah dijadwalkan oleh
-                    pengelola praktikum.
-                </p>
+        <div>
+            <div class="public-heading-kicker">
+                TIMELINE
             </div>
 
-            <a
-                href="{% url 'praktikum:jadwal' %}"
-                class="public-link"
-            >
-                Lihat semua →
-            </a>
+            <h2>Agenda Praktikum</h2>
 
+            <p>
+                Kegiatan terbaru yang telah dijadwalkan oleh
+                pengelola praktikum.
+            </p>
         </div>
 
-
-        <div class="agenda-modern-grid">
-
-            {% for acara in acara_list|slice:":6" %}
-
-            <article class="agenda-modern-card">
-
-                <div class="agenda-date-box">
-                    <strong>
-                        {{ acara.tanggal_mulai|date:"d" }}
-                    </strong>
-
-                    <span>
-                        {{ acara.tanggal_mulai|date:"M" }}
-                    </span>
-                </div>
-
-                <div class="agenda-modern-content">
-
-                    <small>
-                        {{ acara.tanggal_mulai|date:"H:i" }}
-                        ·
-                        {{ acara.status|default:"Terjadwal" }}
-                    </small>
-
-                    <h3>
-                        {{ acara.nama }}
-                    </h3>
-
-                    {% if acara.sub_acara %}
-                    <p>
-                        {{ acara.sub_acara }}
-                    </p>
-                    {% endif %}
-
-                    {% if acara.lokasi %}
-                    <p>
-                        📍 {{ acara.lokasi }}
-                    </p>
-                    {% endif %}
-
-                </div>
-
-            </article>
-
-            {% empty %}
-
-            <div class="public-empty">
-                Belum ada agenda praktikum.
-            </div>
-
-            {% endfor %}
-
-        </div>
+        <a
+            href="{% url 'praktikum:jadwal' %}"
+            class="public-link"
+        >
+            Lihat semua →
+        </a>
 
     </div>
 
-</section>
 
+    <div class="agenda-modern-grid">
+
+        {% for acara in acara_list|slice:":6" %}
+
+        <article class="agenda-modern-card">
+
+            <div class="agenda-date-box">
+
+                <strong>
+                    {{ acara.tanggal_mulai|date:"d" }}
+                </strong>
+
+                <span>
+                    {{ acara.tanggal_mulai|date:"M" }}
+                </span>
+
+            </div>
+
+
+            <div class="agenda-modern-content">
+
+                <small>
+                    {{ acara.tanggal_mulai|date:"H:i" }}
+                    ·
+                    {{ acara.status|default:"Terjadwal" }}
+                </small>
+
+                <h3>
+                    {{ acara.nama }}
+                </h3>
+
+                {% if acara.sub_acara %}
+                <p>
+                    {{ acara.sub_acara }}
+                </p>
+                {% endif %}
+
+                {% if acara.lokasi %}
+                <p>
+                    📍 {{ acara.lokasi }}
+                </p>
+                {% endif %}
+
+
+                <!-- =====================================
+                     TIM ACARA
+                ====================================== -->
+
+                <div class="agenda-team">
+
+                    {% if acara.penanggung_jawab %}
+
+                    <div class="agenda-team-row">
+
+                        <span class="agenda-team-label">
+                            PJ
+                        </span>
+
+                        <span class="agenda-team-value">
+                            {{ acara.penanggung_jawab.nama }}
+                        </span>
+
+                    </div>
+
+                    {% endif %}
+
+
+                    <div class="agenda-team-row">
+
+                        <span class="agenda-team-label">
+                            🎤 MC
+                        </span>
+
+                        <div class="agenda-team-value agenda-mc-list">
+
+                            {% for mc in acara.pembawa_acara.all %}
+
+                                <span>
+                                    {{ mc.nama }}
+                                </span>
+
+                            {% empty %}
+
+                                <span>
+                                    Belum ditentukan
+                                </span>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+        {% empty %}
+
+        <div class="public-empty">
+            Belum ada agenda praktikum.
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+</section>
 
 <!-- =========================================================
      GROUP SNAPSHOT
@@ -1009,89 +1251,92 @@ Praktikum Perencanaan Tambang | Portal Akademik
 
 <section class="public-section">
 
-    <div class="container">
 
-        <div class="public-heading">
+<div class="container">
 
-            <div>
-                <div class="public-heading-kicker">
-                    MINING TEAMS
-                </div>
+    <div class="public-heading">
 
-                <h2>Progress Kelompok</h2>
-
-                <p>
-                    Pantau perkembangan setiap kelompok secara
-                    ringkas dan transparan.
-                </p>
+        <div>
+            <div class="public-heading-kicker">
+                MINING TEAMS
             </div>
 
-            <a
-                href="{% url 'praktikum:kelompok' %}"
-                class="public-link"
-            >
-                Lihat semua →
-            </a>
+            <h2>Progress Kelompok</h2>
 
+            <p>
+                Pantau perkembangan setiap kelompok secara
+                ringkas dan transparan.
+            </p>
         </div>
 
-
-        <div class="group-modern-grid">
-
-            {% for kelompok in kelompok_list|slice:":6" %}
-
-            <article class="group-modern-card">
-
-                <div class="group-modern-head">
-
-                    <strong>
-                        {{ kelompok.nama }}
-                    </strong>
-
-                    <span>
-                        {{ kelompok.progress_persen }}%
-                    </span>
-
-                </div>
-
-                <div class="group-progress">
-                    <div
-                        style="width: {{ kelompok.progress_persen }}%;"
-                    ></div>
-                </div>
-
-                <div class="group-modern-footer">
-
-                    <span>
-                        👥 {{ kelompok.jumlah_anggota }} anggota
-                    </span>
-
-                    <span>
-                        {% if kelompok.aktif %}
-                            AKTIF
-                        {% else %}
-                            NONAKTIF
-                        {% endif %}
-                    </span>
-
-                </div>
-
-            </article>
-
-            {% empty %}
-
-            <div class="public-empty">
-                Belum ada kelompok aktif.
-            </div>
-
-            {% endfor %}
-
-        </div>
+        <a
+            href="{% url 'praktikum:kelompok' %}"
+            class="public-link"
+        >
+            Lihat semua →
+        </a>
 
     </div>
 
-</section>
 
+    <div class="group-modern-grid">
+
+        {% for kelompok in kelompok_list|slice:":6" %}
+
+        <article class="group-modern-card">
+
+            <div class="group-modern-head">
+
+                <strong>
+                    {{ kelompok.nama }}
+                </strong>
+
+                <span>
+                    {{ kelompok.progress_persen }}%
+                </span>
+
+            </div>
+
+            <div class="group-progress">
+
+                <div
+                    style="width: {{ kelompok.progress_persen }}%;"
+                ></div>
+
+            </div>
+
+            <div class="group-modern-footer">
+
+                <span>
+                    👥 {{ kelompok.jumlah_anggota }} anggota
+                </span>
+
+                <span>
+                    {% if kelompok.aktif %}
+                        AKTIF
+                    {% else %}
+                        NONAKTIF
+                    {% endif %}
+                </span>
+
+            </div>
+
+        </article>
+
+        {% empty %}
+
+        <div class="public-empty">
+            Belum ada kelompok aktif.
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+</section>
 
 <!-- =========================================================
      ANNOUNCEMENT
@@ -1099,77 +1344,78 @@ Praktikum Perencanaan Tambang | Portal Akademik
 
 <section class="modern-announcement">
 
-    <div class="container">
+```
+<div class="container">
 
-        <div class="public-heading">
+    <div class="public-heading">
 
-            <div>
-                <div class="public-heading-kicker">
-                    INFORMATION
-                </div>
-
-                <h2 style="color:white;">
-                    Pengumuman Terbaru
-                </h2>
-
-                <p style="color:#9eada7;">
-                    Informasi terbaru dari pengelola praktikum.
-                </p>
+        <div>
+            <div class="public-heading-kicker">
+                INFORMATION
             </div>
 
-            <a
-                href="{% url 'praktikum:pengumuman' %}"
-                class="public-link"
-                style="color:#e0bd67;"
-            >
-                Semua pengumuman →
-            </a>
+            <h2 style="color:white;">
+                Pengumuman Terbaru
+            </h2>
 
+            <p style="color:#9eada7;">
+                Informasi terbaru dari pengelola praktikum.
+            </p>
         </div>
 
-
-        <div class="announcement-modern-grid">
-
-            {% for item in items|slice:":4" %}
-
-            <article class="announcement-modern-card">
-
-                <div class="announcement-number">
-                    {{ forloop.counter|stringformat:"02d" }}
-                </div>
-
-                <div>
-
-                    <small>
-                        {{ item.dibuat|date:"d M Y" }}
-                    </small>
-
-                    <h3>
-                        {{ item.judul }}
-                    </h3>
-
-                    <p>
-                        {{ item.isi|striptags|truncatechars:180 }}
-                    </p>
-
-                </div>
-
-            </article>
-
-            {% empty %}
-
-            <div class="public-empty">
-                Belum ada pengumuman.
-            </div>
-
-            {% endfor %}
-
-        </div>
+        <a
+            href="{% url 'praktikum:pengumuman' %}"
+            class="public-link"
+            style="color:#e0bd67;"
+        >
+            Semua pengumuman →
+        </a>
 
     </div>
 
-</section>
 
+    <div class="announcement-modern-grid">
+
+        {% for item in items|slice:":4" %}
+
+        <article class="announcement-modern-card">
+
+            <div class="announcement-number">
+                {{ forloop.counter|stringformat:"02d" }}
+            </div>
+
+            <div>
+
+                <small>
+                    {{ item.dibuat|date:"d M Y" }}
+                </small>
+
+                <h3>
+                    {{ item.judul }}
+                </h3>
+
+                <p>
+                    {{ item.isi|striptags|truncatechars:180 }}
+                </p>
+
+            </div>
+
+        </article>
+
+        {% empty %}
+
+        <div class="public-empty">
+            Belum ada pengumuman.
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+</section>
 
 <!-- =========================================================
      LOGIN CTA
@@ -1177,38 +1423,40 @@ Praktikum Perencanaan Tambang | Portal Akademik
 
 <section class="modern-login">
 
-    <div class="container">
 
-        <div class="modern-login-box">
+<div class="container">
 
-            <div>
+    <div class="modern-login-box">
 
-                <div class="gold-text">
-                    GROUP PORTAL
-                </div>
+        <div>
 
-                <h2>
-                    Kelola progres kelompokmu.
-                </h2>
-
-                <p>
-                    Login untuk mengakses dashboard kelompok,
-                    mengirim laporan, memantau progres dan melihat
-                    evaluasi praktikum.
-                </p>
-
+            <div class="gold-text">
+                GROUP PORTAL
             </div>
 
-            <a
-                href="{% url 'praktikum:login_kelompok' %}"
-                class="modern-btn modern-btn-gold"
-            >
-                Login Kelompok →
-            </a>
+            <h2>
+                Kelola progres kelompokmu.
+            </h2>
+
+            <p>
+                Login untuk mengakses dashboard kelompok,
+                mengirim laporan, memantau progres dan melihat
+                evaluasi praktikum.
+            </p>
 
         </div>
 
+        <a
+            href="{% url 'praktikum:login_kelompok' %}"
+            class="modern-btn modern-btn-gold"
+        >
+            Login Kelompok →
+        </a>
+
     </div>
+
+</div>
+
 
 </section>
 
