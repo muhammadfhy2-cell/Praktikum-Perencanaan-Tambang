@@ -1,222 +1,123 @@
-<!DOCTYPE html>
-<html lang="id">
+{% extends "praktikum/base.html" %}
 
-<head>
+{% block title %}Absensi | Praktikum Perencanaan Tambang{% endblock %}
 
-    <meta charset="UTF-8">
+{% block content %}
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        Absensi Praktikum
-    </title>
-
-    <style>
-
-        body {
-            margin: 0;
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-            background: #f5f7fa;
-            color: #111827;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 45px auto;
-            padding: 0 25px;
-        }
-
-        h1 {
-            font-size: 45px;
-            margin-bottom: 8px;
-        }
-
-        .subtitle {
-            color: #4b5563;
-            margin-bottom: 30px;
-            font-size: 20px;
-        }
-
-        .table-wrapper {
-            background: white;
-            border: 1px solid #d9dee5;
-            border-radius: 10px;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: 15px;
-            border-bottom:
-                1px solid #e5e7eb;
-            text-align: left;
-        }
-
-        th {
-            background: #f8fafc;
-            font-weight: 700;
-        }
-
-        .nilai {
-            font-weight: 700;
-        }
-
-        .progress {
-            width: 150px;
-            height: 9px;
-            background: #e5e7eb;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: #111827;
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-<div class="container">
-
-    <h1>
-        Absensi Praktikum
-    </h1>
-
-    <div class="subtitle">
-        Rekapitulasi persentase kehadiran
-        peserta pada seluruh acara.
+<section class="page-header">
+    <div class="container">
+        <div class="eyebrow">ATTENDANCE MONITORING</div>
+        <h1>Rekap Absensi</h1>
+        <p>
+            Rekapitulasi kehadiran peserta berdasarkan data absensi
+            yang tercatat dalam kegiatan praktikum.
+        </p>
     </div>
+</section>
 
+<section class="content-section">
+    <div class="container">
 
-    <div class="table-wrapper">
+        <div class="table-wrap">
 
-        <table>
+            <table>
 
-            <thead>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Peserta</th>
+                        <th>NIM</th>
+                        <th>Kelompok</th>
+                        <th>Jumlah Acara</th>
+                        <th>Nilai</th>
+                        <th>Persentase</th>
+                    </tr>
+                </thead>
 
-                <tr>
+                <tbody>
 
-                    <th>
-                        Peserta
-                    </th>
+                    {% for row in rows %}
 
-                    <th>
-                        NIM
-                    </th>
+                    <tr>
 
-                    <th>
-                        Kelompok
-                    </th>
+                        <td>{{ forloop.counter }}</td>
 
-                    <th>
-                        Jumlah Acara
-                    </th>
+                        <td>
+                            <strong>{{ row.peserta.nama }}</strong>
+                        </td>
 
-                    <th>
-                        Akumulasi Nilai
-                    </th>
+                        <td>{{ row.peserta.nim }}</td>
 
-                    <th>
-                        Persentase
-                    </th>
+                        <td>
+                            {% if row.peserta.kelompok %}
+                                {{ row.peserta.kelompok.nama }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
 
-                </tr>
+                        <td>{{ row.total_acara }}</td>
 
-            </thead>
+                        <td>
+                            <strong>{{ row.total_nilai }}%</strong>
+                        </td>
 
+                        <td>
+                            {% if row.persentase >= 80 %}
+                                <span class="badge badge-green">
+                                    {{ row.persentase }}%
+                                </span>
+                            {% elif row.persentase >= 60 %}
+                                <span class="badge badge-gold">
+                                    {{ row.persentase }}%
+                                </span>
+                            {% else %}
+                                <span class="badge badge-red">
+                                    {{ row.persentase }}%
+                                </span>
+                            {% endif %}
+                        </td>
 
-            <tbody>
+                    </tr>
 
-                {% for row in rows %}
+                    {% empty %}
 
-                <tr>
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty">
+                                <div class="empty-icon">📋</div>
+                                Belum ada data absensi.
+                            </div>
+                        </td>
+                    </tr>
 
-                    <td>
-                        {{ row.peserta.nama }}
-                    </td>
+                    {% endfor %}
 
-                    <td>
-                        {{ row.peserta.nim }}
-                    </td>
+                </tbody>
 
-                    <td>
+            </table>
 
-                        {% if row.peserta.kelompok %}
-                            {{ row.peserta.kelompok.nama }}
-                        {% else %}
-                            -
-                        {% endif %}
+        </div>
 
-                    </td>
-
-                    <td>
-                        {{ row.total_acara }}
-                    </td>
-
-                    <td class="nilai">
-                        {{ row.total_nilai }}%
-                    </td>
-
-                    <td>
-
-                        <strong>
-                            {{ row.persentase }}%
-                        </strong>
-
-                        <div class="progress">
-
-                            <div
-                                class="progress-fill"
-                                style="
-                                    width:
-                                    {{ row.persentase }}%;
-                                "
-                            ></div>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-                {% empty %}
-
-                <tr>
-
-                    <td
-                        colspan="6"
-                        style="text-align:center;"
-                    >
-                        Belum ada data absensi.
-                    </td>
-
-                </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
+        <div class="attendance-note">
+            <strong>Catatan:</strong>
+            Persentase mengikuti data kehadiran yang telah dimasukkan
+            oleh administrator melalui sistem.
+        </div>
 
     </div>
+</section>
 
-</div>
+<style>
+    .attendance-note {
+        margin-top: 17px;
+        padding: 15px 18px;
+        border-left: 4px solid #d6a84f;
+        background: #fff8e7;
+        color: #74622d;
+        border-radius: 8px;
+        font-size: 12px;
+    }
+</style>
 
-</body>
-
-</html>
+{% endblock %}
