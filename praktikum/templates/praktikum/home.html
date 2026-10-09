@@ -11,9 +11,21 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
 
 {% block extra_css %}
 <style>
-/* =========================
-   HERO
-========================= */
+:root {
+    --home-ink: #241a11;
+    --home-ink-2: #342419;
+    --home-brown: #513720;
+    --home-earth: #75502d;
+    --home-gold: #dca52e;
+    --home-yellow: #ffc94a;
+    --home-cream: #f7f2e8;
+    --home-paper: #fffdf8;
+    --home-line: #e8dfd0;
+    --home-text: #30271d;
+    --home-muted: #796e60;
+}
+
+/* HERO */
 .home-hero {
     position: relative;
     isolation: isolate;
@@ -21,11 +33,11 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     min-height: 510px;
     display: flex;
     align-items: center;
+    color: var(--home-paper);
     background:
-        radial-gradient(ellipse at 88% 15%, rgba(255,201,74,.18), transparent 29%),
-        radial-gradient(ellipse at 75% 95%, rgba(117,80,45,.42), transparent 35%),
-        linear-gradient(125deg, #241a11 0%, #342419 52%, #513720 100%);
-    color: #fffdf8;
+        radial-gradient(ellipse at 88% 15%, rgba(255,201,74,.16), transparent 29%),
+        radial-gradient(ellipse at 75% 95%, rgba(117,80,45,.38), transparent 35%),
+        linear-gradient(125deg, var(--home-ink) 0%, var(--home-ink-2) 52%, var(--home-brown) 100%);
 }
 
 .home-hero::before,
@@ -38,16 +50,15 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
 
 .home-hero::before {
     inset: 0;
-    opacity: .25;
-    background-image:
-        repeating-radial-gradient(
-            ellipse at 85% 50%,
-            transparent 0,
-            transparent 27px,
-            rgba(255,201,74,.38) 28px,
-            transparent 29px,
-            transparent 45px
-        );
+    opacity: .22;
+    background-image: repeating-radial-gradient(
+        ellipse at 85% 50%,
+        transparent 0,
+        transparent 27px,
+        rgba(255,201,74,.38) 28px,
+        transparent 29px,
+        transparent 45px
+    );
     mask-image: linear-gradient(90deg, transparent 5%, #000 100%);
 }
 
@@ -74,9 +85,7 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     gap: 48px;
 }
 
-.home-hero-content {
-    max-width: 720px;
-}
+.home-hero-content { max-width: 720px; }
 
 .home-kicker {
     display: inline-flex;
@@ -94,27 +103,25 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     content: "";
     width: 28px;
     height: 2px;
-    background: #ffc94a;
+    background: var(--home-yellow);
 }
 
 .home-hero h1 {
     max-width: 760px;
     margin: 0 0 23px;
-    color: #fffdf8;
+    color: var(--home-paper);
     font-size: clamp(37px, 5.5vw, 68px);
     font-weight: 900;
     letter-spacing: -1.8px;
     line-height: 1.04;
 }
 
-.home-hero h1 span {
-    color: #ffc94a;
-}
+.home-hero h1 span { color: var(--home-yellow); }
 
 .home-hero-description {
     max-width: 640px;
-    margin-bottom: 30px;
-    color: #e1d5c3;
+    margin: 0 0 30px;
+    color: #e8dece;
     font-size: 15px;
     line-height: 1.9;
 }
@@ -140,33 +147,35 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     transition: transform .2s ease, filter .2s ease, background .2s ease;
 }
 
-.home-btn:hover {
-    transform: translateY(-2px);
-}
+.home-btn:hover { transform: translateY(-2px); }
 
 .home-btn-primary {
-    background: linear-gradient(135deg, #ffc94a, #dca52e);
-    color: #241a11;
+    background: linear-gradient(135deg, #ffd875, var(--home-gold));
+    color: var(--home-ink);
+    border-color: var(--home-gold);
     box-shadow: 0 8px 24px rgba(220,165,46,.2);
 }
 
-.home-btn-primary:hover {
-    filter: brightness(1.05);
+.home-btn-primary:hover,
+.home-btn-primary:focus-visible {
+    color: var(--home-ink);
+    background: #ffda7a;
+    filter: brightness(1.03);
 }
 
 .home-btn-secondary {
-    border-color: rgba(255,255,255,.24);
-    background: rgba(255,255,255,.055);
-    color: #fffdf8;
+    border-color: rgba(255,253,248,.3);
+    background: rgba(255,253,248,.06);
+    color: var(--home-paper);
 }
 
-.home-btn-secondary:hover {
-    background: rgba(255,255,255,.12);
+.home-btn-secondary:hover,
+.home-btn-secondary:focus-visible {
+    color: var(--home-paper);
+    background: rgba(255,253,248,.13);
 }
 
-/* =========================
-   HERO VISUAL
-========================= */
+/* VISUAL TAMBANG */
 .home-hero-visual {
     position: relative;
     min-height: 310px;
@@ -214,7 +223,7 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
 }
 
 .mine-emblem-title {
-    color: #fffdf8;
+    color: var(--home-paper);
     font-size: 17px;
     font-weight: 900;
     letter-spacing: .8px;
@@ -225,7 +234,7 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     padding: 10px 13px;
     border: 1px solid rgba(255,201,74,.3);
     border-radius: 10px;
-    background: rgba(36,26,17,.84);
+    background: rgba(36,26,17,.9);
     color: #f7edda;
     font-size: 10px;
     font-weight: 800;
@@ -234,27 +243,16 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     backdrop-filter: blur(8px);
 }
 
-.mine-floating-label.one {
-    top: 27px;
-    right: -5px;
-}
+.mine-floating-label.one { top: 27px; right: -5px; }
+.mine-floating-label.two { bottom: 34px; left: -12px; }
 
-.mine-floating-label.two {
-    bottom: 34px;
-    left: -12px;
-}
-
-/* =========================
-   SECTION GENERAL
-========================= */
-.home-section {
-    padding: 72px 0;
-}
-
+/* CONTAINER DAN SECTION */
 .home-container {
     width: min(1180px, calc(100% - 40px));
     margin: 0 auto;
 }
+
+.home-section { padding: 72px 0; }
 
 .home-section-heading {
     display: flex;
@@ -264,9 +262,7 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     margin-bottom: 30px;
 }
 
-.home-section-heading-main {
-    max-width: 700px;
-}
+.home-section-heading-main { max-width: 700px; }
 
 .home-eyebrow {
     display: inline-block;
@@ -280,7 +276,7 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
 
 .home-section-heading h2 {
     margin: 0 0 10px;
-    color: #241a11;
+    color: var(--home-ink);
     font-size: clamp(26px, 3.5vw, 36px);
     font-weight: 900;
     letter-spacing: -.6px;
@@ -289,7 +285,8 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
 
 .home-section-heading p {
     max-width: 650px;
-    color: #796e60;
+    margin: 0;
+    color: #65594b;
     font-size: 13px;
     line-height: 1.8;
 }
@@ -300,23 +297,94 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     gap: 8px;
     flex: 0 0 auto;
     padding-bottom: 4px;
-    color: #75502d;
+    color: var(--home-earth);
     font-size: 12px;
     font-weight: 900;
     text-decoration: none;
 }
 
-.home-text-link:hover {
-    color: #a57620;
-}
+.home-text-link:hover { color: #a57620; }
 
-/* =========================
-   QUICK LINKS
-========================= */
-.home-shortcuts {
+/* STATISTIK */
+.home-stats {
     position: relative;
     z-index: 2;
-    margin-top: -30px;
+    padding: 0 0 32px;
+    background: var(--home-paper);
+}
+
+.home-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.home-stat-card {
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+    padding: 23px 22px;
+    border: 1px solid var(--home-line);
+    border-radius: 16px;
+    background: var(--home-paper);
+    box-shadow: 0 10px 28px rgba(36,26,17,.055);
+    transition: transform .2s ease, border-color .2s ease;
+}
+
+.home-stat-card::after {
+    content: "";
+    position: absolute;
+    right: -30px;
+    bottom: -45px;
+    width: 100px;
+    height: 100px;
+    border: 1px solid rgba(117,80,45,.12);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 12px rgba(117,80,45,.025),
+        0 0 0 24px rgba(117,80,45,.025);
+    pointer-events: none;
+}
+
+.home-stat-card:hover {
+    transform: translateY(-3px);
+    border-color: #d9bc7d;
+}
+
+.home-stat-icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    margin-bottom: 17px;
+    border-radius: 12px;
+    background: #f5e8c9;
+    color: var(--home-earth);
+    font-size: 21px;
+}
+
+.home-stat-value {
+    margin-bottom: 5px;
+    color: var(--home-ink-2);
+    font-size: clamp(25px, 3vw, 34px);
+    font-weight: 900;
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+}
+
+.home-stat-label {
+    color: var(--home-muted);
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.6;
+}
+
+/* AKSES CEPAT */
+.home-shortcuts {
+    position: relative;
+    z-index: 1;
+    padding: 10px 0 30px;
+    background: var(--home-paper);
 }
 
 .home-shortcuts-grid {
@@ -331,10 +399,10 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     gap: 14px;
     min-width: 0;
     padding: 20px;
-    border: 1px solid #e8dfd0;
+    border: 1px solid var(--home-line);
     border-radius: 16px;
-    background: #fffdf8;
-    box-shadow: 0 12px 28px rgba(36,26,17,.07);
+    background: var(--home-paper);
+    box-shadow: 0 10px 28px rgba(36,26,17,.055);
     text-decoration: none;
     transition: transform .2s ease, border-color .2s ease;
 }
@@ -352,29 +420,26 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     flex: 0 0 43px;
     border-radius: 12px;
     background: #f5e8c9;
-    color: #513720;
+    color: var(--home-brown);
     font-size: 21px;
 }
 
 .home-shortcut h3 {
     margin: 1px 0 5px;
-    color: #342419;
+    color: var(--home-ink-2);
     font-size: 13px;
     font-weight: 900;
 }
 
 .home-shortcut p {
-    color: #796e60;
+    margin: 0;
+    color: var(--home-muted);
     font-size: 11px;
     line-height: 1.65;
 }
 
-/* =========================
-   ABOUT / FEATURE
-========================= */
-.home-about {
-    background: #f7f2e8;
-}
+/* TENTANG PLATFORM */
+.home-about { background: var(--home-cream); }
 
 .home-about-grid {
     display: grid;
@@ -384,16 +449,14 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
 }
 
 .home-about-copy h2 {
-    margin-bottom: 17px;
-    color: #241a11;
+    margin: 0 0 17px;
+    color: var(--home-ink);
     font-size: clamp(28px, 3.5vw, 39px);
     font-weight: 900;
     line-height: 1.2;
 }
 
-.home-about-copy h2 span {
-    color: #a87922;
-}
+.home-about-copy h2 span { color: #a87922; }
 
 .home-about-copy p {
     margin-bottom: 14px;
@@ -401,6 +464,8 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     font-size: 13px;
     line-height: 1.95;
 }
+
+.home-about-copy .home-btn { margin-top: 8px; }
 
 .home-about-panel {
     position: relative;
@@ -410,7 +475,7 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     border-radius: 22px;
     background:
         radial-gradient(ellipse at 100% 0%, rgba(255,201,74,.15), transparent 45%),
-        #fffdf8;
+        var(--home-paper);
     box-shadow: 0 15px 38px rgba(36,26,17,.07);
 }
 
@@ -430,8 +495,8 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
 }
 
 .home-about-panel h3 {
-    margin-bottom: 22px;
-    color: #342419;
+    margin: 0 0 22px;
+    color: var(--home-ink-2);
     font-size: 17px;
     font-weight: 900;
 }
@@ -456,29 +521,28 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     flex: 0 0 28px;
     border-radius: 9px;
     background: #f5e8c9;
-    color: #75502d;
+    color: var(--home-earth);
     font-size: 13px;
     font-weight: 900;
 }
 
 .home-feature h4 {
     margin: 1px 0 4px;
-    color: #342419;
+    color: var(--home-ink-2);
     font-size: 13px;
     font-weight: 900;
 }
 
 .home-feature p {
-    color: #796e60;
+    margin: 0;
+    color: var(--home-muted);
     font-size: 12px;
     line-height: 1.7;
 }
 
-/* =========================
-   LATEST ANNOUNCEMENTS
-========================= */
+/* PENGUMUMAN */
 .home-announcements {
-    background: #fffdf8;
+    background: var(--home-paper);
 }
 
 .home-announcement-list {
@@ -490,9 +554,9 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
 .home-announcement-card {
     min-width: 0;
     padding: 23px;
-    border: 1px solid #e8dfd0;
+    border: 1px solid var(--home-line);
     border-radius: 17px;
-    background: #fffdf8;
+    background: var(--home-paper);
     box-shadow: 0 8px 24px rgba(36,26,17,.045);
     transition: transform .2s ease, border-color .2s ease;
 }
@@ -514,8 +578,8 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
 }
 
 .home-announcement-card h3 {
-    margin-bottom: 10px;
-    color: #342419;
+    margin: 0 0 10px;
+    color: var(--home-ink-2);
     font-size: 16px;
     font-weight: 900;
     line-height: 1.5;
@@ -523,7 +587,8 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
 }
 
 .home-announcement-card p {
-    color: #796e60;
+    margin: 0;
+    color: var(--home-muted);
     font-size: 12px;
     line-height: 1.8;
     overflow-wrap: anywhere;
@@ -534,17 +599,15 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     padding: 35px 20px;
     border: 1px dashed #d8c7a7;
     border-radius: 16px;
-    color: #796e60;
+    color: var(--home-muted);
     text-align: center;
     font-size: 13px;
 }
 
-/* =========================
-   FINAL CTA
-========================= */
+/* CTA */
 .home-cta {
     padding: 0 0 75px;
-    background: #fffdf8;
+    background: var(--home-paper);
 }
 
 .home-cta-panel {
@@ -559,8 +622,8 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     border-radius: 22px;
     background:
         radial-gradient(ellipse at 100% 0%, rgba(255,201,74,.17), transparent 35%),
-        linear-gradient(120deg, #241a11, #513720);
-    color: #fffdf8;
+        linear-gradient(120deg, var(--home-ink), var(--home-brown));
+    color: var(--home-paper);
 }
 
 .home-cta-panel::after {
@@ -585,15 +648,16 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
 }
 
 .home-cta-copy h2 {
-    margin-bottom: 9px;
-    color: #fffdf8;
+    margin: 0 0 9px;
+    color: var(--home-paper);
     font-size: clamp(23px, 3vw, 32px);
     font-weight: 900;
     line-height: 1.25;
 }
 
 .home-cta-copy p {
-    color: #e1d5c3;
+    margin: 0;
+    color: #e8dece;
     font-size: 13px;
     line-height: 1.8;
 }
@@ -604,19 +668,16 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     flex: 0 0 auto;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* RESPONSIVE */
 @media (max-width: 1000px) {
     .home-hero-inner {
         grid-template-columns: minmax(0, 1fr) 280px;
         gap: 20px;
     }
 
-    .home-hero-visual {
-        transform: scale(.86);
-    }
+    .home-hero-visual { transform: scale(.86); }
 
+    .home-stats-grid,
     .home-shortcuts-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -625,32 +686,20 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .home-about-grid {
-        gap: 30px;
-    }
+    .home-about-grid { gap: 30px; }
 }
 
 @media (max-width: 720px) {
-    .home-hero {
-        min-height: auto;
-    }
+    .home-hero { min-height: auto; }
 
     .home-hero-inner {
         grid-template-columns: 1fr;
         padding: 65px 0 75px;
     }
 
-    .home-hero h1 {
-        letter-spacing: -1px;
-    }
-
-    .home-hero-visual {
-        display: none;
-    }
-
-    .home-section {
-        padding: 52px 0;
-    }
+    .home-hero h1 { letter-spacing: -1px; }
+    .home-hero-visual { display: none; }
+    .home-section { padding: 52px 0; }
 
     .home-section-heading {
         align-items: flex-start;
@@ -658,13 +707,12 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
         gap: 13px;
     }
 
-    .home-about-grid {
-        grid-template-columns: 1fr;
-    }
+    .home-stats { padding-bottom: 25px; }
+    .home-shortcuts { padding-top: 5px; }
 
-    .home-announcement-list {
-        grid-template-columns: 1fr;
-    }
+    .home-about-grid { grid-template-columns: 1fr; }
+
+    .home-announcement-list { grid-template-columns: 1fr; }
 
     .home-cta-panel {
         align-items: flex-start;
@@ -672,9 +720,7 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
         padding: 28px 24px;
     }
 
-    .home-cta {
-        padding-bottom: 52px;
-    }
+    .home-cta { padding-bottom: 52px; }
 }
 
 @media (max-width: 480px) {
@@ -683,53 +729,57 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
         width: calc(100% - 28px);
     }
 
-    .home-hero-inner {
-        padding: 52px 0 65px;
-    }
-
-    .home-hero h1 {
-        font-size: 39px;
-    }
-
-    .home-hero-description {
-        font-size: 13px;
-    }
+    .home-hero-inner { padding: 52px 0 65px; }
+    .home-hero h1 { font-size: 39px; }
+    .home-hero-description { font-size: 13px; }
 
     .home-hero-actions {
         align-items: stretch;
         flex-direction: column;
     }
 
-    .home-btn {
-        width: 100%;
+    .home-btn { width: 100%; }
+
+    .home-stats-grid { gap: 10px; }
+
+    .home-stat-card { padding: 17px 14px; }
+
+    .home-stat-icon {
+        width: 36px;
+        height: 36px;
+        margin-bottom: 13px;
+        font-size: 18px;
     }
 
-    .home-shortcuts-grid {
-        grid-template-columns: 1fr;
-    }
+    .home-stat-value { font-size: 25px; }
+    .home-stat-label { font-size: 10px; }
 
-    .home-shortcut {
-        padding: 17px;
-    }
+    .home-shortcuts-grid { grid-template-columns: 1fr; }
+    .home-shortcut { padding: 17px; }
 
-    .home-about-panel {
-        padding: 23px 19px;
-    }
+    .home-about-panel { padding: 23px 19px; }
+    .home-cta-panel { padding: 25px 20px; }
+}
 
-    .home-cta-panel {
-        padding: 25px 20px;
-    }
+/* AKSESIBILITAS */
+.home-btn:focus-visible,
+.home-text-link:focus-visible,
+.home-shortcut:focus-visible {
+    outline: 3px solid var(--home-gold);
+    outline-offset: 4px;
 }
 
 @media (prefers-reduced-motion: reduce) {
     .home-btn,
     .home-shortcut,
+    .home-stat-card,
     .home-announcement-card {
         transition: none;
     }
 
     .home-btn:hover,
     .home-shortcut:hover,
+    .home-stat-card:hover,
     .home-announcement-card:hover {
         transform: none;
     }
@@ -739,13 +789,10 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
 
 {% block content %}
 
-<!-- HERO -->
 <section class="home-hero">
     <div class="home-hero-inner">
         <div class="home-hero-content">
-            <div class="home-kicker">
-                Mining Education Platform
-            </div>
+            <div class="home-kicker">Mining Education Platform</div>
 
             <h1>
                 Praktikum<br>
@@ -789,11 +836,39 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     </div>
 </section>
 
-<!-- QUICK ACCESS -->
+<section class="home-stats" aria-label="Statistik portal praktikum">
+    <div class="home-container">
+        <div class="home-stats-grid">
+            <article class="home-stat-card">
+                <div class="home-stat-icon" aria-hidden="true">▤</div>
+                <div class="home-stat-value">{{ materi_list|length }}</div>
+                <div class="home-stat-label">Materi Praktikum</div>
+            </article>
+
+            <article class="home-stat-card">
+                <div class="home-stat-icon" aria-hidden="true">♧</div>
+                <div class="home-stat-value">{{ kelompok_list|length }}</div>
+                <div class="home-stat-label">Kelompok Aktif</div>
+            </article>
+
+            <article class="home-stat-card">
+                <div class="home-stat-icon" aria-hidden="true">◷</div>
+                <div class="home-stat-value">{{ acara_list|length }}</div>
+                <div class="home-stat-label">Agenda Kegiatan</div>
+            </article>
+
+            <article class="home-stat-card">
+                <div class="home-stat-icon" aria-hidden="true">♙</div>
+                <div class="home-stat-value">{{ peserta_list|length }}</div>
+                <div class="home-stat-label">Peserta Terdaftar</div>
+            </article>
+        </div>
+    </div>
+</section>
+
 <section class="home-shortcuts">
     <div class="home-container">
         <div class="home-shortcuts-grid">
-
             <a href="{% url 'praktikum:personel' %}" class="home-shortcut">
                 <div class="home-shortcut-icon" aria-hidden="true">♙</div>
                 <div>
@@ -825,16 +900,13 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
                     <p>Periksa informasi terbaru dari pengelola.</p>
                 </div>
             </a>
-
         </div>
     </div>
 </section>
 
-<!-- ABOUT -->
 <section class="home-section home-about">
     <div class="home-container">
         <div class="home-about-grid">
-
             <div class="home-about-copy">
                 <div class="home-eyebrow">Tentang Platform</div>
 
@@ -900,12 +972,10 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </section>
 
-<!-- LATEST ANNOUNCEMENTS -->
 <section class="home-section home-announcements">
     <div class="home-container">
         <div class="home-section-heading">
@@ -930,12 +1000,8 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
                 <div class="home-announcement-date">
                     {{ item.dibuat|date:"d M Y" }}
                 </div>
-
                 <h3>{{ item.judul }}</h3>
-
-                <p>
-                    {{ item.isi|striptags|truncatechars:150 }}
-                </p>
+                <p>{{ item.isi|striptags|truncatechars:150 }}</p>
             </article>
             {% empty %}
             <div class="home-announcement-empty">
@@ -947,7 +1013,6 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     </div>
 </section>
 
-<!-- CALL TO ACTION -->
 <section class="home-cta">
     <div class="home-container">
         <div class="home-cta-panel">
