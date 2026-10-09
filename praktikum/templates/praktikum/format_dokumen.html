@@ -1,0 +1,187 @@
+{% extends "praktikum/base.html" %}
+
+{% block title %}Format Dokumen | Praktikum Perencanaan Tambang{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <div class="eyebrow">DOCUMENT CENTER</div>
+        <h1>Format Dokumen</h1>
+        <p>
+            Pusat dokumen dan format administrasi untuk mendukung
+            kegiatan Praktikum Perencanaan Tambang.
+        </p>
+    </div>
+</section>
+
+<section class="content-section">
+    <div class="container">
+        <div class="document-intro">
+            <h2>Dokumen yang Tersedia</h2>
+            <p>
+                Pilih dokumen yang diperlukan. Dokumen yang ditampilkan
+                merupakan format yang telah diaktifkan oleh administrator.
+            </p>
+        </div>
+
+        <div class="document-grid">
+            {% for dokumen in format_dokumen_list %}
+            <article class="document-card">
+                <div class="document-icon">📄</div>
+
+                <div class="document-content">
+                    <span class="badge badge-gold">
+                        {{ dokumen.jenis|default:"Dokumen" }}
+                    </span>
+
+                    <h3>{{ dokumen.judul }}</h3>
+
+                    {% if dokumen.deskripsi %}
+                    <p>{{ dokumen.deskripsi }}</p>
+                    {% else %}
+                    <p>
+                        Dokumen pendukung kegiatan Praktikum
+                        Perencanaan Tambang.
+                    </p>
+                    {% endif %}
+
+                    {% if dokumen.file %}
+                    <a
+                        href="{{ dokumen.file.url }}"
+                        class="btn"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Buka Dokumen
+                    </a>
+                    {% else %}
+                    <span class="document-unavailable">
+                        File belum tersedia
+                    </span>
+                    {% endif %}
+
+                    <small>
+                        Diperbarui:
+                        {{ dokumen.uploaded_at|date:"d M Y" }}
+                    </small>
+                </div>
+            </article>
+
+            {% empty %}
+            <div class="empty document-empty">
+                <div class="empty-icon">📁</div>
+                <h3>Belum Ada Format Dokumen</h3>
+                <p>
+                    Format dokumen akan ditampilkan di halaman ini
+                    setelah diunggah dan diaktifkan oleh administrator.
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+.document-intro {
+    margin-bottom: 25px;
+}
+
+.document-intro h2 {
+    color: var(--mine-dark);
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.document-intro p {
+    color: var(--muted);
+    max-width: 750px;
+}
+
+.document-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.document-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 22px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    min-width: 0;
+}
+
+.document-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 50px;
+    width: 50px;
+    height: 50px;
+    background: #f8eed5;
+    border-radius: 14px;
+    font-size: 23px;
+}
+
+.document-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.document-content h3 {
+    margin: 12px 0 8px;
+    color: var(--mine-dark-2);
+    font-size: 17px;
+    overflow-wrap: anywhere;
+}
+
+.document-content p {
+    margin-bottom: 14px;
+    color: var(--muted);
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.document-content small {
+    display: block;
+    margin-top: 12px;
+    color: #89928c;
+    font-size: 11px;
+}
+
+.document-unavailable {
+    display: inline-block;
+    padding: 9px 12px;
+    background: #edf0ed;
+    color: #5f6962;
+    border-radius: 9px;
+    font-size: 12px;
+}
+
+.document-empty {
+    grid-column: 1 / -1;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+@media (max-width: 900px) {
+    .document-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .document-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .document-card {
+        padding: 18px;
+    }
+}
+{% endblock %}
