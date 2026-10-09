@@ -10,9 +10,9 @@ from .daily_mom_views import (
 app_name = "praktikum"
 
 urlpatterns = [
-    # =========================================================
+    # ========================================================
     # HALAMAN PUBLIK
-    # =========================================================
+    # ========================================================
     path("", views.home, name="home"),
     path("personel/", views.personel, name="personel"),
     path("kelompok/", views.kelompok, name="kelompok"),
@@ -37,9 +37,9 @@ urlpatterns = [
         name="format_dokumen",
     ),
 
-    # =========================================================
-    # UNDUHAN PUBLIK
-    # =========================================================
+    # ========================================================
+    # DOWNLOAD MATERI DAN FORMAT DOKUMEN
+    # ========================================================
     path(
         "materi/<int:materi_id>/download/",
         views.download_materi,
@@ -50,15 +50,19 @@ urlpatterns = [
         views.download_format_dokumen,
         name="download_format_dokumen",
     ),
+
+    # ========================================================
+    # DOWNLOAD LAPORAN LENGKAP PUBLIK
+    # ========================================================
     path(
         "laporan-lengkap/<int:laporan_id>/publik/download/",
         views.download_laporan_lengkap_publik,
         name="download_laporan_lengkap_publik",
     ),
 
-    # =========================================================
-    # LOGIN DAN LOGOUT KELOMPOK
-    # =========================================================
+    # ========================================================
+    # LOGIN DAN LOGOUT
+    # ========================================================
     path(
         "login/",
         views.login_kelompok,
@@ -70,9 +74,9 @@ urlpatterns = [
         name="logout_kelompok",
     ),
 
-    # =========================================================
+    # ========================================================
     # DASHBOARD
-    # =========================================================
+    # ========================================================
     path(
         "dashboard/kelompok/",
         views.dashboard_kelompok,
@@ -84,9 +88,9 @@ urlpatterns = [
         name="dashboard_peserta",
     ),
 
-    # =========================================================
+    # ========================================================
     # DAILY MOM
-    # =========================================================
+    # ========================================================
     path(
         "dashboard/kelompok/daily-mom/tambah/",
         tambah_daily_mom,
@@ -103,9 +107,9 @@ urlpatterns = [
         name="hapus_daily_mom",
     ),
 
-    # =========================================================
+    # ========================================================
     # LAPORAN MINGGUAN
-    # =========================================================
+    # ========================================================
     path(
         "laporan/upload/",
         views.upload_laporan,
@@ -121,15 +125,18 @@ urlpatterns = [
         views.download_file_revisi,
         name="download_file_revisi",
     ),
+
+    # Download file laporan mingguan melalui Django Admin.
+    # jenis: asli atau revisi.
     path(
         "admin-file/laporan-mingguan/<int:laporan_id>/<str:jenis>/",
         views.download_laporan_mingguan_admin,
         name="download_laporan_mingguan_admin",
     ),
 
-    # =========================================================
+    # ========================================================
     # LAPORAN LENGKAP
-    # =========================================================
+    # ========================================================
     path(
         "laporan-lengkap/upload/",
         views.upload_laporan_lengkap,
@@ -145,27 +152,31 @@ urlpatterns = [
         views.download_laporan_lengkap_revisi,
         name="download_laporan_lengkap_revisi",
     ),
+
+    # Download file laporan lengkap melalui Django Admin.
+    # jenis: asli atau revisi.
     path(
         "admin-file/laporan-lengkap/<int:laporan_id>/<str:jenis>/",
         views.download_laporan_lengkap_admin,
         name="download_laporan_lengkap_admin",
     ),
 
-    # =========================================================
+    # ========================================================
     # LOGO KELOMPOK
-    # =========================================================
+    # ========================================================
     path(
         "dashboard/kelompok/logo/upload/",
         views.upload_logo_kelompok,
         name="upload_logo_kelompok",
     ),
 
-    # =========================================================
+    # ========================================================
     # FILE KELOMPOK
-    # =========================================================
+    # ========================================================
     path(
         "file-kelompok/<int:file_id>/download/",
         views.download_file_kelompok,
         name="download_file_kelompok",
     ),
 ]
+
