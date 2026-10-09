@@ -165,4 +165,18 @@ urlpatterns = [
         views.download_file_kelompok,
         name="download_file_kelompok",
     ),
+    
+    # =====================================================
+    # KONSULTASI
+    # =====================================================
+    path(
+        "dashboard/kelompok/konsultasi/tambah/",
+        views.ajukan_konsultasi,
+        name="ajukan_konsultasi",
+    ),
+    path(
+        "admin/konsultasi/<int:konsultasi_id>/jawab/",
+        views.jawab_konsultasi,
+        name="jawab_konsultasi",
+    ),
 ]
