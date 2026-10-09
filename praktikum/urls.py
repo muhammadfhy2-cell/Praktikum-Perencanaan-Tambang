@@ -1,3 +1,4 @@
+
 from django.urls import path
 
 from . import views
@@ -7,15 +8,12 @@ from .daily_mom_views import (
     hapus_daily_mom,
 )
 
-
 app_name = "praktikum"
-
 
 urlpatterns = [
     # ========================================================
-    # PUBLIC
+    # HALAMAN PUBLIK
     # ========================================================
-
     path("", views.home, name="home"),
     path("personel/", views.personel, name="personel"),
     path("kelompok/", views.kelompok, name="kelompok"),
@@ -41,9 +39,8 @@ urlpatterns = [
     ),
 
     # ========================================================
-    # DOWNLOAD MATERI DAN FORMAT DOKUMEN
+    # UNDUHAN PUBLIK
     # ========================================================
-
     path(
         "materi/<int:materi_id>/download/",
         views.download_materi,
@@ -56,16 +53,22 @@ urlpatterns = [
     ),
 
     # ========================================================
-    # AUTHENTICATION
+    # LOGIN DAN LOGOUT
     # ========================================================
-
-    path("login/", views.login_kelompok, name="login_kelompok"),
-    path("logout/", views.logout_kelompok, name="logout_kelompok"),
+    path(
+        "login/",
+        views.login_kelompok,
+        name="login_kelompok",
+    ),
+    path(
+        "logout/",
+        views.logout_kelompok,
+        name="logout_kelompok",
+    ),
 
     # ========================================================
     # DASHBOARD
     # ========================================================
-
     path(
         "dashboard/kelompok/",
         views.dashboard_kelompok,
@@ -80,7 +83,6 @@ urlpatterns = [
     # ========================================================
     # DAILY MOM
     # ========================================================
-
     path(
         "dashboard/kelompok/daily-mom/tambah/",
         tambah_daily_mom,
@@ -100,7 +102,6 @@ urlpatterns = [
     # ========================================================
     # LAPORAN MINGGUAN
     # ========================================================
-
     path(
         "laporan/upload/",
         views.upload_laporan,
@@ -120,7 +121,6 @@ urlpatterns = [
     # ========================================================
     # LAPORAN LENGKAP
     # ========================================================
-
     path(
         "laporan-lengkap/upload/",
         views.upload_laporan_lengkap,
@@ -133,23 +133,20 @@ urlpatterns = [
     ),
 
     # ========================================================
-    # FILE KELOMPOK
-    # ========================================================
-
-    path(
-        "file-kelompok/<int:file_id>/download/",
-        views.download_file_kelompok,
-        name="download_file_kelompok",
-    ),
-
-    # ========================================================
     # LOGO KELOMPOK
     # ========================================================
-
     path(
         "dashboard/kelompok/logo/upload/",
         views.upload_logo_kelompok,
         name="upload_logo_kelompok",
     ),
-]
 
+    # ========================================================
+    # FILE KELOMPOK
+    # ========================================================
+    path(
+        "file-kelompok/<int:file_id>/download/",
+        views.download_file_kelompok,
+        name="download_file_kelompok",
+    ),
+]
