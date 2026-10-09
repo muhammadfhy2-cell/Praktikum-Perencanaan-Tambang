@@ -1,4 +1,3 @@
-
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -10,11 +9,11 @@ from django.contrib.auth.models import User
 class Setting(models.Model):
     nama_praktikum = models.CharField(
         max_length=200,
-        default="Praktikum Perencanaan Tambang"
+        default="Praktikum Perencanaan Tambang",
     )
     periode = models.CharField(
         max_length=100,
-        default="2026/2027"
+        default="2026/2027",
     )
     deskripsi = models.TextField(blank=True)
     dosen_pengampu = models.CharField(max_length=200, blank=True)
@@ -44,6 +43,8 @@ class Staff(models.Model):
 
     class Meta:
         ordering = ["jabatan", "urutan", "nama"]
+        verbose_name = "Staff Praktikum"
+        verbose_name_plural = "Staff Praktikum"
 
     def __str__(self):
         return f"{self.nama} - {self.get_jabatan_display()}"
@@ -91,6 +92,8 @@ class Kelompok(models.Model):
 
     class Meta:
         ordering = ["nama"]
+        verbose_name = "Kelompok"
+        verbose_name_plural = "Kelompok"
 
     def __str__(self):
         return self.nama
@@ -105,9 +108,7 @@ class Kelompok(models.Model):
 
     @property
     def progress_persen(self):
-        if self.progress is None:
-            return 0
-        return min(max(self.progress, 0), 100)
+        return min(max(self.progress or 0, 0), 100)
 
 
 # ============================================================
@@ -171,6 +172,8 @@ class Peserta(models.Model):
 
     class Meta:
         ordering = ["kelompok", "jabatan", "nama"]
+        verbose_name = "Peserta"
+        verbose_name_plural = "Peserta"
 
     def __str__(self):
         return self.nama
@@ -222,6 +225,8 @@ class Acara(models.Model):
 
     class Meta:
         ordering = ["urutan", "tanggal_mulai"]
+        verbose_name = "Acara Praktikum"
+        verbose_name_plural = "Acara Praktikum"
 
     def __str__(self):
         return self.nama
@@ -257,6 +262,11 @@ class Materi(models.Model):
     file = models.FileField(upload_to="materi/%Y/%m/")
     deskripsi = models.TextField(blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-uploaded_at"]
+        verbose_name = "Materi"
+        verbose_name_plural = "Materi"
 
     def __str__(self):
         return self.judul
@@ -302,6 +312,8 @@ class Absensi(models.Model):
                 name="unique_peserta_acara",
             )
         ]
+        verbose_name = "Absensi"
+        verbose_name_plural = "Absensi"
 
     def __str__(self):
         return f"{self.peserta.nama} - {self.acara.nama}"
@@ -309,6 +321,7 @@ class Absensi(models.Model):
     @property
     def nilai_persentase(self):
         nilai = 0
+
         if self.start:
             nilai += 20
         if self.ishoma_1:
@@ -319,6 +332,7 @@ class Absensi(models.Model):
             nilai += 10
         if self.ls:
             nilai += 50
+
         return nilai
 
 
@@ -334,6 +348,8 @@ class Pengumuman(models.Model):
 
     class Meta:
         ordering = ["-dibuat"]
+        verbose_name = "Pengumuman"
+        verbose_name_plural = "Pengumuman"
 
     def __str__(self):
         return self.judul
@@ -351,6 +367,8 @@ class TataTertib(models.Model):
 
     class Meta:
         ordering = ["urutan", "id"]
+        verbose_name = "Tata Tertib"
+        verbose_name_plural = "Tata Tertib"
 
     def __str__(self):
         return self.judul
@@ -383,6 +401,8 @@ class TugasPendahuluan(models.Model):
 
     class Meta:
         ordering = ["-dibuat"]
+        verbose_name = "Tugas Pendahuluan"
+        verbose_name_plural = "Tugas Pendahuluan"
 
     def __str__(self):
         return self.judul
@@ -440,6 +460,8 @@ class LaporanMingguan(models.Model):
 
     class Meta:
         ordering = ["-uploaded_at"]
+        verbose_name = "Laporan Mingguan"
+        verbose_name_plural = "Laporan Mingguan"
 
     def __str__(self):
         return self.judul
@@ -475,6 +497,9 @@ class ProgressAcara(models.Model):
                 name="unique_progress_kelompok_acara",
             )
         ]
+        ordering = ["kelompok", "acara"]
+        verbose_name = "Progress Acara"
+        verbose_name_plural = "Progress Acara"
 
     def __str__(self):
         return f"{self.kelompok.nama} - {self.acara.nama}"
@@ -539,6 +564,8 @@ class FileKelompok(models.Model):
 
     class Meta:
         ordering = ["-uploaded_at"]
+        verbose_name = "File Kelompok"
+        verbose_name_plural = "File Kelompok"
 
     def __str__(self):
         return self.nama_file
@@ -581,6 +608,8 @@ class DailyMOM(models.Model):
 
     class Meta:
         ordering = ["-tanggal", "-dibuat"]
+        verbose_name = "Daily MOM"
+        verbose_name_plural = "Daily MOM"
 
     def __str__(self):
         return self.judul
@@ -605,13 +634,10 @@ class LaporanLengkap(models.Model):
         related_name="laporan_lengkap",
     )
 
-    # File laporan asli yang diunggah kelompok.
     file = models.FileField(
         upload_to="laporan_lengkap/%Y/%m/",
     )
 
-    # File revisi yang diunggah admin.
-    # Field ini baru dan memerlukan migrasi database 0008.
     file_revisi = models.FileField(
         upload_to="laporan_lengkap/revisi/",
         blank=True,
@@ -628,6 +654,11 @@ class LaporanLengkap(models.Model):
     catatan_admin = models.TextField(blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-uploaded_at"]
+        verbose_name = "Laporan Lengkap"
+        verbose_name_plural = "Laporan Lengkap"
 
     def __str__(self):
         return self.judul
@@ -658,6 +689,11 @@ class FormatDokumen(models.Model):
     deskripsi = models.TextField(blank=True)
     aktif = models.BooleanField(default=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-uploaded_at"]
+        verbose_name = "Format Dokumen"
+        verbose_name_plural = "Format Dokumen"
 
     def __str__(self):
         return self.judul
@@ -741,8 +777,14 @@ class Konsultasi(models.Model):
     dibuat = models.DateTimeField(auto_now_add=True)
     dijawab_at = models.DateTimeField(null=True, blank=True)
 
+    # Menyimpan waktu perubahan terakhir.
+    # Field ini juga diperlukan untuk menyelaraskan model dengan database.
+    updated_at = models.DateTimeField(auto_now=True)
+
     class Meta:
         ordering = ["-dibuat", "-id"]
+        verbose_name = "Konsultasi"
+        verbose_name_plural = "Konsultasi"
 
     def __str__(self):
         return self.topik
