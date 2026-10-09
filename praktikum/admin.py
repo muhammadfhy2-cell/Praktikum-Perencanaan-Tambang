@@ -28,7 +28,6 @@ from .models import (
 
 @admin.register(Setting)
 class SettingAdmin(admin.ModelAdmin):
-
     list_display = (
         "nama_praktikum",
         "periode",
@@ -50,7 +49,6 @@ class SettingAdmin(admin.ModelAdmin):
 
 @admin.register(Staff)
 class StaffAdmin(admin.ModelAdmin):
-
     list_display = (
         "nama",
         "jabatan",
@@ -81,7 +79,6 @@ class StaffAdmin(admin.ModelAdmin):
 
 @admin.register(Kelompok)
 class KelompokAdmin(admin.ModelAdmin):
-
     list_display = (
         "nama",
         "akun_login",
@@ -91,22 +88,16 @@ class KelompokAdmin(admin.ModelAdmin):
         "progress_persen",
     )
 
-    list_filter = (
-        "aktif",
-    )
+    list_filter = ("aktif",)
 
     search_fields = (
         "nama",
         "akun_login__username",
     )
 
-    filter_horizontal = (
-        "mentor",
-    )
+    filter_horizontal = ("mentor",)
 
-    list_editable = (
-        "aktif",
-    )
+    list_editable = ("aktif",)
 
     readonly_fields = (
         "jumlah_anggota",
@@ -129,9 +120,7 @@ class KelompokAdmin(admin.ModelAdmin):
         (
             "Akun Login",
             {
-                "fields": (
-                    "akun_login",
-                )
+                "fields": ("akun_login",)
             },
         ),
         (
@@ -162,7 +151,6 @@ class KelompokAdmin(admin.ModelAdmin):
 
 @admin.register(Peserta)
 class PesertaAdmin(admin.ModelAdmin):
-
     list_display = (
         "nama",
         "nim",
@@ -186,9 +174,7 @@ class PesertaAdmin(admin.ModelAdmin):
         "kelompok__nama",
     )
 
-    list_editable = (
-        "aktif",
-    )
+    list_editable = ("aktif",)
 
     autocomplete_fields = (
         "kelompok",
@@ -203,7 +189,6 @@ class PesertaAdmin(admin.ModelAdmin):
 
 @admin.register(Acara)
 class AcaraAdmin(admin.ModelAdmin):
-
     list_display = (
         "nama",
         "sub_acara",
@@ -231,13 +216,9 @@ class AcaraAdmin(admin.ModelAdmin):
         "urutan",
     )
 
-    filter_horizontal = (
-        "pembawa_acara",
-    )
+    filter_horizontal = ("pembawa_acara",)
 
-    autocomplete_fields = (
-        "penanggung_jawab",
-    )
+    autocomplete_fields = ("penanggung_jawab",)
 
 
 # ============================================================
@@ -246,7 +227,6 @@ class AcaraAdmin(admin.ModelAdmin):
 
 @admin.register(Materi)
 class MateriAdmin(admin.ModelAdmin):
-
     list_display = (
         "judul",
         "kategori",
@@ -264,9 +244,7 @@ class MateriAdmin(admin.ModelAdmin):
         "deskripsi",
     )
 
-    autocomplete_fields = (
-        "acara",
-    )
+    autocomplete_fields = ("acara",)
 
 
 # ============================================================
@@ -275,7 +253,6 @@ class MateriAdmin(admin.ModelAdmin):
 
 @admin.register(Absensi)
 class AbsensiAdmin(admin.ModelAdmin):
-
     list_display = (
         "peserta",
         "acara",
@@ -325,25 +302,20 @@ class AbsensiAdmin(admin.ModelAdmin):
 
 @admin.register(Pengumuman)
 class PengumumanAdmin(admin.ModelAdmin):
-
     list_display = (
         "judul",
         "aktif",
         "dibuat",
     )
 
-    list_filter = (
-        "aktif",
-    )
+    list_filter = ("aktif",)
 
     search_fields = (
         "judul",
         "isi",
     )
 
-    list_editable = (
-        "aktif",
-    )
+    list_editable = ("aktif",)
 
 
 # ============================================================
@@ -352,16 +324,13 @@ class PengumumanAdmin(admin.ModelAdmin):
 
 @admin.register(TataTertib)
 class TataTertibAdmin(admin.ModelAdmin):
-
     list_display = (
         "judul",
         "aktif",
         "urutan",
     )
 
-    list_filter = (
-        "aktif",
-    )
+    list_filter = ("aktif",)
 
     search_fields = (
         "judul",
@@ -380,7 +349,6 @@ class TataTertibAdmin(admin.ModelAdmin):
 
 @admin.register(TugasPendahuluan)
 class TugasPendahuluanAdmin(admin.ModelAdmin):
-
     list_display = (
         "judul",
         "acara",
@@ -399,13 +367,9 @@ class TugasPendahuluanAdmin(admin.ModelAdmin):
         "soal",
     )
 
-    list_editable = (
-        "aktif",
-    )
+    list_editable = ("aktif",)
 
-    autocomplete_fields = (
-        "acara",
-    )
+    autocomplete_fields = ("acara",)
 
 
 # ============================================================
@@ -414,7 +378,6 @@ class TugasPendahuluanAdmin(admin.ModelAdmin):
 
 @admin.register(LaporanMingguan)
 class LaporanMingguanAdmin(admin.ModelAdmin):
-
     list_display = (
         "judul",
         "kelompok",
@@ -437,9 +400,7 @@ class LaporanMingguanAdmin(admin.ModelAdmin):
         "kelompok__nama",
     )
 
-    list_editable = (
-        "status",
-    )
+    list_editable = ("status",)
 
     autocomplete_fields = (
         "peserta",
@@ -500,7 +461,6 @@ class LaporanMingguanAdmin(admin.ModelAdmin):
 
 @admin.register(ProgressAcara)
 class ProgressAcaraAdmin(admin.ModelAdmin):
-
     list_display = (
         "kelompok",
         "acara",
@@ -543,7 +503,6 @@ class ProgressAcaraAdmin(admin.ModelAdmin):
 
 @admin.register(FileKelompok)
 class FileKelompokAdmin(admin.ModelAdmin):
-
     list_display = (
         "nama_file",
         "kelompok",
@@ -567,9 +526,7 @@ class FileKelompokAdmin(admin.ModelAdmin):
         "uploaded_by__nama",
     )
 
-    list_editable = (
-        "status",
-    )
+    list_editable = ("status",)
 
     autocomplete_fields = (
         "kelompok",
@@ -584,7 +541,6 @@ class FileKelompokAdmin(admin.ModelAdmin):
 
 @admin.register(DailyMOM)
 class DailyMOMAdmin(admin.ModelAdmin):
-
     list_display = (
         "judul",
         "tanggal",
@@ -621,7 +577,6 @@ class DailyMOMAdmin(admin.ModelAdmin):
 
 @admin.register(LaporanLengkap)
 class LaporanLengkapAdmin(admin.ModelAdmin):
-
     list_display = (
         "judul",
         "kelompok",
@@ -640,13 +595,9 @@ class LaporanLengkapAdmin(admin.ModelAdmin):
         "kelompok__nama",
     )
 
-    list_editable = (
-        "status",
-    )
+    list_editable = ("status",)
 
-    autocomplete_fields = (
-        "kelompok",
-    )
+    autocomplete_fields = ("kelompok",)
 
 
 # ============================================================
@@ -655,7 +606,6 @@ class LaporanLengkapAdmin(admin.ModelAdmin):
 
 @admin.register(FormatDokumen)
 class FormatDokumenAdmin(admin.ModelAdmin):
-
     list_display = (
         "judul",
         "jenis",
@@ -673,31 +623,31 @@ class FormatDokumenAdmin(admin.ModelAdmin):
         "deskripsi",
     )
 
-    list_editable = (
-        "aktif",
-    )
+    list_editable = ("aktif",)
 
 
 # ============================================================
-# KONSULTASI
+# KONSULTASI PRIVAT
 # ============================================================
 
 @admin.register(Konsultasi)
 class KonsultasiAdmin(admin.ModelAdmin):
-
     list_display = (
         "topik",
         "kelompok",
-        "peserta",
-        "tujuan",
         "acara",
+        "tujuan",
+        "tanggal_konsultasi",
+        "waktu_mulai",
+        "waktu_selesai",
+        "lokasi",
         "status",
         "dibuat",
-        "dijawab_at",
     )
 
     list_filter = (
         "status",
+        "tanggal_konsultasi",
         "tujuan",
         "acara",
         "kelompok",
@@ -707,12 +657,19 @@ class KonsultasiAdmin(admin.ModelAdmin):
         "topik",
         "pertanyaan",
         "jawaban",
+        "lokasi",
         "kelompok__nama",
         "peserta__nama",
+        "tujuan__nama",
+        "acara__nama",
     )
 
-    list_editable = (
-        "status",
+    list_per_page = 25
+    date_hierarchy = "tanggal_konsultasi"
+    ordering = (
+        "-tanggal_konsultasi",
+        "-waktu_mulai",
+        "-dibuat",
     )
 
     autocomplete_fields = (
@@ -722,13 +679,67 @@ class KonsultasiAdmin(admin.ModelAdmin):
         "acara",
     )
 
+    readonly_fields = (
+        "dibuat",
+        "dijawab_at",
+    )
+
+    fieldsets = (
+        (
+            "Penerima dan Penanggung Jawab",
+            {
+                "description": (
+                    "Pilih kelompok yang menerima informasi konsultasi. "
+                    "Pastikan kelompok yang dipilih sudah benar."
+                ),
+                "fields": (
+                    "kelompok",
+                    "peserta",
+                    "acara",
+                    "tujuan",
+                ),
+            },
+        ),
+        (
+            "Jadwal Konsultasi",
+            {
+                "fields": (
+                    "topik",
+                    "tanggal_konsultasi",
+                    "waktu_mulai",
+                    "waktu_selesai",
+                    "lokasi",
+                ),
+            },
+        ),
+        (
+            "Pertanyaan dan Jawaban",
+            {
+                "fields": (
+                    "pertanyaan",
+                    "jawaban",
+                ),
+            },
+        ),
+        (
+            "Status dan Riwayat",
+            {
+                "fields": (
+                    "status",
+                    "dibuat",
+                    "dijawab_at",
+                ),
+            },
+        ),
+    )
+
 
 # ============================================================
 # USER DJANGO
 # ============================================================
 #
 # User bawaan Django tetap digunakan untuk login kelompok.
-# Tidak perlu membuat model User baru.
-#
 # Admin Django bawaan User tetap tersedia.
+#
+# Tidak perlu membuat model User baru.
 # ============================================================
