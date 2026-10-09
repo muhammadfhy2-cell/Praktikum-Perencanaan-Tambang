@@ -1,138 +1,425 @@
 
 {% extends "praktikum/base.html" %}
+{% load static %}
 
-{% block title %}Format Dokumen{% endblock %}
+{% block title %}Format Dokumen | Praktikum Perencanaan Tambang{% endblock %}
+
+{% block meta_description %}
+Kumpulan format dan dokumen resmi untuk mendukung kegiatan Praktikum Perencanaan Tambang.
+{% endblock %}
 
 {% block extra_css %}
 <style>
 .format-page {
-    max-width: 1150px;
+    min-height: 65vh;
+    padding-bottom: 72px;
+    background: #fffdf8;
+}
+
+.format-container {
+    width: min(1180px, calc(100% - 40px));
     margin: 0 auto;
-    padding: 32px 20px 48px;
 }
-.format-heading {
-    margin-bottom: 24px;
+
+/* Header seragam dengan halaman navigasi lain */
+.format-page-header {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 55px 0 60px;
+    margin-bottom: 36px;
+    color: #fffdf8;
+    background:
+        radial-gradient(ellipse at 90% 10%, rgba(245,196,81,.15), transparent 35%),
+        linear-gradient(120deg, #20170f, #49321d);
 }
-.format-heading p {
-    color: var(--muted, #64748b);
-    line-height: 1.7;
+
+.format-page-header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: .25;
+    background-image: repeating-radial-gradient(
+        ellipse at 90% 45%,
+        transparent 0,
+        transparent 25px,
+        rgba(255,201,74,.38) 26px,
+        transparent 27px,
+        transparent 43px
+    );
+    mask-image: linear-gradient(90deg, transparent, #000);
 }
+
+.format-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-bottom: 19px;
+    color: #e1d5c3;
+    font-size: 12px;
+}
+
+.format-breadcrumb a {
+    color: #ffda7a;
+    text-decoration: none;
+}
+
+.format-breadcrumb a:hover {
+    color: #fffdf8;
+}
+
+.format-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 12px;
+    color: #ffda7a;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.format-eyebrow::before {
+    content: "";
+    width: 26px;
+    height: 2px;
+    background: #ffc94a;
+}
+
+.format-page-header h1 {
+    margin: 0 0 13px;
+    color: #fffdf8;
+    font-size: clamp(30px, 4vw, 44px);
+    font-weight: 900;
+    letter-spacing: -.7px;
+    line-height: 1.15;
+}
+
+.format-page-header p {
+    max-width: 720px;
+    margin: 0;
+    color: #e8dfd1;
+    font-size: 14px;
+    line-height: 1.85;
+}
+
+.format-intro {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 28px;
+    padding: 20px 22px;
+    border: 1px solid #e5d8bd;
+    border-radius: 15px;
+    background: #f8f2e6;
+}
+
+.format-intro-icon {
+    display: grid;
+    place-items: center;
+    width: 43px;
+    height: 43px;
+    flex: 0 0 43px;
+    border-radius: 12px;
+    background: #f0dfb7;
+    color: #63451e;
+    font-size: 20px;
+}
+
+.format-intro h2 {
+    margin: 0 0 5px;
+    color: #302319;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.format-intro p {
+    margin: 0;
+    color: #6e6254;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
 .format-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 19px;
 }
+
 .format-card {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 22px;
-    border: 1px solid var(--border, #e2e8f0);
-    border-radius: 16px;
-    background: var(--card, #fff);
-    box-shadow: 0 5px 18px rgba(15, 23, 42, .04);
+    min-width: 0;
+    padding: 24px;
+    border: 1px solid #e7dece;
+    border-radius: 18px;
+    background: #fffefa;
+    box-shadow: 0 8px 24px rgba(36,26,17,.045);
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
+
+.format-card:hover {
+    transform: translateY(-3px);
+    border-color: #d5bb80;
+    box-shadow: 0 14px 30px rgba(36,26,17,.08);
+}
+
+.format-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.format-file-icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+    border-radius: 15px;
+    background: #f3e5c5;
+    color: #674719;
+    font-size: 23px;
+    font-weight: 900;
+}
+
+.format-type {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #f5ead2;
+    color: #76531f;
+    font-size: 10px;
+    font-weight: 900;
+}
+
 .format-card h2 {
-    margin: 0;
-    font-size: 1.1rem;
+    margin: 0 0 10px;
+    color: #302319;
+    font-size: 17px;
+    font-weight: 900;
     line-height: 1.5;
     overflow-wrap: anywhere;
 }
-.format-type {
-    display: inline-block;
-    width: fit-content;
-    padding: 5px 10px;
-    border-radius: 20px;
-    background: var(--soft, #eff6ff);
-    color: var(--primary, #1d4ed8);
-    font-size: .8rem;
-    font-weight: 700;
-}
+
 .format-description {
-    color: var(--muted, #64748b);
-    line-height: 1.7;
-    white-space: pre-line;
+    flex: 1;
+    margin: 0 0 20px;
+    color: #6e6254;
+    font-size: 12px;
+    line-height: 1.85;
     overflow-wrap: anywhere;
 }
+
 .format-meta {
-    color: var(--muted, #64748b);
-    font-size: .86rem;
+    margin-bottom: 18px;
+    color: #8a7c69;
+    font-size: 11px;
 }
+
 .format-download {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-top: auto;
-    padding: 11px 16px;
-    border-radius: 10px;
-    background: var(--primary, #1d4ed8);
-    color: #fff;
-    text-decoration: none;
-    font-weight: 700;
-}
-.format-download:hover {
-    opacity: .9;
-}
-.format-empty {
-    padding: 24px;
-    border: 1px dashed var(--border, #cbd5e1);
-    border-radius: 14px;
-    color: var(--muted, #64748b);
+    gap: 9px;
+    width: 100%;
+    min-height: 44px;
+    padding: 11px 15px;
+    border: 1px solid #dca52e;
+    border-radius: 11px;
+    background: #f5c451;
+    color: #2c2117;
+    font-size: 12px;
+    font-weight: 900;
     text-align: center;
+    text-decoration: none;
+    transition: background .2s ease, transform .2s ease;
+}
+
+.format-download:hover {
+    background: #ffda7a;
+    color: #2c2117;
+    transform: translateY(-1px);
+}
+
+.format-empty {
+    grid-column: 1 / -1;
+    padding: 48px 24px;
+    border: 1px dashed #d8c7a7;
+    border-radius: 18px;
+    background: #fffefa;
+    text-align: center;
+}
+
+.format-empty-icon {
+    margin-bottom: 12px;
+    color: #9b7a43;
+    font-size: 35px;
+}
+
+.format-empty h2 {
+    margin: 0 0 8px;
+    color: #302319;
+    font-size: 19px;
+}
+
+.format-empty p {
+    margin: 0;
+    color: #6e6254;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+@media (max-width: 900px) {
+    .format-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .format-container {
+        width: calc(100% - 28px);
+    }
+
+    .format-page-header {
+        padding: 40px 0 44px;
+        margin-bottom: 25px;
+    }
+
+    .format-page-header p {
+        font-size: 13px;
+    }
+
+    .format-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .format-card {
+        padding: 21px;
+    }
+
+    .format-intro {
+        padding: 17px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .format-card,
+    .format-download {
+        transition: none;
+    }
+
+    .format-card:hover,
+    .format-download:hover {
+        transform: none;
+    }
 }
 </style>
 {% endblock %}
 
 {% block content %}
-<main class="format-page">
-    <header class="format-heading">
-        <h1>Format Dokumen</h1>
-        <p>
-            Unduh format dan template resmi yang disediakan admin
-            untuk membantu penyusunan dokumen praktikum.
-        </p>
+<div class="format-page">
+
+    <header class="format-page-header">
+        <div class="format-container">
+            <nav class="format-breadcrumb" aria-label="Breadcrumb">
+                <a href="{% url 'praktikum:home' %}">Beranda</a>
+                <span aria-hidden="true">/</span>
+                <span>Format Dokumen</span>
+            </nav>
+
+            <div class="format-eyebrow">Pusat Unduhan</div>
+            <h1>Format Dokumen</h1>
+            <p>
+                Akses format dokumen dan berkas pendukung resmi yang
+                disediakan untuk membantu pelaksanaan Praktikum
+                Perencanaan Tambang.
+            </p>
+        </div>
     </header>
 
-    {% if format_dokumen_list %}
-        <section class="format-grid">
+    <main class="format-container">
+
+        <section class="format-intro">
+            <div class="format-intro-icon" aria-hidden="true">▤</div>
+            <div>
+                <h2>Dokumen Praktikum dalam Satu Tempat</h2>
+                <p>
+                    Pilih dokumen yang diperlukan, periksa jenis berkasnya,
+                    lalu tekan tombol unduh. Gunakan dokumen sesuai petunjuk
+                    dari pengelola praktikum.
+                </p>
+            </div>
+        </section>
+
+        <section class="format-grid" aria-label="Daftar format dokumen">
+
             {% for dokumen in format_dokumen_list %}
-                <article class="format-card">
+            <article class="format-card">
+
+                <div class="format-card-top">
+                    <div class="format-file-icon" aria-hidden="true">
+                        {% if dokumen.jenis == "pdf" %}PDF
+                        {% elif dokumen.jenis == "word" %}W
+                        {% elif dokumen.jenis == "excel" %}X
+                        {% elif dokumen.jenis == "ppt" %}P
+                        {% else %}▤
+                        {% endif %}
+                    </div>
+
                     <span class="format-type">
                         {{ dokumen.get_jenis_display|default:dokumen.jenis }}
                     </span>
+                </div>
 
-                    <h2>{{ dokumen.judul }}</h2>
+                <h2>{{ dokumen.judul }}</h2>
 
+                <p class="format-description">
                     {% if dokumen.deskripsi %}
-                        <div class="format-description">
-                            {{ dokumen.deskripsi }}
-                        </div>
-                    {% endif %}
-
-                    <div class="format-meta">
-                        Diunggah:
-                        {{ dokumen.uploaded_at|date:"d M Y" }}
-                    </div>
-
-                    {% if dokumen.file %}
-                        <a
-                            class="format-download"
-                            href="{% url 'praktikum:download_format_dokumen' dokumen.id %}"
-                        >
-                            Unduh Dokumen
-                        </a>
+                        {{ dokumen.deskripsi|linebreaksbr }}
                     {% else %}
-                        <div class="format-meta">
-                            Berkas belum tersedia.
-                        </div>
+                        Dokumen pendukung Praktikum Perencanaan Tambang.
                     {% endif %}
-                </article>
+                </p>
+
+                {% if dokumen.uploaded_at %}
+                <div class="format-meta">
+                    Diunggah {{ dokumen.uploaded_at|date:"d M Y" }}
+                </div>
+                {% endif %}
+
+                {% if dokumen.file %}
+                <a class="format-download"
+                   href="{{ dokumen.file.url }}"
+                   download>
+                    <span aria-hidden="true">↓</span>
+                    Unduh Dokumen
+                </a>
+                {% else %}
+                <span class="format-meta">
+                    Berkas belum tersedia.
+                </span>
+                {% endif %}
+
+            </article>
+            {% empty %}
+            <div class="format-empty">
+                <div class="format-empty-icon" aria-hidden="true">▤</div>
+                <h2>Belum Ada Format Dokumen</h2>
+                <p>
+                    Dokumen akan ditampilkan di halaman ini setelah
+                    dipublikasikan oleh pengelola praktikum.
+                </p>
+            </div>
             {% endfor %}
+
         </section>
-    {% else %}
-        <div class="format-empty">
-            Belum ada format dokumen aktif yang diunggah oleh admin.
-        </div>
-    {% endif %}
-</main>
+    </main>
+</div>
 {% endblock %}
