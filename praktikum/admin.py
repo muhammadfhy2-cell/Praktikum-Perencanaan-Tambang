@@ -752,6 +752,10 @@ class FormatDokumenAdmin(admin.ModelAdmin):
 # Admin hanya mengatur jadwal konsultasi kelompok.
 # ============================================================
 
+from django.contrib import admin
+from .models import Konsultasi
+
+
 @admin.register(Konsultasi)
 class KonsultasiAdmin(admin.ModelAdmin):
     list_display = (
@@ -764,10 +768,10 @@ class KonsultasiAdmin(admin.ModelAdmin):
     )
 
     list_filter = (
+        "tanggal_konsultasi",
         "kelompok",
         "tujuan",
         "acara",
-        "tanggal_konsultasi",
     )
 
     search_fields = (
@@ -775,10 +779,9 @@ class KonsultasiAdmin(admin.ModelAdmin):
         "kelompok__nama",
     )
 
-    autocomplete_fields = (
-        "kelompok",
-        "tujuan",
-        "acara",
+    ordering = (
+        "-tanggal_konsultasi",
+        "waktu_mulai",
     )
 
     fields = (
@@ -791,12 +794,8 @@ class KonsultasiAdmin(admin.ModelAdmin):
         "waktu_selesai",
     )
 
-    @admin.display(description="Waktu konsultasi")
+    @admin.display(description="Waktu Konsultasi")
     def waktu_konsultasi(self, obj):
-        if not obj.waktu_mulai or not obj.waktu_selesai:
-            return "-"
-
-        return (
-            f"{obj.waktu_mulai.strftime('%H:%M')}–"
-            f"{obj.waktu_selesai.strftime('%H:%M')}"
-        )
+        if obj.waktu_mulai and obj.waktu_selesai:
+            return f"{obj.waktu_mulai:%H:%M} - {obj.waktu_selesai:%H:%M}"
+        return "-"
