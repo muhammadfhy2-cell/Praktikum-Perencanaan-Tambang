@@ -53,7 +53,7 @@ urlpatterns = [
     ),
 
     # =====================================================
-    # LOGIN DAN DASHBOARD
+    # LOGIN, LOGOUT, DAN DASHBOARD
     # =====================================================
     path(
         "login/",
@@ -138,23 +138,9 @@ urlpatterns = [
         name="download_laporan_lengkap_revisi",
     ),
     path(
-        "laporan-lengkap/<int:laporan_id>/publik/download/",
-        views.download_laporan_lengkap_publik,
-        name="download_laporan_lengkap_publik",
-    ),
-    path(
         "admin-file/laporan-lengkap/<int:laporan_id>/<str:jenis>/",
         views.download_laporan_lengkap_admin,
         name="download_laporan_lengkap_admin",
-    ),
-
-    # =====================================================
-    # LOGO KELOMPOK
-    # =====================================================
-    path(
-        "dashboard/kelompok/logo/upload/",
-        views.upload_logo_kelompok,
-        name="upload_logo_kelompok",
     ),
 
     # =====================================================
@@ -165,7 +151,7 @@ urlpatterns = [
         views.download_file_kelompok,
         name="download_file_kelompok",
     ),
-    
+
     # =====================================================
     # KONSULTASI
     # =====================================================
@@ -173,10 +159,5 @@ urlpatterns = [
         "dashboard/kelompok/konsultasi/tambah/",
         views.ajukan_konsultasi,
         name="ajukan_konsultasi",
-    ),
-    path(
-        "admin/konsultasi/<int:konsultasi_id>/jawab/",
-        views.jawab_konsultasi,
-        name="jawab_konsultasi",
     ),
 ]
