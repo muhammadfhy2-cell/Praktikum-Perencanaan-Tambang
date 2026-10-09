@@ -26,6 +26,7 @@
 <section class="content-section">
     <div class="container">
 
+
         <!-- PENANGGUNG JAWAB -->
         <div class="section-heading">
             <span class="eyebrow">Leadership</span>
@@ -36,8 +37,8 @@
             </p>
         </div>
 
-        {% if penanggung_jawab %}
-            <div class="personel-feature-grid">
+        <div class="personel-feature-grid">
+            {% for x in penanggung_jawab %}
                 <article class="personel-feature">
                     <div class="personel-feature-mark">PJ</div>
 
@@ -46,15 +47,15 @@
                             Penanggung Jawab Praktikum
                         </span>
 
-                        <h3>{{ penanggung_jawab.nama }}</h3>
+                        <h3>{{ x.nama }}</h3>
 
-                        {% if penanggung_jawab.kontak %}
+                        {% if x.kontak %}
                             <a
                                 class="personel-contact"
-                                href="tel:{{ penanggung_jawab.kontak }}"
+                                href="tel:{{ x.kontak }}"
                             >
                                 <span aria-hidden="true">☎</span>
-                                {{ penanggung_jawab.kontak }}
+                                {{ x.kontak }}
                             </a>
                         {% endif %}
                     </div>
@@ -64,17 +65,17 @@
                         aria-hidden="true"
                     ></div>
                 </article>
-            </div>
-        {% else %}
-            <div class="empty personel-empty">
-                <div class="empty-icon">♙</div>
-                <h3>Penanggung Jawab Belum Ditentukan</h3>
-                <p>
-                    Informasi akan ditampilkan setelah data personel
-                    tersedia.
-                </p>
-            </div>
-        {% endif %}
+            {% empty %}
+                <div class="empty personel-empty">
+                    <div class="empty-icon">♙</div>
+                    <h3>Penanggung Jawab Belum Ditentukan</h3>
+                    <p>
+                        Informasi akan ditampilkan setelah data
+                        Penanggung Jawab Praktikum tersedia dan aktif.
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
 
         <!-- KOORDINATOR -->
         <div class="section-heading personel-section-heading">
