@@ -1,1472 +1,1056 @@
+
 {% load static %}
-
 <!DOCTYPE html>
-
 <html lang="id">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
+    <title>
+        Dashboard {{ kelompok.nama }} -
+        {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+    </title>
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <style>
+        * { box-sizing: border-box; }
 
-<title>
-    Dashboard {{ kelompok.nama }} -
-    {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
-</title>
-
-<style>
-
-    * {
-        box-sizing: border-box;
-    }
-
-    body {
-        margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        background: #f1f5f9;
-        color: #1e293b;
-    }
-
-    .navbar {
-        background: #0f172a;
-        color: white;
-        padding: 16px 25px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-    }
-
-    .brand {
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    .brand small {
-        display: block;
-        font-size: 11px;
-        font-weight: normal;
-        color: #cbd5e1;
-        margin-top: 4px;
-    }
-
-    .logout {
-        background: #dc2626;
-        color: white;
-        text-decoration: none;
-        padding: 9px 14px;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: bold;
-    }
-
-    .logout:hover {
-        background: #b91c1c;
-    }
-
-    .container {
-        width: min(1200px, 94%);
-        margin: 30px auto;
-    }
-
-    .welcome {
-        background: white;
-        border-radius: 16px;
-        padding: 25px;
-        margin-bottom: 22px;
-        box-shadow: 0 5px 18px rgba(15, 23, 42, 0.06);
-    }
-
-    .welcome h1 {
-        margin: 0 0 8px;
-        font-size: 28px;
-        color: #0f172a;
-    }
-
-    .welcome p {
-        margin: 0;
-        color: #64748b;
-    }
-
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
-        margin-bottom: 25px;
-    }
-
-    .stat-card {
-        background: white;
-        padding: 20px;
-        border-radius: 14px;
-        box-shadow: 0 5px 18px rgba(15, 23, 42, 0.06);
-    }
-
-    .stat-title {
-        color: #64748b;
-        font-size: 13px;
-        margin-bottom: 8px;
-    }
-
-    .stat-value {
-        color: #0f172a;
-        font-size: 25px;
-        font-weight: bold;
-    }
-
-    .section {
-        background: white;
-        border-radius: 16px;
-        padding: 22px;
-        margin-bottom: 22px;
-        box-shadow: 0 5px 18px rgba(15, 23, 42, 0.06);
-    }
-
-    .section h2 {
-        margin: 0 0 18px;
-        color: #0f172a;
-        font-size: 20px;
-    }
-
-    .section-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 15px;
-        margin-bottom: 18px;
-    }
-
-    .section-header h2 {
-        margin: 0;
-    }
-
-    .daily-mom-button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: #0f172a;
-        color: white;
-        padding: 10px 14px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-size: 13px;
-        font-weight: bold;
-        white-space: nowrap;
-    }
-
-    .daily-mom-button:hover {
-        background: #1e293b;
-    }
-
-    /* =====================================================
-       DAILY MOM ACTION
-       ===================================================== */
-
-    .mom-actions {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-top: 10px;
-        flex-wrap: wrap;
-    }
-
-    .mom-edit-button,
-    .mom-delete-button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 7px 11px;
-        border-radius: 7px;
-        font-size: 12px;
-        font-weight: bold;
-        text-decoration: none;
-        cursor: pointer;
-        border: none;
-    }
-
-    .mom-edit-button {
-        background: #eff6ff;
-        color: #1d4ed8;
-        border: 1px solid #bfdbfe;
-    }
-
-    .mom-edit-button:hover {
-        background: #dbeafe;
-    }
-
-    .mom-delete-button {
-        background: #fef2f2;
-        color: #b91c1c;
-        border: 1px solid #fecaca;
-    }
-
-    .mom-delete-button:hover {
-        background: #fee2e2;
-    }
-
-    .mom-content {
-        white-space: pre-line;
-        line-height: 1.6;
-        color: #475569;
-    }
-
-    .mom-date {
-        white-space: nowrap;
-    }
-
-    .mom-title {
-        font-weight: bold;
-        color: #0f172a;
-        margin-bottom: 5px;
-    }
-
-    .mom-small {
-        color: #64748b;
-        font-size: 12px;
-    }
-
-    .progress-wrapper {
-        margin-top: 15px;
-    }
-
-    .progress-bar {
-        height: 18px;
-        background: #e2e8f0;
-        border-radius: 20px;
-        overflow: hidden;
-    }
-
-    .progress-fill {
-        height: 100%;
-        background: #2563eb;
-        border-radius: 20px;
-    }
-
-    .progress-text {
-        margin-top: 8px;
-        font-size: 14px;
-        color: #475569;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    th,
-    td {
-        padding: 12px;
-        border-bottom: 1px solid #e2e8f0;
-        text-align: left;
-        vertical-align: top;
-        font-size: 14px;
-    }
-
-    th {
-        background: #f8fafc;
-        color: #334155;
-    }
-
-    .badge {
-        display: inline-block;
-        padding: 5px 9px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: bold;
-        background: #e2e8f0;
-        color: #334155;
-    }
-
-    .mentor-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .mentor {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        padding: 10px 13px;
-        border-radius: 10px;
-    }
-
-    .upload-form {
-        display: grid;
-        gap: 13px;
-    }
-
-    .upload-form label {
-        font-size: 13px;
-        font-weight: bold;
-        color: #334155;
-    }
-
-    .upload-form input,
-    .upload-form select {
-        width: 100%;
-        padding: 11px;
-        border: 1px solid #cbd5e1;
-        border-radius: 8px;
-        background: white;
-    }
-
-    .button {
-        display: inline-block;
-        border: none;
-        background: #0f172a;
-        color: white;
-        padding: 11px 16px;
-        border-radius: 8px;
-        text-decoration: none;
-        cursor: pointer;
-        font-weight: bold;
-    }
-
-    .empty {
-        color: #94a3b8;
-        font-size: 14px;
-        padding: 10px 0;
-    }
-
-    .message {
-        padding: 12px 15px;
-        border-radius: 10px;
-        background: #eff6ff;
-        color: #1d4ed8;
-        margin-bottom: 15px;
-        font-size: 14px;
-    }
-
-    .two-column {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 22px;
-    }
-
-    @media (max-width: 900px) {
-
-        .grid {
-            grid-template-columns: repeat(2, 1fr);
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
         }
-
-        .two-column {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    @media (max-width: 600px) {
 
         .navbar {
-            flex-direction: column;
-            align-items: flex-start;
+            background: #0f172a;
+            color: white;
+            padding: 16px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand { font-size: 18px; font-weight: bold; }
+
+        .brand small {
+            display: block;
+            font-size: 11px;
+            font-weight: normal;
+            color: #cbd5e1;
+            margin-top: 4px;
+        }
+
+        .logout {
+            background: #dc2626;
+            color: white;
+            text-decoration: none;
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .logout:hover { background: #b91c1c; }
+
+        .container {
+            width: min(1200px, 94%);
+            margin: 30px auto;
+        }
+
+        .welcome, .stat-card, .section {
+            background: white;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.06);
+        }
+
+        .welcome {
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 22px;
+        }
+
+        .welcome h1 {
+            margin: 0 0 8px;
+            font-size: 28px;
+            color: #0f172a;
+        }
+
+        .welcome p { margin: 0; color: #64748b; }
+
+        .welcome-heading {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .group-logo {
+            width: 95px;
+            height: 95px;
+            object-fit: contain;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 6px;
+            background: white;
         }
 
         .grid {
-            grid-template-columns: 1fr;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 25px;
         }
 
-        .container {
-            width: 92%;
+        .stat-card {
+            padding: 20px;
+            border-radius: 14px;
+        }
+
+        .stat-title {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            color: #0f172a;
+            font-size: 25px;
+            font-weight: bold;
         }
 
         .section {
-            padding: 17px;
-            overflow-x: auto;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 22px;
         }
 
-        table {
-            min-width: 650px;
+        .section h2 {
+            margin: 0 0 18px;
+            color: #0f172a;
+            font-size: 20px;
         }
 
         .section-header {
-            align-items: flex-start;
-            flex-direction: column;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 18px;
         }
+
+        .section-header h2 { margin: 0; }
 
         .daily-mom-button {
-            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #0f172a;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            white-space: nowrap;
         }
+
+        .daily-mom-button:hover { background: #1e293b; }
 
         .mom-actions {
-            flex-direction: column;
-            align-items: stretch;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
         }
 
-        .mom-edit-button,
+        .mom-edit-button, .mom-delete-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 7px 11px;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+        }
+
+        .mom-edit-button {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+
         .mom-delete-button {
-            width: 100%;
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
         }
-    }
 
-</style>
+        .mom-content {
+            white-space: pre-line;
+            line-height: 1.6;
+            color: #475569;
+        }
 
+        .mom-date { white-space: nowrap; }
+
+        .mom-title {
+            font-weight: bold;
+            color: #0f172a;
+            margin-bottom: 5px;
+        }
+
+        .mom-small {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .progress-wrapper { margin-top: 15px; }
+
+        .progress-bar {
+            height: 18px;
+            background: #e2e8f0;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #2563eb;
+            border-radius: 20px;
+        }
+
+        .progress-text {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+            vertical-align: top;
+            font-size: 14px;
+        }
+
+        th { background: #f8fafc; color: #334155; }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .mentor-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .mentor {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 10px 13px;
+            border-radius: 10px;
+        }
+
+        .upload-form {
+            display: grid;
+            gap: 13px;
+        }
+
+        .upload-form label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+
+        .upload-form input, .upload-form select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: white;
+            font: inherit;
+        }
+
+        .button, .file-link {
+            display: inline-block;
+            border: none;
+            background: #0f172a;
+            color: white;
+            padding: 11px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .file-link {
+            padding: 7px 10px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .button:hover, .file-link:hover { background: #334155; }
+
+        .empty {
+            color: #94a3b8;
+            font-size: 14px;
+            padding: 10px 0;
+        }
+
+        .message {
+            padding: 12px 15px;
+            border-radius: 10px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+        }
+
+        .help-text {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.6;
+            margin: 0 0 15px;
+        }
+
+        .consultation-info {
+            line-height: 1.7;
+            min-width: 190px;
+        }
+
+        @media (max-width: 900px) {
+            .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .two-column { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .grid { grid-template-columns: 1fr; }
+            .container { width: 92%; }
+
+            .section {
+                padding: 17px;
+                overflow-x: auto;
+            }
+
+            table { min-width: 650px; }
+
+            .section-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .daily-mom-button { width: 100%; }
+
+            .mom-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .mom-edit-button, .mom-delete-button { width: 100%; }
+
+            .welcome h1 { font-size: 23px; }
+        }
+    </style>
 </head>
 
 <body>
-
-<!-- ===================================================== -->
-<!-- NAVBAR -->
-<!-- ===================================================== -->
-
 <nav class="navbar">
-
     <div class="brand">
-
         {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
-
-        <small>
-            Dashboard Kelompok
-        </small>
-
+        <small>Dashboard Kelompok</small>
     </div>
 
-    <a
-        href="{% url 'praktikum:logout_kelompok' %}"
-        class="logout"
-    >
+    <a href="{% url 'praktikum:logout_kelompok' %}" class="logout">
         Keluar
     </a>
-
 </nav>
-
 
 <div class="container">
 
-<!-- ================================================= -->
-<!-- MESSAGES -->
-<!-- ================================================= -->
-
-{% if messages %}
-
-    {% for message in messages %}
-
-        <div class="message">
-            {{ message }}
-        </div>
-
-    {% endfor %}
-
-{% endif %}
-
-
-<!-- ================================================= -->
-<!-- WELCOME -->
-<!-- ================================================= -->
-
-<div class="welcome">
-
-    <h1>
-        {{ kelompok.nama }}
-    </h1>
-
-    <p>
-        Selamat datang di dashboard kelompok.
-        Kelola laporan, progress, file, dan konsultasi kelompok
-        melalui halaman ini.
-    </p>
-
-    <div class="progress-wrapper">
-
-        <div class="progress-bar">
-
-            <div
-                class="progress-fill"
-                style="width: {{ progress }}%;"
-            ></div>
-
-        </div>
-
-        <div class="progress-text">
-
-            Progress kelompok:
-            <strong>{{ progress }}%</strong>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- ================================================= -->
-<!-- STATISTIK -->
-<!-- ================================================= -->
-
-<div class="grid">
-
-    <div class="stat-card">
-
-        <div class="stat-title">
-            Jumlah Anggota
-        </div>
-
-        <div class="stat-value">
-            {{ anggota|length }}
-        </div>
-
-    </div>
-
-
-    <div class="stat-card">
-
-        <div class="stat-title">
-            Laporan Mingguan
-        </div>
-
-        <div class="stat-value">
-            {{ laporan|length }}
-        </div>
-
-    </div>
-
-
-    <div class="stat-card">
-
-        <div class="stat-title">
-            Progress Acara
-        </div>
-
-        <div class="stat-value">
-            {{ progress_acara|length }}
-        </div>
-
-    </div>
-
-
-    <div class="stat-card">
-
-        <div class="stat-title">
-            File Kelompok
-        </div>
-
-        <div class="stat-value">
-            {{ file_kelompok|length }}
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- ================================================= -->
-<!-- ANGGOTA & MENTOR -->
-<!-- ================================================= -->
-
-<div class="two-column">
-
-    <div class="section">
-
-        <h2>
-            Anggota Kelompok
-        </h2>
-
-        {% if anggota %}
-
-            <table>
-
-                <thead>
-
-                    <tr>
-                        <th>No.</th>
-                        <th>Nama</th>
-                        <th>NIM</th>
-                        <th>Jabatan</th>
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {% for peserta in anggota %}
-
-                        <tr>
-
-                            <td>
-                                {{ forloop.counter }}
-                            </td>
-
-                            <td>
-                                {{ peserta.nama }}
-                            </td>
-
-                            <td>
-                                {{ peserta.nim|default:"-" }}
-                            </td>
-
-                            <td>
-                                <span class="badge">
-                                    {{ peserta.get_jabatan_display }}
-                                </span>
-                            </td>
-
-                        </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        {% else %}
-
-            <div class="empty">
-                Belum ada anggota kelompok.
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- PROFIL KELOMPOK -->
+    <div class="welcome">
+        <div class="welcome-heading">
+            {% if kelompok.logo %}
+                <img
+                    src="{{ kelompok.logo.url }}"
+                    alt="Logo {{ kelompok.nama }}"
+                    class="group-logo"
+                >
+            {% endif %}
+
+            <div>
+                <h1>{{ kelompok.nama }}</h1>
+                <p>Selamat datang di dashboard kelompok. Kelola laporan, progress, file, dan konsultasi melalui halaman ini.</p>
             </div>
+        </div>
 
-        {% endif %}
-
-    </div>
-
-
-    <div class="section">
-
-        <h2>
-            Mentor
-        </h2>
-
-        {% if mentor %}
-
-            <div class="mentor-list">
-
-                {% for item in mentor %}
-
-                    <div class="mentor">
-
-                        <strong>
-                            {{ item.nama }}
-                        </strong>
-
-                        <br>
-
-                        <small>
-                            {{ item.get_jabatan_display }}
-                        </small>
-
-                    </div>
-
-                {% endfor %}
-
+        <div class="progress-wrapper">
+            <div class="progress-bar">
+                <div
+                    class="progress-fill"
+                    style="width: {{ progress|default:0 }}%;"
+                ></div>
             </div>
-
-        {% else %}
-
-            <div class="empty">
-                Belum ada mentor yang ditetapkan.
+            <div class="progress-text">
+                Progress kelompok:
+                <strong>{{ progress|default:0 }}%</strong>
             </div>
-
-        {% endif %}
-
+        </div>
     </div>
 
-</div>
-
-
-<!-- ================================================= -->
-<!-- UPLOAD LAPORAN -->
-<!-- ================================================= -->
-
-<div class="section">
-
-    <h2>
-        Upload Laporan Mingguan
-    </h2>
-
-    <form
-        method="post"
-        action="{% url 'praktikum:upload_laporan' %}"
-        enctype="multipart/form-data"
-        class="upload-form"
-    >
-
-        {% csrf_token %}
-
-        <div>
-
-            <label for="judul">
-                Judul Laporan
-            </label>
-
-            <input
-                type="text"
-                id="judul"
-                name="judul"
-                placeholder="Contoh: Laporan Mingguan 01"
-            >
-
+    <!-- STATISTIK -->
+    <div class="grid">
+        <div class="stat-card">
+            <div class="stat-title">Jumlah Anggota</div>
+            <div class="stat-value">{{ anggota|length }}</div>
         </div>
 
-
-        <div>
-
-            <label for="acara">
-                Acara
-            </label>
-
-            <select
-                id="acara"
-                name="acara"
-                required
-            >
-
-                <option value="">
-                    -- Pilih Acara --
-                </option>
-
-                {% for item in acara_list %}
-
-                    <option value="{{ item.id }}">
-
-                        {{ item.nama }}
-
-                        {% if item.sub_acara %}
-                            - {{ item.sub_acara }}
-                        {% endif %}
-
-                    </option>
-
-                {% endfor %}
-
-            </select>
-
+        <div class="stat-card">
+            <div class="stat-title">Laporan Mingguan</div>
+            <div class="stat-value">{{ laporan|length }}</div>
         </div>
 
-
-        <div>
-
-            <label for="peserta">
-                Peserta Pengunggah
-            </label>
-
-            <select
-                id="peserta"
-                name="peserta"
-                required
-            >
-
-                <option value="">
-                    -- Pilih Peserta --
-                </option>
-
-                {% for item in anggota %}
-
-                    <option value="{{ item.id }}">
-                        {{ item.nama }}
-                    </option>
-
-                {% endfor %}
-
-            </select>
-
+        <div class="stat-card">
+            <div class="stat-title">Progress Acara</div>
+            <div class="stat-value">{{ progress_acara|length }}</div>
         </div>
 
-
-        <div>
-
-            <label for="file_laporan">
-                File Laporan
-            </label>
-
-            <input
-                type="file"
-                id="file_laporan"
-                name="file_laporan"
-                required
-            >
-
+        <div class="stat-card">
+            <div class="stat-title">File Kelompok</div>
+            <div class="stat-value">{{ file_kelompok|length }}</div>
         </div>
-
-
-        <div>
-
-            <button
-                type="submit"
-                class="button"
-            >
-                Upload Laporan
-            </button>
-
-        </div>
-
-    </form>
-
-</div>
-
-
-<!-- ================================================= -->
-<!-- LAPORAN -->
-<!-- ================================================= -->
-
-<div class="section">
-
-    <h2>
-        Laporan Mingguan
-    </h2>
-
-    {% if laporan %}
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>No.</th>
-                    <th>Judul</th>
-                    <th>Peserta</th>
-                    <th>Acara</th>
-                    <th>Status</th>
-                    <th>File</th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                {% for item in laporan %}
-
-                    <tr>
-
-                        <td>
-                            {{ forloop.counter }}
-                        </td>
-
-                        <td>
-                            {{ item.judul }}
-                        </td>
-
-                        <td>
-
-                            {% if item.peserta %}
-                                {{ item.peserta.nama }}
-                            {% else %}
-                                -
-                            {% endif %}
-
-                        </td>
-
-                        <td>
-
-                            {% if item.acara %}
-                                {{ item.acara.nama }}
-                            {% else %}
-                                -
-                            {% endif %}
-
-                        </td>
-
-                        <td>
-
-                            <span class="badge">
-                                {{ item.get_status_display }}
-                            </span>
-
-                        </td>
-
-                        <td>
-
-                            {% if item.file %}
-
-                                <a
-                                    href="{{ item.file.url }}"
-                                    target="_blank"
-                                >
-                                    Lihat File
-                                </a>
-
-                            {% else %}
-
-                                -
-
-                            {% endif %}
-
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    {% else %}
-
-        <div class="empty">
-            Belum ada laporan mingguan.
-        </div>
-
-    {% endif %}
-
-</div>
-
-
-<!-- ================================================= -->
-<!-- PROGRESS ACARA -->
-<!-- ================================================= -->
-
-<div class="section">
-
-    <h2>
-        Progress Setiap Acara
-    </h2>
-
-    {% if progress_acara %}
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>No.</th>
-                    <th>Acara</th>
-                    <th>Progress</th>
-                    <th>Laporan</th>
-                    <th>Peta</th>
-                    <th>PPT</th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                {% for item in progress_acara %}
-
-                    <tr>
-
-                        <td>
-                            {{ forloop.counter }}
-                        </td>
-
-                        <td>
-                            {{ item.acara.nama }}
-                        </td>
-
-                        <td>
-                            {{ item.nilai_progress }}%
-                        </td>
-
-                        <td>
-                            {{ item.laporan_acc|yesno:"ACC,-" }}
-                        </td>
-
-                        <td>
-                            {{ item.peta_acc|yesno:"ACC,-" }}
-                        </td>
-
-                        <td>
-                            {{ item.ppt_acc|yesno:"ACC,-" }}
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    {% else %}
-
-        <div class="empty">
-            Belum ada data progress acara.
-        </div>
-
-    {% endif %}
-
-</div>
-
-
-<!-- ================================================= -->
-<!-- FILE KELOMPOK -->
-<!-- ================================================= -->
-
-<div class="section">
-
-    <h2>
-        File Kelompok
-    </h2>
-
-    {% if file_kelompok %}
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>No.</th>
-                    <th>Nama File</th>
-                    <th>Acara</th>
-                    <th>Jenis</th>
-                    <th>Status</th>
-                    <th>File</th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                {% for item in file_kelompok %}
-
-                    <tr>
-
-                        <td>
-                            {{ forloop.counter }}
-                        </td>
-
-                        <td>
-                            {{ item.nama_file }}
-                        </td>
-
-                        <td>
-                            {{ item.acara.nama }}
-                        </td>
-
-                        <td>
-                            {{ item.get_jenis_display }}
-                        </td>
-
-                        <td>
-                            {{ item.get_status_display }}
-                        </td>
-
-                        <td>
-
-                            {% if item.file %}
-
-                                <a
-                                    href="{{ item.file.url }}"
-                                    target="_blank"
-                                >
-                                    Lihat File
-                                </a>
-
-                            {% else %}
-
-                                -
-
-                            {% endif %}
-
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    {% else %}
-
-        <div class="empty">
-            Belum ada file kelompok.
-        </div>
-
-    {% endif %}
-
-</div>
-
-
-<!-- ================================================= -->
-<!-- DAILY MOM -->
-<!-- ================================================= -->
-
-<div class="section">
-
-    <div class="section-header">
-
-        <h2>
-            Daily MOM
-        </h2>
-
-        <a
-            href="{% url 'praktikum:tambah_daily_mom' %}"
-            class="daily-mom-button"
-        >
-            + Tambah DailyMOM
-        </a>
-
     </div>
 
-
-    {% if daily_mom %}
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>Tanggal</th>
-                    <th>Judul</th>
-                    <th>Acara</th>
-                    <th>Dibuat Oleh</th>
-                    <th>Isi / Pembahasan</th>
-                    <th>Keputusan</th>
-                    <th>Tindak Lanjut</th>
-                    <th>Aksi</th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                {% for item in daily_mom %}
-
-                    <tr>
-
-                        <td class="mom-date">
-                            {{ item.tanggal|date:"d/m/Y" }}
-                        </td>
-
-
-                        <td>
-
-                            <div class="mom-title">
-                                {{ item.judul }}
-                            </div>
-
-                        </td>
-
-
-                        <td>
-
-                            {% if item.acara %}
-
-                                {{ item.acara.nama }}
-
-                                {% if item.acara.sub_acara %}
-
-                                    <div class="mom-small">
-                                        {{ item.acara.sub_acara }}
-                                    </div>
-
-                                {% endif %}
-
-                            {% else %}
-
-                                -
-
-                            {% endif %}
-
-                        </td>
-
-
-                        <td>
-
-                            {% if item.dibuat_oleh %}
-                                {{ item.dibuat_oleh.nama }}
-                            {% else %}
-                                -
-                            {% endif %}
-
-                        </td>
-
-
-                        <td>
-
-                            {% if item.isi %}
-
-                                <div class="mom-content">
-                                    {{ item.isi }}
-                                </div>
-
-                            {% else %}
-
-                                -
-
-                            {% endif %}
-
-                        </td>
-
-
-                        <td>
-
-                            {% if item.keputusan %}
-
-                                <div class="mom-content">
-                                    {{ item.keputusan }}
-                                </div>
-
-                            {% else %}
-
-                                -
-
-                            {% endif %}
-
-                        </td>
-
-
-                        <td>
-
-                            {% if item.tindak_lanjut %}
-
-                                <div class="mom-content">
-                                    {{ item.tindak_lanjut }}
-                                </div>
-
-                            {% else %}
-
-                                -
-
-                            {% endif %}
-
-                        </td>
-
-
-                        <!-- ================================= -->
-                        <!-- AKSI DAILY MOM -->
-                        <!-- ================================= -->
-
-                        <td>
-
-                            <div class="mom-actions">
-
-                                <a
-                                    href="{% url 'praktikum:edit_daily_mom' item.id %}"
-                                    class="mom-edit-button"
-                                >
-                                    ✎ Edit
-                                </a>
-
-
-                                <form
-                                    method="post"
-                                    action="{% url 'praktikum:hapus_daily_mom' item.id %}"
-                                    onsubmit="return confirm('Yakin ingin menghapus DailyMOM ini? Data yang dihapus tidak dapat dikembalikan.');"
-                                >
-
-                                    {% csrf_token %}
-
-                                    <button
-                                        type="submit"
-                                        class="mom-delete-button"
-                                    >
-                                        🗑 Hapus
-                                    </button>
-
-                                </form>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    {% else %}
-
-        <div class="empty">
-            Belum ada Daily MOM.
-        </div>
-
-    {% endif %}
-
-</div>
-
-
-<!-- ================================================= -->
-<!-- LAPORAN LENGKAP -->
-<!-- ================================================= -->
-
-<div class="section">
-
-    <h2>
-        Laporan Lengkap
-    </h2>
-
-    {% if laporan_lengkap %}
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>No.</th>
-                    <th>Judul</th>
-                    <th>Status</th>
-                    <th>File</th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                {% for item in laporan_lengkap %}
-
-                    <tr>
-
-                        <td>
-                            {{ forloop.counter }}
-                        </td>
-
-                        <td>
-                            {{ item.judul }}
-                        </td>
-
-                        <td>
-                            {{ item.get_status_display }}
-                        </td>
-
-                        <td>
-
-                            {% if item.file %}
-
-                                <a
-                                    href="{{ item.file.url }}"
-                                    target="_blank"
-                                >
-                                    Lihat File
-                                </a>
-
-                            {% else %}
-
-                                -
-
-                            {% endif %}
-
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    {% else %}
-
-        <div class="empty">
-            Belum ada laporan lengkap.
-        </div>
-
-    {% endif %}
-
-</div>
-
-
-<!-- ================================================= -->
-<!-- KONSULTASI -->
-<!-- ================================================= -->
-
-<div class="section">
-
-    <h2>
-        Konsultasi
-    </h2>
-
-    {% if konsultasi %}
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>No.</th>
-                    <th>Topik</th>
-                    <th>Peserta</th>
-                    <th>Tujuan</th>
-                    <th>Status</th>
-                    <th>Pertanyaan</th>
-                    <th>Jawaban</th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                {% for item in konsultasi %}
-
-                    <tr>
-
-                        <td>
-                            {{ forloop.counter }}
-                        </td>
-
-                        <td>
-                            {{ item.topik }}
-                        </td>
-
-                        <td>
-
-                            {% if item.peserta %}
-                                {{ item.peserta.nama }}
-                            {% else %}
-                                -
-                            {% endif %}
-
-                        </td>
-
-                        <td>
-
-                            {% if item.tujuan %}
-                                {{ item.tujuan.nama }}
-                            {% else %}
-                                -
-                            {% endif %}
-
-                        </td>
-
-                        <td>
-                            {{ item.get_status_display }}
-                        </td>
-
-                        <td>
-                            {{ item.pertanyaan }}
-                        </td>
-
-                        <td>
-                            {{ item.jawaban|default:"Belum dijawab" }}
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    {% else %}
-
-        <div class="empty">
-            Belum ada data konsultasi.
-        </div>
-
-    {% endif %}
-
-</div>
-
-
-<!-- ================================================= -->
-<!-- CATATAN KELOMPOK -->
-<!-- ================================================= -->
-
-{% if kelompok.catatan %}
-
+    <!-- LOGO KELOMPOK -->
     <div class="section">
-
-        <h2>
-            Catatan Kelompok
-        </h2>
-
-        <p>
-            {{ kelompok.catatan|linebreaks }}
+        <h2>Logo Kelompok</h2>
+        <p class="help-text">
+            Unggah logo kelompok dalam format JPG, JPEG, PNG, atau WEBP.
+            Logo yang baru diunggah akan menggantikan logo sebelumnya.
         </p>
 
+        <form
+            method="post"
+            action="{% url 'praktikum:upload_logo_kelompok' %}"
+            enctype="multipart/form-data"
+            class="upload-form"
+        >
+            {% csrf_token %}
+
+            <div>
+                <label for="logo">Pilih logo kelompok</label>
+                <input
+                    type="file"
+                    id="logo"
+                    name="logo"
+                    accept=".jpg,.jpeg,.png,.webp"
+                    required
+                >
+            </div>
+
+            <div>
+                <button type="submit" class="button">Unggah Logo</button>
+            </div>
+        </form>
     </div>
 
-{% endif %}
+    <!-- ANGGOTA DAN MENTOR -->
+    <div class="two-column">
+        <div class="section">
+            <h2>Anggota Kelompok</h2>
 
+            {% if anggota %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Nama</th>
+                            <th>NIM</th>
+                            <th>Jabatan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for peserta in anggota %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ peserta.nama }}</td>
+                                <td>{{ peserta.nim|default:"-" }}</td>
+                                <td>
+                                    <span class="badge">{{ peserta.get_jabatan_display }}</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="empty">Belum ada anggota kelompok.</div>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <h2>Mentor</h2>
+
+            {% if mentor %}
+                <div class="mentor-list">
+                    {% for item in mentor %}
+                        <div class="mentor">
+                            <strong>{{ item.nama }}</strong><br>
+                            <small>{{ item.get_jabatan_display }}</small>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty">Belum ada mentor yang ditetapkan.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- UPLOAD LAPORAN MINGGUAN -->
+    <div class="section">
+        <h2>Upload Laporan Mingguan</h2>
+
+        <p class="help-text">
+            Pilih acara dan peserta pengunggah dengan benar. Laporan akan
+            dikirim untuk diperiksa oleh admin atau asisten yang ditetapkan.
+        </p>
+
+        <form
+            method="post"
+            action="{% url 'praktikum:upload_laporan' %}"
+            enctype="multipart/form-data"
+            class="upload-form"
+        >
+            {% csrf_token %}
+
+            <div>
+                <label for="judul">Judul Laporan</label>
+                <input
+                    type="text"
+                    id="judul"
+                    name="judul"
+                    maxlength="200"
+                    placeholder="Contoh: Laporan Mingguan 01"
+                    required
+                >
+            </div>
+
+            <div>
+                <label for="acara">Acara</label>
+                <select id="acara" name="acara" required>
+                    <option value="">-- Pilih Acara --</option>
+                    {% for item in acara_list %}
+                        <option value="{{ item.id }}">
+                            {{ item.nama }}{% if item.sub_acara %} - {{ item.sub_acara }}{% endif %}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="peserta">Peserta Pengunggah</label>
+                <select id="peserta" name="peserta" required>
+                    <option value="">-- Pilih Peserta --</option>
+                    {% for item in anggota %}
+                        <option value="{{ item.id }}">{{ item.nama }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="file_laporan">File Laporan</label>
+                <input
+                    type="file"
+                    id="file_laporan"
+                    name="file_laporan"
+                    required
+                >
+            </div>
+
+            <div>
+                <button type="submit" class="button">Upload Laporan</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- DAFTAR LAPORAN MINGGUAN -->
+    <div class="section">
+        <h2>Laporan Mingguan</h2>
+
+        {% if laporan %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Judul</th>
+                        <th>Peserta</th>
+                        <th>Acara</th>
+                        <th>Status</th>
+                        <th>File</th>
+                        <th>File Revisi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in laporan %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ item.judul|default:"Laporan Mingguan" }}</td>
+                            <td>
+                                {% if item.peserta %}
+                                    {{ item.peserta.nama }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.acara %}
+                                    {{ item.acara.nama }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge">{{ item.get_status_display }}</span>
+                                {% if item.catatan_admin %}
+                                    <div class="mom-small" style="margin-top:6px">
+                                        Catatan: {{ item.catatan_admin }}
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.file %}
+                                    <a
+                                        href="{% url 'praktikum:download_laporan_mingguan' item.id %}"
+                                        class="file-link"
+                                    >Unduh Laporan</a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.file_revisi %}
+                                    <a
+                                        href="{% url 'praktikum:download_file_revisi' item.id %}"
+                                        class="file-link"
+                                    >Unduh Revisi</a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty">Belum ada laporan mingguan.</div>
+        {% endif %}
+    </div>
+
+    <!-- PROGRESS ACARA -->
+    <div class="section">
+        <h2>Progress Setiap Acara</h2>
+
+        {% if progress_acara %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Acara</th>
+                        <th>Progress</th>
+                        <th>Laporan</th>
+                        <th>Peta</th>
+                        <th>PPT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in progress_acara %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ item.acara.nama }}</td>
+                            <td>{{ item.nilai_progress }}%</td>
+                            <td>{{ item.laporan_acc|yesno:"ACC,-" }}</td>
+                            <td>{{ item.peta_acc|yesno:"ACC,-" }}</td>
+                            <td>{{ item.ppt_acc|yesno:"ACC,-" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty">Belum ada data progress acara.</div>
+        {% endif %}
+    </div>
+
+    <!-- FILE KELOMPOK -->
+    <div class="section">
+        <h2>File Kelompok</h2>
+
+        {% if file_kelompok %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Nama File</th>
+                        <th>Acara</th>
+                        <th>Jenis</th>
+                        <th>Status</th>
+                        <th>Catatan Admin</th>
+                        <th>File</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in file_kelompok %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ item.nama_file }}</td>
+                            <td>
+                                {% if item.acara %}
+                                    {{ item.acara.nama }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>{{ item.get_jenis_display }}</td>
+                            <td>{{ item.get_status_display }}</td>
+                            <td>{{ item.catatan_admin|default:"-" }}</td>
+                            <td>
+                                {% if item.file %}
+                                    <a
+                                        href="{% url 'praktikum:download_file_kelompok' item.id %}"
+                                        class="file-link"
+                                    >Unduh File</a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty">Belum ada file kelompok.</div>
+        {% endif %}
+    </div>
+
+    <!-- DAILY MOM -->
+    <div class="section">
+        <div class="section-header">
+            <h2>Daily MOM</h2>
+            <a
+                href="{% url 'praktikum:tambah_daily_mom' %}"
+                class="daily-mom-button"
+            >+ Tambah Daily MOM</a>
+        </div>
+
+        {% if daily_mom %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Judul</th>
+                        <th>Acara</th>
+                        <th>Dibuat Oleh</th>
+                        <th>Isi / Pembahasan</th>
+                        <th>Keputusan</th>
+                        <th>Tindak Lanjut</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in daily_mom %}
+                        <tr>
+                            <td class="mom-date">{{ item.tanggal|date:"d/m/Y" }}</td>
+                            <td><div class="mom-title">{{ item.judul }}</div></td>
+                            <td>
+                                {% if item.acara %}
+                                    {{ item.acara.nama }}
+                                    {% if item.acara.sub_acara %}
+                                        <div class="mom-small">{{ item.acara.sub_acara }}</div>
+                                    {% endif %}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.dibuat_oleh %}
+                                    {{ item.dibuat_oleh.nama }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.isi %}
+                                    <div class="mom-content">{{ item.isi }}</div>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.keputusan %}
+                                    <div class="mom-content">{{ item.keputusan }}</div>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.tindak_lanjut %}
+                                    <div class="mom-content">{{ item.tindak_lanjut }}</div>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="mom-actions">
+                                    <a
+                                        href="{% url 'praktikum:edit_daily_mom' item.id %}"
+                                        class="mom-edit-button"
+                                    >Edit</a>
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'praktikum:hapus_daily_mom' item.id %}"
+                                        onsubmit="return confirm('Yakin ingin menghapus Daily MOM ini?');"
+                                    >
+                                        {% csrf_token %}
+                                        <button type="submit" class="mom-delete-button">Hapus</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty">Belum ada Daily MOM.</div>
+        {% endif %}
+    </div>
+
+    <!-- UPLOAD LAPORAN LENGKAP -->
+    <div class="section">
+        <h2>Upload Laporan Lengkap</h2>
+
+        <p class="help-text">
+            Unggah laporan akhir kelompok untuk diperiksa admin. Setiap
+            unggahan disimpan sebagai entri baru; laporan sebelumnya tidak
+            dihapus secara otomatis.
+        </p>
+
+        <form
+            method="post"
+            action="{% url 'praktikum:upload_laporan_lengkap' %}"
+            enctype="multipart/form-data"
+            class="upload-form"
+        >
+            {% csrf_token %}
+
+            <div>
+                <label for="judul_laporan_lengkap">Judul Laporan</label>
+                <input
+                    type="text"
+                    id="judul_laporan_lengkap"
+                    name="judul_laporan_lengkap"
+                    maxlength="200"
+                    placeholder="Contoh: Laporan Akhir Kelompok"
+                    required
+                >
+            </div>
+
+            <div>
+                <label for="file_laporan_lengkap">File Laporan Lengkap</label>
+                <input
+                    type="file"
+                    id="file_laporan_lengkap"
+                    name="file_laporan_lengkap"
+                    required
+                >
+            </div>
+
+            <div>
+                <button type="submit" class="button">Unggah Laporan Lengkap</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- DAFTAR LAPORAN LENGKAP -->
+    <div class="section">
+        <h2>Riwayat Laporan Lengkap</h2>
+
+        {% if laporan_lengkap %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Judul</th>
+                        <th>Status</th>
+                        <th>Catatan Admin</th>
+                        <th>File</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in laporan_lengkap %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ item.judul }}</td>
+                            <td>{{ item.get_status_display }}</td>
+                            <td>{{ item.catatan_admin|default:"-" }}</td>
+                            <td>
+                                {% if item.file %}
+                                    <a
+                                        href="{% url 'praktikum:download_laporan_lengkap' item.id %}"
+                                        class="file-link"
+                                    >Unduh Laporan</a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty">Belum ada laporan lengkap.</div>
+        {% endif %}
+    </div>
+
+    <!-- KONSULTASI -->
+    <div class="section">
+        <h2>Informasi Konsultasi Kelompok</h2>
+
+        <p class="help-text">
+            Informasi konsultasi pada bagian ini ditujukan untuk kelompok
+            yang sedang login. Periksa acara, pendamping, tanggal, waktu,
+            dan lokasi yang diberikan oleh admin.
+        </p>
+
+        {% if konsultasi %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Topik</th>
+                        <th>Peserta</th>
+                        <th>Pendamping</th>
+                        <th>Acara</th>
+                        <th>Jadwal dan Lokasi</th>
+                        <th>Status</th>
+                        <th>Pertanyaan</th>
+                        <th>Jawaban / Catatan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in konsultasi %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ item.topik|default:"Konsultasi" }}</td>
+                            <td>
+                                {% if item.peserta %}
+                                    {{ item.peserta.nama }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.tujuan %}
+                                    {{ item.tujuan.nama }}
+                                    <div class="mom-small">{{ item.tujuan.get_jabatan_display }}</div>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.acara %}
+                                    {{ item.acara.nama }}
+                                    {% if item.acara.sub_acara %}
+                                        <div class="mom-small">{{ item.acara.sub_acara }}</div>
+                                    {% endif %}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="consultation-info">
+                                    {% if item.tanggal_konsultasi %}
+                                        <strong>Tanggal:</strong>
+                                        {{ item.tanggal_konsultasi|date:"d/m/Y" }}<br>
+                                    {% endif %}
+
+                                    {% if item.waktu_mulai %}
+                                        <strong>Mulai:</strong>
+                                        {{ item.waktu_mulai|time:"H:i" }}<br>
+                                    {% endif %}
+
+                                    {% if item.waktu_selesai %}
+                                        <strong>Selesai:</strong>
+                                        {{ item.waktu_selesai|time:"H:i" }}<br>
+                                    {% endif %}
+
+                                    {% if item.lokasi %}
+                                        <strong>Lokasi:</strong>
+                                        {{ item.lokasi }}
+                                    {% endif %}
+
+                                    {% if not item.tanggal_konsultasi and not item.waktu_mulai and not item.waktu_selesai and not item.lokasi %}
+                                        Belum dijadwalkan
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge">{{ item.get_status_display }}</span>
+                            </td>
+                            <td>{{ item.pertanyaan|default:"-" }}</td>
+                            <td>{{ item.jawaban|default:"Belum ada jawaban atau catatan dari admin." }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty">
+                Belum ada informasi konsultasi untuk kelompok ini.
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- CATATAN KELOMPOK -->
+    {% if kelompok.catatan %}
+        <div class="section">
+            <h2>Catatan Kelompok</h2>
+            <p>{{ kelompok.catatan|linebreaks }}</p>
+        </div>
+    {% endif %}
 
 </div>
-
 </body>
 </html>
