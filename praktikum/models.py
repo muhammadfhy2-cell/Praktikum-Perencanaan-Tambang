@@ -145,7 +145,6 @@ class Peserta(models.Model):
     email = models.EmailField(blank=True)
     aktif = models.BooleanField(default=True)
 
-    # Akun lama tetap dipertahankan.
     akun = models.OneToOneField(
         User,
         on_delete=models.SET_NULL,
@@ -290,7 +289,6 @@ class Absensi(models.Model):
     status = models.CharField(max_length=1, choices=STATUS, default="H")
     catatan = models.CharField(max_length=200, blank=True)
 
-    # Komponen kehadiran: total 100%.
     start = models.BooleanField(default=False, verbose_name="START (20%)")
     ishoma_1 = models.BooleanField(default=False, verbose_name="ISHOMA 1 (10%)")
     ishoma_2 = models.BooleanField(default=False, verbose_name="ISHOMA 2 (10%)")
@@ -430,7 +428,6 @@ class LaporanMingguan(models.Model):
 
     catatan_admin = models.TextField(blank=True)
 
-    # File revisi tetap dipertahankan.
     file_revisi = models.FileField(
         upload_to="laporan_revisi/%Y/%m/",
         blank=True,
@@ -608,7 +605,19 @@ class LaporanLengkap(models.Model):
         related_name="laporan_lengkap",
     )
 
-    file = models.FileField(upload_to="laporan_lengkap/%Y/%m/")
+    # File laporan asli yang diunggah kelompok.
+    file = models.FileField(
+        upload_to="laporan_lengkap/%Y/%m/",
+    )
+
+    # File revisi yang diunggah admin.
+    # Field ini baru dan memerlukan migrasi database 0008.
+    file_revisi = models.FileField(
+        upload_to="laporan_lengkap/revisi/",
+        blank=True,
+        null=True,
+        verbose_name="File Revisi Admin",
+    )
 
     status = models.CharField(
         max_length=20,
@@ -697,8 +706,6 @@ class Konsultasi(models.Model):
         related_name="konsultasi",
     )
 
-    # Jadwal konsultasi privat.
-    # Semua field baru opsional untuk menjaga data konsultasi lama.
     tanggal_konsultasi = models.DateField(
         null=True,
         blank=True,
