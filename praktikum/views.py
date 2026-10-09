@@ -6,8 +6,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.db.models import Prefetch
 from django.http import FileResponse, Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_POST
 from django.utils.dateparse import parse_date, parse_time
+from django.views.decorators.http import require_POST
 
 from .models import (
     Absensi,
@@ -110,6 +110,8 @@ def _pastikan_admin(request):
 def _redirect_dashboard_kelompok(request):
     if get_kelompok_login(request):
         return redirect("praktikum:dashboard_kelompok")
+
+    request.session.pop("kelompok_id", None)
     return redirect("praktikum:login_kelompok")
 
 
@@ -174,7 +176,9 @@ def home(request):
         jabatan="penanggung_jawab"
     ).first()
 
-    koordinator = staff_list.filter(jabatan="koordinator").first()
+    koordinator = staff_list.filter(
+        jabatan="koordinator"
+    ).order_by("urutan", "nama").first()
 
     asisten_list = staff_list.filter(
         jabatan="asisten"
@@ -222,10 +226,12 @@ def personel(request):
         "jabatan", "urutan", "nama"
     )
 
+    # Penanggung jawab adalah satu objek Staff, bukan QuerySet.
     penanggung_jawab = staff_list.filter(
         jabatan="penanggung_jawab"
     ).first()
 
+    # Koordinator dan asisten adalah kumpulan objek Staff.
     koordinator = staff_list.filter(
         jabatan="koordinator"
     ).order_by("urutan", "nama")
@@ -246,11 +252,15 @@ def personel(request):
         "asisten_list": asisten_list,
     }
 
-    return render(request, "praktikum/personel.html", context)
+    return render(
+        request,
+        "praktikum/personel.html",
+        context,
+    )
 
 
 # ============================================================
-# KELOMPOK DAN INFORMASI LAPORAN ACC UNTUK PUBLIK
+# KELOMPOK DAN LAPORAN ACC UNTUK PUBLIK
 # ============================================================
 
 def kelompok(request):
@@ -407,7 +417,9 @@ def absensi(request):
             "persentase": persentase,
         })
 
-    kelompok_list = Kelompok.objects.filter(aktif=True).order_by("nama")
+    kelompok_list = Kelompok.objects.filter(
+        aktif=True
+    ).order_by("nama")
 
     return render(
         request,
@@ -570,8 +582,14 @@ def format_dokumen(request):
 # ============================================================
 
 def login_kelompok(request):
-    if request.session.get("kelompok_id"):
+    kelompok_saat_ini = get_kelompok_login(request)
+
+    if kelompok_saat_ini:
         return redirect("praktikum:dashboard_kelompok")
+
+    # Bersihkan sesi jika kelompok sebelumnya sudah tidak aktif
+    # atau tidak lagi ditemukan.
+    request.session.pop("kelompok_id", None)
 
     if request.method == "POST":
         username = request.POST.get("username", "").strip()
@@ -584,10 +602,14 @@ def login_kelompok(request):
         )
 
         if user is not None:
-            kelompok_obj = Kelompok.objects.filter(
-                akun_login=user,
-                aktif=True,
-            ).first()
+            kelompok_obj = (
+                Kelompok.objects
+                .filter(
+                    akun_login=user,
+                    aktif=True,
+                )
+                .first()
+            )
 
             if kelompok_obj:
                 login(request, user)
@@ -603,10 +625,14 @@ def login_kelompok(request):
 
         messages.error(
             request,
-            "Username atau password tidak valid.",
+            "Username atau password tidak valid, atau akun "
+            "belum terhubung dengan kelompok aktif.",
         )
 
-    return render(request, "praktikum/login_kelompok.html")
+    return render(
+        request,
+        "praktikum/login_kelompok.html",
+    )
 
 
 # ============================================================
@@ -629,6 +655,7 @@ def dashboard_kelompok(request):
     kelompok_obj = get_kelompok_login(request)
 
     if not kelompok_obj:
+        request.session.pop("kelompok_id", None)
         messages.warning(request, "Silakan login terlebih dahulu.")
         return redirect("praktikum:login_kelompok")
 
@@ -686,9 +713,9 @@ def dashboard_kelompok(request):
         .order_by("urutan", "tanggal_mulai")
     )
 
-    mentor_list = kelompok_obj.mentor.filter(aktif=True).order_by(
-        "jabatan", "urutan", "nama"
-    )
+    mentor_list = kelompok_obj.mentor.filter(
+        aktif=True
+    ).order_by("jabatan", "urutan", "nama")
 
     context = {
         "setting": setting,
@@ -864,7 +891,6 @@ def upload_laporan_lengkap(request):
         )
         return redirect("praktikum:dashboard_kelompok")
 
-    # Batasi ukuran berkas maksimal 25 MB.
     batas_ukuran = 25 * 1024 * 1024
 
     if file_laporan.size > batas_ukuran:
