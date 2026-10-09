@@ -1,44 +1,29 @@
 from django.contrib import admin
 from django.urls import include, path
-
 from django.conf import settings
 from django.conf.urls.static import static
 
 
 urlpatterns = [
+    # ========================================================
+    # ADMIN DJANGO
+    # ========================================================
+    path("admin/", admin.site.urls),
 
     # ========================================================
-    # ADMIN
+    # WEBSITE PRAKTIKUM PERENCANAAN TAMBANG
     # ========================================================
-
-    path(
-        "admin/",
-        admin.site.urls,
-    ),
-
-    # ========================================================
-    # PRAKTIKUM
-    # ========================================================
-
     path(
         "",
-        include(
-            (
-                "praktikum.urls",
-                "praktikum",
-            ),
-            namespace="praktikum",
-        ),
+        include("praktikum.urls", namespace="praktikum"),
     ),
 ]
 
 
 # ============================================================
-# MEDIA DEVELOPMENT
+# MEDIA FILES UNTUK DEVELOPMENT
 # ============================================================
-
 if settings.DEBUG:
-
     urlpatterns += static(
         settings.MEDIA_URL,
         document_root=settings.MEDIA_ROOT,
