@@ -1,149 +1,143 @@
+
 {% extends "praktikum/base.html" %}
 
-{% block title %}Materi | Praktikum Perencanaan Tambang{% endblock %}
+{% block title %}Materi Praktikum{% endblock %}
+
+{% block extra_css %}
+<style>
+.materi-page {
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 32px 20px 48px;
+}
+.materi-heading {
+    margin-bottom: 24px;
+}
+.materi-heading h1 {
+    margin-bottom: 8px;
+}
+.materi-heading p {
+    color: var(--muted, #64748b);
+    line-height: 1.7;
+}
+.materi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+.materi-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 22px;
+    border: 1px solid var(--border, #e2e8f0);
+    border-radius: 16px;
+    background: var(--card, #fff);
+    box-shadow: 0 5px 18px rgba(15, 23, 42, .04);
+}
+.materi-card h2 {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+.materi-category {
+    display: inline-block;
+    width: fit-content;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: var(--soft, #eff6ff);
+    color: var(--primary, #1d4ed8);
+    font-size: .8rem;
+    font-weight: 700;
+}
+.materi-description {
+    color: var(--muted, #64748b);
+    line-height: 1.7;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+.materi-meta {
+    color: var(--muted, #64748b);
+    font-size: .86rem;
+    line-height: 1.6;
+}
+.materi-download {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: auto;
+    padding: 11px 16px;
+    border-radius: 10px;
+    background: var(--primary, #1d4ed8);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+}
+.materi-download:hover {
+    opacity: .9;
+}
+.materi-empty {
+    padding: 24px;
+    border: 1px dashed var(--border, #cbd5e1);
+    border-radius: 14px;
+    color: var(--muted, #64748b);
+    text-align: center;
+}
+</style>
+{% endblock %}
 
 {% block content %}
-
-<section class="page-header">
-    <div class="container">
-        <div class="eyebrow">LEARNING MATERIAL</div>
+<main class="materi-page">
+    <header class="materi-heading">
         <h1>Materi Praktikum</h1>
         <p>
-            Modul, dataset, template, dan dokumen pendukung kegiatan praktikum.
+            Akses modul, dataset, template, dan berkas pendukung
+            Praktikum Perencanaan Tambang.
         </p>
-    </div>
-</section>
+    </header>
 
-<section class="content-section">
-    <div class="container">
-
-        <div class="material-grid">
-
+    {% if materi_list %}
+        <section class="materi-grid">
             {% for materi in materi_list %}
-
-            <article class="material-card">
-
-                <div class="material-icon">
-                    {% if materi.kategori == "modul" %}
-                        📚
-                    {% elif materi.kategori == "dataset" %}
-                        📊
-                    {% elif materi.kategori == "template" %}
-                        📄
-                    {% else %}
-                        📁
-                    {% endif %}
-                </div>
-
-                <div class="material-content">
-
-                    <span class="badge badge-gold">
-                        {{ materi.kategori }}
+                <article class="materi-card">
+                    <span class="materi-category">
+                        {{ materi.get_kategori_display|default:materi.kategori }}
                     </span>
 
                     <h2>{{ materi.judul }}</h2>
 
                     {% if materi.acara %}
-                        <p class="event">
-                            📅 {{ materi.acara.nama }}
-                        </p>
+                        <div class="materi-meta">
+                            Acara: {{ materi.acara.nama }}
+                        </div>
                     {% endif %}
 
                     {% if materi.deskripsi %}
-                        <p>{{ materi.deskripsi }}</p>
+                        <div class="materi-description">
+                            {{ materi.deskripsi }}
+                        </div>
                     {% endif %}
 
                     {% if materi.file %}
-                        <a href="{{ materi.file.url }}" target="_blank" class="btn">
-                            ⬇ Buka File
+                        <a
+                            class="materi-download"
+                            href="{% url 'praktikum:download_materi' materi.id %}"
+                        >
+                            Unduh Materi
                         </a>
+                    {% else %}
+                        <div class="materi-meta">
+                            Berkas belum tersedia.
+                        </div>
                     {% endif %}
-
-                    <small>
-                        Upload: {{ materi.uploaded_at|date:"d M Y" }}
-                    </small>
-
-                </div>
-
-            </article>
-
-            {% empty %}
-
-            <div class="empty">
-                <div class="empty-icon">📚</div>
-                Belum ada materi tersedia.
-            </div>
-
+                </article>
             {% endfor %}
-
+        </section>
+    {% else %}
+        <div class="materi-empty">
+            Belum ada materi yang dipublikasikan oleh admin.
         </div>
-
-    </div>
-</section>
-
-<style>
-    .material-grid {
-        display: grid;
-        grid-template-columns: repeat(3,1fr);
-        gap: 20px;
-    }
-
-    .material-card {
-        background: white;
-        border: 1px solid #dfe5df;
-        border-radius: 18px;
-        padding: 22px;
-        box-shadow: 0 8px 25px rgba(16,37,27,.06);
-        display: flex;
-        gap: 15px;
-    }
-
-    .material-icon {
-        width: 52px;
-        height: 52px;
-        min-width: 52px;
-        border-radius: 14px;
-        display: grid;
-        place-items: center;
-        background: #e9f0eb;
-        font-size: 23px;
-    }
-
-    .material-content h2 {
-        color: #173c2b;
-        font-size: 17px;
-        margin: 8px 0;
-    }
-
-    .material-content p {
-        color: #6b756e;
-        font-size: 12px;
-        margin-bottom: 12px;
-    }
-
-    .material-content .event {
-        color: #8a6b28;
-        font-weight: 700;
-    }
-
-    .material-content small {
-        display: block;
-        color: #89928c;
-        font-size: 10px;
-        margin-top: 10px;
-    }
-
-    @media(max-width:900px) {
-        .material-grid {
-            grid-template-columns: repeat(2,1fr);
-        }
-    }
-
-    @media(max-width:600px) {
-        .material-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
-
+    {% endif %}
+</main>
 {% endblock %}
