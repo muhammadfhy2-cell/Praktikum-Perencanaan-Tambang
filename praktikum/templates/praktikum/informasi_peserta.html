@@ -1,709 +1,492 @@
-{% extends "praktikum/base.html" %}
 
-{% block title %}
-Informasi Peserta | Praktikum Perencanaan Tambang
+{% extends "praktikum/base.html" %}
+{% load static %}
+
+{% block title %}Informasi Peserta | Praktikum Perencanaan Tambang{% endblock %}
+
+{% block meta_description %}
+Informasi peserta Praktikum Perencanaan Tambang berdasarkan kelompok dan status peserta.
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.peserta-page {
+    min-height: 65vh;
+    padding-bottom: 72px;
+    background: #fffdf8;
+}
+
+.peserta-container {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+}
+
+/* Header halaman seragam */
+.peserta-page-header {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 55px 0 60px;
+    margin-bottom: 35px;
+    color: #fffdf8;
+    background:
+        radial-gradient(ellipse at 90% 10%, rgba(245,196,81,.15), transparent 35%),
+        linear-gradient(120deg, #20170f, #49321d);
+}
+
+.peserta-page-header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: .25;
+    background-image: repeating-radial-gradient(
+        ellipse at 90% 45%,
+        transparent 0,
+        transparent 25px,
+        rgba(255,201,74,.38) 26px,
+        transparent 27px,
+        transparent 43px
+    );
+    mask-image: linear-gradient(90deg, transparent, #000);
+}
+
+.peserta-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-bottom: 19px;
+    color: #e1d5c3;
+    font-size: 12px;
+}
+
+.peserta-breadcrumb a {
+    color: #ffda7a;
+    text-decoration: none;
+}
+
+.peserta-breadcrumb a:hover {
+    color: #fffdf8;
+}
+
+.peserta-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 12px;
+    color: #ffda7a;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.peserta-eyebrow::before {
+    content: "";
+    width: 26px;
+    height: 2px;
+    background: #ffc94a;
+}
+
+.peserta-page-header h1 {
+    margin: 0 0 13px;
+    color: #fffdf8;
+    font-size: clamp(30px, 4vw, 44px);
+    font-weight: 900;
+    letter-spacing: -.7px;
+    line-height: 1.15;
+}
+
+.peserta-page-header p {
+    max-width: 720px;
+    margin: 0;
+    color: #e8dfd1;
+    font-size: 14px;
+    line-height: 1.85;
+}
+
+/* Statistik */
+.peserta-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.peserta-stat {
+    position: relative;
+    overflow: hidden;
+    padding: 22px;
+    border: 1px solid #e7dece;
+    border-radius: 16px;
+    background: #fffefa;
+    box-shadow: 0 8px 24px rgba(36,26,17,.045);
+}
+
+.peserta-stat-label {
+    margin-bottom: 10px;
+    color: #6e6254;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.6;
+}
+
+.peserta-stat-value {
+    color: #302319;
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 900;
+    line-height: 1.15;
+}
+
+.peserta-stat.active .peserta-stat-value {
+    color: #39714a;
+}
+
+.peserta-stat.inactive .peserta-stat-value {
+    color: #a65a36;
+}
+
+/* Panel tabel */
+.peserta-table-panel {
+    overflow: hidden;
+    border: 1px solid #e7dece;
+    border-radius: 18px;
+    background: #fffefa;
+    box-shadow: 0 8px 24px rgba(36,26,17,.045);
+}
+
+.peserta-table-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 23px 25px;
+    border-bottom: 1px solid #e7dece;
+    background: #f8f2e6;
+}
+
+.peserta-table-heading h2 {
+    margin: 0 0 5px;
+    color: #302319;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.peserta-table-heading p {
+    margin: 0;
+    color: #6e6254;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.peserta-count {
+    flex: 0 0 auto;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: #f0dfb7;
+    color: #674719;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.peserta-table-wrap {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.peserta-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.peserta-table th {
+    padding: 15px 18px;
+    background: #fffaf0;
+    color: #70562f;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .7px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.peserta-table td {
+    padding: 16px 18px;
+    border-top: 1px solid #eee5d7;
+    color: #4b4033;
+    font-size: 12px;
+    line-height: 1.7;
+    vertical-align: middle;
+}
+
+.peserta-table tbody tr:hover {
+    background: #fcf7ec;
+}
+
+.peserta-number {
+    width: 55px;
+    color: #8a7c69 !important;
+    font-weight: 800;
+}
+
+.peserta-name {
+    color: #302319 !important;
+    font-weight: 900;
+}
+
+.peserta-nim {
+    color: #6e6254;
+    white-space: nowrap;
+}
+
+.peserta-group {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 9px;
+    border: 1px solid #e7d6b1;
+    border-radius: 8px;
+    background: #f8f0dd;
+    color: #70501f;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.peserta-role {
+    color: #6e6254;
+}
+
+.peserta-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.peserta-status::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.peserta-status.is-active {
+    background: #e6f2e7;
+    color: #28633b;
+}
+
+.peserta-status.is-inactive {
+    background: #f8e9df;
+    color: #9a4e2c;
+}
+
+.peserta-empty {
+    padding: 45px 20px !important;
+    text-align: center;
+    color: #796e60 !important;
+}
+
+.peserta-empty strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #302319;
+    font-size: 15px;
+}
+
+.peserta-note {
+    margin-top: 17px;
+    padding: 15px 18px;
+    border-left: 3px solid #dca52e;
+    border-radius: 0 10px 10px 0;
+    background: #f8f2e6;
+    color: #6e6254;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+@media (max-width: 900px) {
+    .peserta-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .peserta-container {
+        width: calc(100% - 28px);
+    }
+
+    .peserta-page-header {
+        padding: 40px 0 44px;
+        margin-bottom: 25px;
+    }
+
+    .peserta-page-header p {
+        font-size: 13px;
+    }
+
+    .peserta-stat {
+        padding: 17px;
+    }
+
+    .peserta-stat-value {
+        font-size: 27px;
+    }
+
+    .peserta-table-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .peserta-table th,
+    .peserta-table td {
+        padding: 13px 14px;
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}
-
-<style>
-
-    .peserta-page {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 30px 20px 60px;
-    }
-
-    .page-header {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    .page-header h1 {
-        margin: 0 0 10px;
-        color: #0b5d3b;
-        font-size: 32px;
-        font-weight: 800;
-    }
-
-    .page-header p {
-        margin: 0;
-        color: #666;
-        font-size: 14px;
-        line-height: 1.7;
-    }
-
-    /* ======================================================
-       STATISTIK
-       ====================================================== */
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 15px;
-        margin-bottom: 25px;
-    }
-
-    .stat-card {
-        background: #fff;
-        border: 1px solid #e5e5e5;
-        border-radius: 14px;
-        padding: 20px;
-        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
-    }
-
-    .stat-label {
-        color: #777;
-        font-size: 12px;
-        font-weight: 700;
-        margin-bottom: 8px;
-    }
-
-    .stat-value {
-        color: #0b5d3b;
-        font-size: 28px;
-        font-weight: 800;
-    }
-
-    /* ======================================================
-       FILTER
-       ====================================================== */
-
-    .filter-card {
-        background: #fff;
-        border: 1px solid #e5e5e5;
-        border-radius: 16px;
-        padding: 20px;
-        margin-bottom: 25px;
-        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
-    }
-
-    .filter-title {
-        margin: 0 0 15px;
-        color: #222;
-        font-size: 16px;
-        font-weight: 800;
-    }
-
-    .filter-form {
-        display: grid;
-        grid-template-columns: 1fr 200px auto;
-        gap: 10px;
-        align-items: center;
-    }
-
-    .search-input,
-    .status-select {
-        width: 100%;
-        box-sizing: border-box;
-        border: 1px solid #d8d8d8;
-        border-radius: 9px;
-        padding: 12px 13px;
-        font-size: 13px;
-        outline: none;
-        background: #fff;
-    }
-
-    .search-input:focus,
-    .status-select:focus {
-        border-color: #0b7a4b;
-        box-shadow: 0 0 0 3px rgba(11, 122, 75, 0.08);
-    }
-
-    .search-button {
-        border: none;
-        border-radius: 9px;
-        padding: 12px 20px;
-        background: #0b5d3b;
-        color: #fff;
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
-    }
-
-    .search-button:hover {
-        background: #08462d;
-    }
-
-    .reset-button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 12px 16px;
-        border-radius: 9px;
-        background: #f2f2f2;
-        color: #555;
-        text-decoration: none;
-        font-size: 13px;
-        font-weight: 700;
-        margin-left: 8px;
-    }
-
-    .reset-button:hover {
-        background: #e5e5e5;
-        color: #333;
-    }
-
-    .filter-result {
-        margin-top: 13px;
-        color: #777;
-        font-size: 12px;
-    }
-
-    .filter-result strong {
-        color: #0b5d3b;
-    }
-
-    /* ======================================================
-       TABEL
-       ====================================================== */
-
-    .table-card {
-        background: #fff;
-        border: 1px solid #e5e5e5;
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
-    }
-
-    .table-header {
-        padding: 20px;
-        border-bottom: 1px solid #e8e8e8;
-    }
-
-    .table-header h2 {
-        margin: 0 0 5px;
-        color: #222;
-        font-size: 18px;
-        font-weight: 800;
-    }
-
-    .table-header p {
-        margin: 0;
-        color: #777;
-        font-size: 12px;
-    }
-
-    .table-wrapper {
-        width: 100%;
-        overflow-x: auto;
-    }
-
-    .peserta-table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 750px;
-    }
-
-    .peserta-table th {
-        background: #f5f8f6;
-        color: #555;
-        font-size: 11px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.4px;
-        padding: 13px 15px;
-        text-align: left;
-        border-bottom: 1px solid #e5e5e5;
-    }
-
-    .peserta-table td {
-        padding: 14px 15px;
-        border-bottom: 1px solid #eeeeee;
-        color: #333;
-        font-size: 13px;
-        vertical-align: middle;
-    }
-
-    .peserta-table tr:last-child td {
-        border-bottom: none;
-    }
-
-    .peserta-table tbody tr:hover {
-        background: #fafdfb;
-    }
-
-    .nomor {
-        width: 50px;
-        color: #999 !important;
-        font-weight: 700;
-    }
-
-    .kelompok-name {
-        font-weight: 700;
-        color: #0b5d3b;
-    }
-
-    .peserta-name {
-        font-weight: 700;
-        color: #222;
-    }
-
-    /* ======================================================
-       BADGE JABATAN
-       ====================================================== */
-
-    .jabatan-badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 10px;
-        font-weight: 800;
-    }
-
-    .jabatan-ketua {
-        background: #fff2c7;
-        color: #856404;
-    }
-
-    .jabatan-anggota {
-        background: #edf4f0;
-        color: #0b5d3b;
-    }
-
-    /* ======================================================
-       BADGE STATUS
-       ====================================================== */
-
-    .status-badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 10px;
-        font-weight: 800;
-    }
-
-    .status-aktif {
-        background: #dff4e7;
-        color: #12683f;
-    }
-
-    .status-gugur {
-        background: #fde2e2;
-        color: #a12626;
-    }
-
-    .empty-box {
-        padding: 45px 20px;
-        text-align: center;
-        color: #888;
-        font-size: 13px;
-    }
-
-    .empty-icon {
-        font-size: 32px;
-        margin-bottom: 10px;
-    }
-
-    /* ======================================================
-       RESPONSIVE
-       ====================================================== */
-
-    @media (max-width: 900px) {
-
-        .stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .filter-form {
-            grid-template-columns: 1fr;
-        }
-
-        .reset-button {
-            margin-left: 0;
-        }
-    }
-
-    @media (max-width: 600px) {
-
-        .peserta-page {
-            padding: 20px 14px 45px;
-        }
-
-        .page-header h1 {
-            font-size: 26px;
-        }
-
-        .stats-grid {
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .stat-card {
-            padding: 15px;
-        }
-
-        .stat-value {
-            font-size: 23px;
-        }
-    }
-
-</style>
-
-
 <div class="peserta-page">
 
-    <!-- ==================================================
-         HEADER
-         ================================================== -->
+    <header class="peserta-page-header">
+        <div class="peserta-container">
+            <nav class="peserta-breadcrumb" aria-label="Breadcrumb">
+                <a href="{% url 'praktikum:home' %}">Beranda</a>
+                <span aria-hidden="true">/</span>
+                <span>Informasi Peserta</span>
+            </nav>
 
-    <div class="page-header">
-
-        <h1>Informasi Peserta</h1>
-
-        <p>
-            Daftar peserta Praktikum Perencanaan Tambang
-            berdasarkan urutan kelompok dan jabatan.
-        </p>
-
-    </div>
-
-
-    <!-- ==================================================
-         STATISTIK
-         ================================================== -->
-
-    <div class="stats-grid">
-
-        <div class="stat-card">
-
-            <div class="stat-label">
-                TOTAL PESERTA
-            </div>
-
-            <div class="stat-value">
-                {{ total_peserta }}
-            </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <div class="stat-label">
-                PESERTA AKTIF
-            </div>
-
-            <div class="stat-value">
-                {{ total_aktif }}
-            </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <div class="stat-label">
-                PESERTA GUGUR
-            </div>
-
-            <div class="stat-value">
-                {{ total_gugur }}
-            </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <div class="stat-label">
-                TOTAL KELOMPOK
-            </div>
-
-            <div class="stat-value">
-                {{ total_kelompok }}
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ==================================================
-         PENCARIAN DAN FILTER
-         ================================================== -->
-
-    <div class="filter-card">
-
-        <div class="filter-title">
-            🔎 Cari Peserta
-        </div>
-
-        <form
-            method="get"
-            action=""
-            class="filter-form"
-        >
-
-            <input
-                type="text"
-                name="q"
-                class="search-input"
-                placeholder="Cari nama peserta atau nama kelompok..."
-                value="{{ query }}"
-                autocomplete="off"
-            >
-
-            <select
-                name="status"
-                class="status-select"
-            >
-
-                <option
-                    value="semua"
-                    {% if status_filter == "semua" %}
-                        selected
-                    {% endif %}
-                >
-                    Semua Status
-                </option>
-
-                <option
-                    value="aktif"
-                    {% if status_filter == "aktif" %}
-                        selected
-                    {% endif %}
-                >
-                    Aktif
-                </option>
-
-                <option
-                    value="gugur"
-                    {% if status_filter == "gugur" %}
-                        selected
-                    {% endif %}
-                >
-                    Gugur
-                </option>
-
-            </select>
-
-            <div>
-
-                <button
-                    type="submit"
-                    class="search-button"
-                >
-                    Cari
-                </button>
-
-                {% if query or status_filter != "semua" %}
-
-                    <a
-                        href="{% url 'praktikum:informasi_peserta' %}"
-                        class="reset-button"
-                    >
-                        Reset
-                    </a>
-
-                {% endif %}
-
-            </div>
-
-        </form>
-
-
-        <div class="filter-result">
-
-            Menampilkan
-            <strong>{{ jumlah_hasil }}</strong>
-            peserta
-
-            {% if query %}
-                untuk pencarian
-                <strong>"{{ query }}"</strong>
-            {% endif %}
-
-            {% if status_filter == "aktif" %}
-                dengan status <strong>Aktif</strong>.
-            {% elif status_filter == "gugur" %}
-                dengan status <strong>Gugur</strong>.
-            {% else %}
-                dengan semua status.
-            {% endif %}
-
-        </div>
-
-    </div>
-
-
-    <!-- ==================================================
-         TABEL PESERTA
-         ================================================== -->
-
-    <div class="table-card">
-
-        <div class="table-header">
-
-            <h2>
-                Daftar Peserta Praktikum
-            </h2>
-
+            <div class="peserta-eyebrow">Data Praktikum</div>
+            <h1>Informasi Peserta</h1>
             <p>
-                Urutan: Kelompok berdasarkan pembuatan,
-                kemudian Ketua, Anggota, dan urutan pembuatan peserta.
+                Informasi peserta yang terdaftar dalam Praktikum
+                Perencanaan Tambang, termasuk kelompok dan status
+                keikutsertaan berdasarkan data yang dipublikasikan.
             </p>
-
         </div>
+    </header>
 
+    <main class="peserta-container">
 
-        {% if peserta_list %}
+        <section class="peserta-stats" aria-label="Ringkasan peserta">
 
-            <div class="table-wrapper">
+            <article class="peserta-stat">
+                <div class="peserta-stat-label">Total Peserta Terdaftar</div>
+                <div class="peserta-stat-value">{{ total_peserta|default:0 }}</div>
+            </article>
 
+            <article class="peserta-stat active">
+                <div class="peserta-stat-label">Peserta Berstatus Aktif</div>
+                <div class="peserta-stat-value">{{ total_aktif|default:0 }}</div>
+            </article>
+
+            <article class="peserta-stat inactive">
+                <div class="peserta-stat-label">Peserta Berstatus Gugur</div>
+                <div class="peserta-stat-value">{{ total_gugur|default:0 }}</div>
+            </article>
+
+            <article class="peserta-stat">
+                <div class="peserta-stat-label">Kelompok Terdaftar</div>
+                <div class="peserta-stat-value">{{ total_kelompok|default:0 }}</div>
+            </article>
+
+        </section>
+
+        <section class="peserta-table-panel">
+
+            <div class="peserta-table-heading">
+                <div>
+                    <h2>Daftar Peserta Praktikum</h2>
+                    <p>Daftar peserta yang ditampilkan berdasarkan data portal.</p>
+                </div>
+
+                <span class="peserta-count">
+                    {{ total_peserta|default:0 }} peserta
+                </span>
+            </div>
+
+            <div class="peserta-table-wrap">
                 <table class="peserta-table">
-
                     <thead>
-
                         <tr>
-
-                            <th>
-                                No.
-                            </th>
-
-                            <th>
-                                Kelompok
-                            </th>
-
-                            <th>
-                                Nama Peserta
-                            </th>
-
-                            <th>
-                                Jabatan
-                            </th>
-
-                            <th>
-                                Status
-                            </th>
-
+                            <th>No.</th>
+                            <th>Nama Peserta</th>
+                            <th>NIM</th>
+                            <th>Kelompok</th>
+                            <th>Peran</th>
+                            <th>Status</th>
                         </tr>
-
                     </thead>
 
-
                     <tbody>
+                        {% for orang in peserta_list %}
+                        <tr>
+                            <td class="peserta-number">{{ forloop.counter }}</td>
 
-                        {% for peserta in peserta_list %}
+                            <td class="peserta-name">
+                                {{ orang.nama }}
+                            </td>
 
-                            <tr>
+                            <td class="peserta-nim">
+                                {% if orang.nim %}
+                                    {{ orang.nim }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
 
-                                <td class="nomor">
-                                    {{ forloop.counter }}
-                                </td>
-
-
-                                <td>
-
-                                    {% if peserta.kelompok %}
-
-                                        <span class="kelompok-name">
-                                            {{ peserta.kelompok.nama }}
-                                        </span>
-
-                                    {% else %}
-
-                                        <span>
-                                            -
-                                        </span>
-
-                                    {% endif %}
-
-                                </td>
-
-
-                                <td>
-
-                                    <span class="peserta-name">
-                                        {{ peserta.nama }}
+                            <td>
+                                {% if orang.kelompok %}
+                                    <span class="peserta-group">
+                                        {{ orang.kelompok.nama }}
                                     </span>
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
 
-                                </td>
+                            <td class="peserta-role">
+                                {{ orang.get_jabatan_display|default:orang.jabatan }}
+                            </td>
 
-
-                                <td>
-
-                                    {% if peserta.jabatan == "ketua" %}
-
-                                        <span
-                                            class="jabatan-badge jabatan-ketua"
-                                        >
-                                            Ketua
-                                        </span>
-
-                                    {% else %}
-
-                                        <span
-                                            class="jabatan-badge jabatan-anggota"
-                                        >
-                                            Anggota
-                                        </span>
-
-                                    {% endif %}
-
-                                </td>
-
-
-                                <td>
-
-                                    {% if peserta.status_kemajuan == "aktif" %}
-
-                                        <span
-                                            class="status-badge status-aktif"
-                                        >
-                                            Aktif
-                                        </span>
-
-                                    {% elif peserta.status_kemajuan == "gugur" %}
-
-                                        <span
-                                            class="status-badge status-gugur"
-                                        >
-                                            Gugur
-                                        </span>
-
-                                    {% else %}
-
-                                        <span
-                                            class="status-badge"
-                                        >
-                                            {{ peserta.get_status_kemajuan_display }}
-                                        </span>
-
-                                    {% endif %}
-
-                                </td>
-
-                            </tr>
-
+                            <td>
+                                {% if orang.status_kemajuan == "aktif" %}
+                                    <span class="peserta-status is-active">Aktif</span>
+                                {% elif orang.status_kemajuan == "gugur" %}
+                                    <span class="peserta-status is-inactive">Gugur</span>
+                                {% else %}
+                                    <span class="peserta-status">{{ orang.get_status_kemajuan_display|default:orang.status_kemajuan }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="peserta-empty">
+                                <strong>Belum Ada Data Peserta</strong>
+                                Informasi peserta akan ditampilkan setelah data tersedia.
+                            </td>
+                        </tr>
                         {% endfor %}
-
                     </tbody>
-
                 </table>
-
             </div>
 
-        {% else %}
+        </section>
 
-            <div class="empty-box">
+        <aside class="peserta-note">
+            <strong>Catatan:</strong>
+            Informasi pada halaman ini berasal dari data yang dipublikasikan
+            oleh pengelola praktikum. Pastikan data peserta dan statusnya
+            diperiksa secara berkala.
+        </aside>
 
-                <div class="empty-icon">
-                    🔍
-                </div>
-
-                <div>
-                    Tidak ada peserta yang sesuai dengan pencarian atau filter.
-                </div>
-
-            </div>
-
-        {% endif %}
-
-    </div>
-
+    </main>
 </div>
-
 {% endblock %}
