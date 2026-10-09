@@ -1,752 +1,327 @@
+
 {% extends "praktikum/base.html" %}
 
-{% block title %}
-Personel | Praktikum Perencanaan Tambang
-{% endblock %}
+{% block title %}Personel | Praktikum Perencanaan Tambang{% endblock %}
+
+{% block meta_description %}Kenali Penanggung Jawab Praktikum, Koordinator Asisten Dosen, dan Asisten Dosen Praktikum Perencanaan Tambang.{% endblock %}
 
 {% block content %}
 
-<section class="page-header">
+<section class="page-header topographic">
     <div class="container">
-        <div class="eyebrow">TIM PRAKTIKUM</div>
-
-
-    <h1>Personel Praktikum</h1>
-
-    <p>
-        Tim yang bertanggung jawab dalam pelaksanaan,
-        koordinasi, pembimbingan, dan pengelolaan
-        Praktikum Perencanaan Tambang.
-    </p>
-</div>
-
-
+        <span class="eyebrow">Tim Praktikum</span>
+        <h1>Personel Praktikum</h1>
+        <p>
+            Tim yang bertanggung jawab atas koordinasi, pembimbingan,
+            dan pelaksanaan Praktikum Perencanaan Tambang.
+        </p>
+        <div class="breadcrumb">
+            <a href="{% url 'praktikum:home' %}">Beranda</a>
+            <span class="separator">/</span>
+            <span>Personel</span>
+        </div>
+    </div>
 </section>
 
 <section class="content-section">
     <div class="container">
 
-
-    <!-- =====================================================
-         PENANGGUNG JAWAB PRAKTIKUM
-         ===================================================== -->
-
-    <div class="section-title featured-section-title">
-
-        <span>LEADERSHIP</span>
-
-        <h2>
-            Penanggung Jawab Praktikum
-        </h2>
-
-    </div>
-
-
-    {% if penanggung_jawab %}
-
-    <div class="featured-staff-grid">
-
-        {% for x in penanggung_jawab %}
-
-        <article class="featured-staff">
-
-            <div class="staff-badge">
-                PJ
-            </div>
-
-            <div class="featured-content">
-
-                <span class="badge badge-gold">
-                    Penanggung Jawab Praktikum
-                </span>
-
-                <h2>
-                    {{ x.nama }}
-                </h2>
-
-                {% if x.kontak %}
-                <p>
-                    📞 {{ x.kontak }}
-                </p>
-                {% endif %}
-
-            </div>
-
-        </article>
-
-        {% endfor %}
-
-    </div>
-
-    {% else %}
-
-    <div class="empty-card leadership-empty">
-
-        <div class="empty-icon">
-            👤
+        <!-- PENANGGUNG JAWAB -->
+        <div class="section-heading">
+            <span class="eyebrow">Leadership</span>
+            <h2>Penanggung Jawab Praktikum</h2>
+            <p>
+                Penanggung jawab utama dalam penyelenggaraan dan
+                pengawasan kegiatan praktikum.
+            </p>
         </div>
 
-        <strong>
-            Belum ada Penanggung Jawab Praktikum aktif.
-        </strong>
-
-        <span>
-            Data dapat ditambahkan melalui Django Admin.
-        </span>
-
-    </div>
-
-    {% endif %}
-
-
-    <!-- =====================================================
-         KOORDINATOR
-         ===================================================== -->
-
-    <div class="section-title">
-
-        <span>COORDINATION</span>
-
-        <h2>
-            Koordinator Asisten Dosen
-        </h2>
-
-    </div>
-
-
-    <div class="staff-grid">
-
-        {% for x in koordinator %}
-
-        <article class="staff-card">
-
-            <div class="staff-avatar">
-                {{ x.nama|first|upper }}
+        {% if penanggung_jawab %}
+            <div class="personel-feature-grid">
+                {% for x in penanggung_jawab %}
+                    <article class="personel-feature">
+                        <div class="personel-feature-mark">PJ</div>
+                        <div class="personel-feature-info">
+                            <span class="badge badge-gold">
+                                Penanggung Jawab Praktikum
+                            </span>
+                            <h3>{{ x.nama }}</h3>
+                            {% if x.kontak %}
+                                <a class="personel-contact" href="tel:{{ x.kontak }}">
+                                    <span aria-hidden="true">☎</span>
+                                    {{ x.kontak }}
+                                </a>
+                            {% endif %}
+                        </div>
+                        <div class="personel-feature-lines" aria-hidden="true"></div>
+                    </article>
+                {% endfor %}
             </div>
-
-            <div class="staff-information">
-
-                <span class="badge badge-green">
-                    Koordinator
-                </span>
-
-                <h3>
-                    {{ x.nama }}
-                </h3>
-
-                {% if x.kontak %}
-                <p>
-                    📞 {{ x.kontak }}
-                </p>
-                {% endif %}
-
+        {% else %}
+            <div class="empty personel-empty">
+                <div class="empty-icon">♙</div>
+                <h3>Penanggung Jawab Belum Ditentukan</h3>
+                <p>Informasi akan ditampilkan setelah data personel tersedia.</p>
             </div>
+        {% endif %}
 
-        </article>
-
-        {% empty %}
-
-        <div class="empty-card">
-
-            <div class="empty-icon">
-                👤
-            </div>
-
-            <strong>
-                Belum ada koordinator aktif.
-            </strong>
-
-            <span>
-                Data dapat ditambahkan melalui Django Admin.
-            </span>
-
+        <!-- KOORDINATOR -->
+        <div class="section-heading personel-section-heading">
+            <span class="eyebrow">Coordination</span>
+            <h2>Koordinator Asisten Dosen</h2>
+            <p>
+                Mengatur koordinasi asisten dosen dan mendukung
+                kelancaran pelaksanaan praktikum.
+            </p>
         </div>
 
-        {% endfor %}
-
-    </div>
-
-
-    <!-- =====================================================
-         ASISTEN DOSEN
-         ===================================================== -->
-
-    <div class="section-title">
-
-        <span>FIELD SUPPORT</span>
-
-        <h2>
-            Asisten Dosen
-        </h2>
-
-    </div>
-
-
-    <div class="staff-grid">
-
-        {% for x in asisten %}
-
-        <article class="staff-card">
-
-            <div class="staff-avatar">
-                {{ x.nama|first|upper }}
-            </div>
-
-            <div class="staff-information">
-
-                <span class="badge badge-gray">
-                    Asisten Dosen
-                </span>
-
-                <h3>
-                    {{ x.nama }}
-                </h3>
-
-                {% if x.kontak %}
-                <p>
-                    📞 {{ x.kontak }}
-                </p>
-                {% endif %}
-
-            </div>
-
-        </article>
-
-        {% empty %}
-
-        <div class="empty-card">
-
-            <div class="empty-icon">
-                ⛏
-            </div>
-
-            <strong>
-                Belum ada asisten aktif.
-            </strong>
-
-            <span>
-                Data dapat ditambahkan melalui Django Admin.
-            </span>
-
+        <div class="personel-grid">
+            {% for x in koordinator %}
+                <article class="personel-card">
+                    <div class="personel-avatar">{{ x.nama|first|upper }}</div>
+                    <div class="personel-info">
+                        <span class="badge badge-gold">Koordinator</span>
+                        <h3>{{ x.nama }}</h3>
+                        {% if x.kontak %}
+                            <a class="personel-contact" href="tel:{{ x.kontak }}">
+                                <span aria-hidden="true">☎</span>
+                                {{ x.kontak }}
+                            </a>
+                        {% endif %}
+                    </div>
+                </article>
+            {% empty %}
+                <div class="empty personel-empty">
+                    <div class="empty-icon">♙</div>
+                    <h3>Koordinator Belum Ditentukan</h3>
+                    <p>Informasi koordinator akan ditampilkan di sini.</p>
+                </div>
+            {% endfor %}
         </div>
 
-        {% endfor %}
+        <!-- ASISTEN DOSEN -->
+        <div class="section-heading personel-section-heading">
+            <span class="eyebrow">Field Support</span>
+            <h2>Asisten Dosen</h2>
+            <p>
+                Tim pendamping yang membantu pelaksanaan kegiatan,
+                penyampaian materi, dan pembimbingan praktikan.
+            </p>
+        </div>
+
+        <div class="personel-grid">
+            {% for x in asisten %}
+                <article class="personel-card">
+                    <div class="personel-avatar">{{ x.nama|first|upper }}</div>
+                    <div class="personel-info">
+                        <span class="badge badge-gray">Asisten Dosen</span>
+                        <h3>{{ x.nama }}</h3>
+                        {% if x.kontak %}
+                            <a class="personel-contact" href="tel:{{ x.kontak }}">
+                                <span aria-hidden="true">☎</span>
+                                {{ x.kontak }}
+                            </a>
+                        {% endif %}
+                    </div>
+                </article>
+            {% empty %}
+                <div class="empty personel-empty">
+                    <div class="empty-icon">⛏</div>
+                    <h3>Asisten Dosen Belum Ditentukan</h3>
+                    <p>Informasi asisten akan ditampilkan di sini.</p>
+                </div>
+            {% endfor %}
+        </div>
 
     </div>
-
-</div>
-
-
 </section>
 
 <style>
-
-/* ============================================================
-   PENANGGUNG JAWAB
-   ============================================================ */
-
-.featured-section-title {
-    margin-top: 0;
-}
-
-.featured-staff-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(
-            auto-fit,
-            minmax(320px, 1fr)
-        );
-
-    gap: 18px;
-
-    margin-bottom: 55px;
-}
-
-
-.featured-staff {
-    position: relative;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 24px;
-
-    min-height: 145px;
-
-    padding: 30px;
-
-    border-radius: 24px;
-
-    background:
-        radial-gradient(
-            circle at 90% 10%,
-            rgba(214,168,79,.22),
-            transparent 30%
-        ),
-        linear-gradient(
-            135deg,
-            #10251b,
-            #21543c
-        );
-
-    color: white;
-
-    overflow: hidden;
-
-    box-shadow:
-        0 20px 50px rgba(16,37,27,.18);
-
-    transition:
-        transform .2s ease,
-        box-shadow .2s ease;
-}
-
-
-.featured-staff:hover {
-    transform: translateY(-4px);
-
-    box-shadow:
-        0 25px 55px rgba(16,37,27,.23);
-}
-
-
-.featured-staff::after {
-    content: "";
-
-    position: absolute;
-
-    right: -100px;
-    bottom: -150px;
-
-    width: 320px;
-    height: 320px;
-
-    border-radius: 50%;
-
-    border:
-        50px solid rgba(214,168,79,.06);
-
-    pointer-events: none;
-}
-
-
-.staff-badge {
-    position: relative;
-
-    z-index: 2;
-
-    width: 82px;
-    height: 82px;
-
-    min-width: 82px;
-
-    display: grid;
-
-    place-items: center;
-
-    border-radius: 22px;
-
-    background: #d6a84f;
-
-    color: #10251b;
-
-    font-size: 25px;
-
-    font-weight: 900;
-
-    box-shadow:
-        0 10px 30px rgba(0,0,0,.18);
-}
-
-
-.featured-content {
-    position: relative;
-
-    z-index: 2;
-
-    min-width: 0;
-}
-
-
-.featured-content h2 {
-    margin: 9px 0 0;
-
-    color: #ffffff;
-
-    font-size: 25px;
-
-    line-height: 1.25;
-
-    font-weight: 800;
-
-    word-break: break-word;
-}
-
-
-.featured-content p {
-    margin-top: 8px;
-
-    color: #d6e2da;
-
-    font-size: 13px;
-}
-
-
-/* ============================================================
-   SECTION TITLE
-   ============================================================ */
-
-.section-title {
-    margin: 45px 0 20px;
-}
-
-
-.section-title span {
-    display: block;
-
-    margin-bottom: 5px;
-
-    color: #8a6b28;
-
-    font-size: 10px;
-
-    font-weight: 900;
-
-    letter-spacing: 2px;
-
-    text-transform: uppercase;
-}
-
-
-.section-title h2 {
-    margin: 0;
-
-    color: #173c2b;
-
-    font-size: 28px;
-
-    line-height: 1.25;
-
-    font-weight: 800;
-}
-
-
-/* ============================================================
-   STAFF GRID
-   ============================================================ */
-
-.staff-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(
-            auto-fit,
-            minmax(270px, 1fr)
-        );
-
-    gap: 18px;
-}
-
-
-/* ============================================================
-   STAFF CARD
-   ============================================================ */
-
-.staff-card {
-    display: flex;
-
-    align-items: center;
-
-    gap: 16px;
-
-    min-width: 0;
-
-    padding: 21px;
-
-    background: white;
-
-    border:
-        1px solid #dfe5df;
-
-    border-radius: 20px;
-
-    box-shadow:
-        0 10px 30px rgba(16,37,27,.06);
-
-    transition:
-        transform .2s ease,
-        box-shadow .2s ease,
-        border-color .2s ease;
-}
-
-
-.staff-card:hover {
-    transform: translateY(-5px);
-
-    border-color: #d6a84f;
-
-    box-shadow:
-        0 18px 38px rgba(16,37,27,.11);
-}
-
-
-/* ============================================================
-   AVATAR
-   ============================================================ */
-
-.staff-avatar {
-    width: 60px;
-    height: 60px;
-
-    min-width: 60px;
-
-    display: grid;
-
-    place-items: center;
-
-    border-radius: 18px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #21543c,
-            #173c2b
-        );
-
-    color: #f0d58a;
-
-    font-size: 22px;
-
-    font-weight: 900;
-}
-
-
-/* ============================================================
-   INFORMATION
-   ============================================================ */
-
-.staff-information {
-    min-width: 0;
-}
-
-
-.staff-information h3 {
-    margin-top: 7px;
-
-    color: #173c2b;
-
-    font-size: 17px;
-
-    line-height: 1.3;
-
-    font-weight: 800;
-
-    word-break: break-word;
-}
-
-
-.staff-information p {
-    margin-top: 5px;
-
-    color: #6b756e;
-
-    font-size: 12px;
-
-    word-break: break-word;
-}
-
-
-/* ============================================================
-   BADGE
-   ============================================================ */
-
-.badge {
-    display: inline-flex;
-
-    align-items: center;
-
-    width: fit-content;
-
-    padding:
-        5px
-        9px;
-
-    border-radius: 999px;
-
-    font-size: 9px;
-
-    line-height: 1;
-
-    font-weight: 900;
-
-    letter-spacing: .7px;
-
-    text-transform: uppercase;
-}
-
-
-.badge-gold {
-    background: rgba(214,168,79,.18);
-
-    color: #f0d58a;
-
-    border:
-        1px solid rgba(214,168,79,.28);
-}
-
-
-.badge-green {
-    background: #e5f0e9;
-
-    color: #21543c;
-}
-
-
-.badge-gray {
-    background: #edf0ee;
-
-    color: #5e6962;
-}
-
-
-/* ============================================================
-   EMPTY STATE
-   ============================================================ */
-
-.empty-card {
-    grid-column: 1 / -1;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    justify-content: center;
-
-    min-height: 170px;
-
-    padding: 30px;
-
-    border:
-        1px dashed #cfd8d1;
-
-    border-radius: 18px;
-
-    background: #fafbf9;
-
-    color: #6b756e;
-
-    text-align: center;
-}
-
-
-.leadership-empty {
-    margin-bottom: 55px;
-}
-
-
-.empty-icon {
-    margin-bottom: 8px;
-
-    font-size: 34px;
-}
-
-
-.empty-card strong {
-    color: #173c2b;
-
-    font-size: 15px;
-}
-
-
-.empty-card span {
-    margin-top: 5px;
-
-    font-size: 12px;
-}
-
-
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
-
-@media(max-width: 700px) {
-
-    .featured-staff-grid {
-        grid-template-columns: 1fr;
-
-        margin-bottom: 45px;
+    .personel-feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+        gap: 18px;
     }
 
-}
+    .personel-feature {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        min-width: 0;
+        min-height: 155px;
+        padding: 27px;
+        overflow: hidden;
+        isolation: isolate;
+        border: 1px solid rgba(255, 201, 74, .25);
+        border-radius: var(--radius-lg);
+        background:
+            radial-gradient(ellipse at 90% 10%, rgba(220, 165, 46, .22), transparent 42%),
+            linear-gradient(120deg, var(--ink), var(--brown));
+        color: white;
+        box-shadow: var(--shadow);
+    }
 
+    .personel-feature-mark {
+        z-index: 1;
+        display: grid;
+        place-items: center;
+        width: 76px;
+        height: 76px;
+        flex: 0 0 76px;
+        border: 1px solid rgba(36, 26, 17, .15);
+        border-radius: 20px;
+        background: linear-gradient(145deg, var(--yellow), var(--gold));
+        color: var(--ink);
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 27px;
+        font-weight: 800;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, .15);
+    }
 
-@media(max-width: 600px) {
+    .personel-feature-info {
+        z-index: 1;
+        min-width: 0;
+    }
 
-    .featured-staff {
-        align-items: flex-start;
+    .personel-feature-info h3 {
+        margin-top: 11px;
+        color: white;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: clamp(23px, 3vw, 30px);
+        line-height: 1.15;
+        overflow-wrap: anywhere;
+    }
 
-        padding: 22px;
+    .personel-feature .badge {
+        white-space: normal;
+    }
 
+    .personel-feature-lines {
+        position: absolute;
+        z-index: -1;
+        right: -60px;
+        bottom: -100px;
+        width: 250px;
+        height: 250px;
+        border: 1px solid rgba(255, 201, 74, .22);
+        border-radius: 46%;
+        box-shadow:
+            0 0 0 18px rgba(255, 201, 74, .035),
+            0 0 0 38px rgba(255, 201, 74, .035),
+            0 0 0 60px rgba(255, 201, 74, .025);
+        pointer-events: none;
+    }
+
+    .personel-section-heading {
+        margin-top: 52px;
+    }
+
+    .personel-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 285px), 1fr));
+        gap: 17px;
+    }
+
+    .personel-card {
+        display: flex;
+        align-items: center;
         gap: 16px;
-
-        min-height: 0;
+        min-width: 0;
+        padding: 22px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--paper);
+        box-shadow: var(--shadow-sm);
+        transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
     }
 
-
-    .staff-badge {
-        width: 62px;
-        height: 62px;
-
-        min-width: 62px;
-
-        border-radius: 16px;
-
-        font-size: 19px;
+    .personel-card:hover {
+        transform: translateY(-3px);
+        border-color: #d8bd83;
+        box-shadow: var(--shadow);
     }
 
-
-    .featured-content h2 {
-        font-size: 21px;
+    .personel-avatar {
+        display: grid;
+        place-items: center;
+        width: 58px;
+        height: 58px;
+        flex: 0 0 58px;
+        border: 1px solid #e9d8b4;
+        border-radius: 17px;
+        background: linear-gradient(145deg, #f9e8bd, #f0d49a);
+        color: var(--brown);
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 26px;
+        font-weight: 800;
     }
 
-
-    .section-title {
-        margin-top: 38px;
+    .personel-info {
+        min-width: 0;
     }
 
+    .personel-info h3 {
+        margin-top: 8px;
+        color: var(--ink);
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 22px;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+    }
 
-    .section-title h2 {
+    .personel-contact {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 11px;
+        overflow-wrap: anywhere;
+    }
+
+    .personel-contact:hover {
+        color: var(--earth);
+    }
+
+    .personel-empty {
+        margin-bottom: 8px;
+    }
+
+    .personel-empty h3 {
+        color: var(--ink);
+        font-family: "Barlow Condensed", sans-serif;
         font-size: 23px;
     }
 
-
-    .staff-grid {
-        grid-template-columns: 1fr;
+    .personel-empty p {
+        margin-top: 4px;
+        font-size: 12px;
     }
 
+    @media (max-width: 540px) {
+        .personel-feature {
+            align-items: flex-start;
+            gap: 15px;
+            padding: 21px;
+        }
 
-    .staff-card {
-        padding: 18px;
+        .personel-feature-mark {
+            width: 58px;
+            height: 58px;
+            flex-basis: 58px;
+            border-radius: 15px;
+            font-size: 22px;
+        }
+
+        .personel-section-heading {
+            margin-top: 39px;
+        }
+
+        .personel-card {
+            padding: 18px;
+        }
     }
-
-
-    .staff-avatar {
-        width: 54px;
-        height: 54px;
-
-        min-width: 54px;
-
-        border-radius: 16px;
-
-        font-size: 19px;
-    }
-
-}
-
 </style>
 
 {% endblock %}
