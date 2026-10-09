@@ -215,37 +215,65 @@ def home(request):
     return render(request, "praktikum/home.html", context)
 
 
+
 # ============================================================
 # PERSONEL
 # ============================================================
 
-
 def personel(request):
-    staff_list = Staff.objects.filter(aktif=True).order_by("urutan", "nama")
+    setting = get_setting()
 
-    # Tampilkan SELURUH staff yang menjabat sebagai Penanggung Jawab Praktikum
+    # Ambil seluruh staff, diurutkan berdasarkan jabatan dan nama.
+    staff_list = Staff.objects.filter(
+        aktif=True
+    ).order_by("jabatan", "urutan", "nama")
+
+    # Ambil SELURUH penanggung jawab praktikum.
+    # Tidak menggunakan .first() agar semua data ditampilkan.
     penanggung_jawab = staff_list.filter(
-        jabatan="penanggung_jawab"
+        jabatan__in=[
+            "penanggung_jawab",
+            "penanggung_jawab_praktikum",
+            "penanggung jawab",
+            "penanggung jawab praktikum",
+        ]
     ).order_by("urutan", "nama")
 
-    # Tampilkan koordinator asisten dosen
+    # Koordinator Asisten Dosen.
     koordinator = staff_list.filter(
-        jabatan="koordinator_asisten_dosen"
+        jabatan__in=[
+            "koordinator",
+            "koordinator_asisten_dosen",
+            "koordinator asisten dosen",
+        ]
     ).order_by("urutan", "nama")
 
-    # Tampilkan seluruh asisten dosen
+    # Seluruh Asisten Dosen.
     asisten_list = staff_list.filter(
-        jabatan="asisten_dosen"
+        jabatan__in=[
+            "asisten",
+            "asisten_dosen",
+            "asisten dosen",
+        ]
     ).order_by("urutan", "nama")
 
     context = {
-        "setting": get_setting(),
+        "setting": setting,
+        "staff": staff_list,
+        "staff_list": staff_list,
+        "personel": staff_list,
+        "personel_list": staff_list,
         "penanggung_jawab": penanggung_jawab,
         "koordinator": koordinator,
+        "asisten": asisten_list,
         "asisten_list": asisten_list,
     }
 
-    return render(request, "praktikum/personel.html", context)
+    return render(
+        request,
+        "praktikum/personel.html",
+        context,
+    )
 
 
 # ============================================================
