@@ -1,16 +1,188 @@
+
 {% extends "praktikum/base.html" %}
 
-{% block title %}Absensi | Praktikum Perencanaan Tambang{% endblock %}
+{% block title %}Rekap Absensi | Praktikum Perencanaan Tambang{% endblock %}
+
+{% block meta_description %}
+Rekapitulasi kehadiran peserta Praktikum Perencanaan Tambang.
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.attendance-summary {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.attendance-intro {
+    padding: 22px 24px;
+    border: 1px solid var(--line, #e8dfd0);
+    border-radius: var(--radius-lg, 20px);
+    background: var(--paper, #fffdf8);
+    box-shadow: var(--shadow-sm, 0 8px 24px rgba(36,26,17,.06));
+}
+
+.attendance-intro h2 {
+    margin-bottom: 7px;
+    color: var(--ink, #241a11);
+    font-size: 20px;
+}
+
+.attendance-intro p {
+    color: var(--muted, #796e60);
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.attendance-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--line, #e8dfd0);
+    border-radius: var(--radius-lg, 20px);
+    background: var(--paper, #fffdf8);
+    box-shadow: var(--shadow-sm, 0 8px 24px rgba(36,26,17,.06));
+}
+
+.attendance-table {
+    width: 100%;
+    min-width: 800px;
+    border-collapse: collapse;
+}
+
+.attendance-table thead th {
+    padding: 15px 17px;
+    background: var(--ink, #241a11);
+    color: #fff9ed;
+    font-size: 11px;
+    font-weight: 800;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    white-space: nowrap;
+}
+
+.attendance-table tbody td {
+    padding: 15px 17px;
+    border-bottom: 1px solid var(--line, #e8dfd0);
+    color: var(--text, #30271d);
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.attendance-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.attendance-table tbody tr:hover td {
+    background: #fbf5e9;
+}
+
+.attendance-number {
+    color: var(--muted, #796e60) !important;
+    font-variant-numeric: tabular-nums;
+}
+
+.attendance-name {
+    color: var(--ink, #241a11);
+    font-weight: 800;
+}
+
+.attendance-nim {
+    color: var(--muted, #796e60);
+    white-space: nowrap;
+}
+
+.attendance-value {
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.attendance-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 65px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.attendance-badge-high {
+    background: #e7f3e9;
+    color: #27633b;
+}
+
+.attendance-badge-medium {
+    background: #f8edcf;
+    color: #805b17;
+}
+
+.attendance-badge-low {
+    background: #f7e5e0;
+    color: #963d2e;
+}
+
+.attendance-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    margin-top: 18px;
+    padding: 17px 19px;
+    border: 1px solid #e8d7b0;
+    border-left: 4px solid var(--gold, #dca52e);
+    border-radius: 12px;
+    background: #fff8e7;
+    color: #725728;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.attendance-note-icon {
+    flex: 0 0 auto;
+    font-size: 17px;
+}
+
+.attendance-empty {
+    padding: 38px 20px !important;
+    color: var(--muted, #796e60) !important;
+    text-align: center;
+}
+
+.attendance-empty-icon {
+    margin-bottom: 9px;
+    font-size: 30px;
+}
+
+.attendance-empty p {
+    font-size: 13px;
+}
+
+@media (max-width: 600px) {
+    .attendance-intro {
+        padding: 18px;
+    }
+
+    .attendance-note {
+        padding: 14px;
+    }
+}
+</style>
+{% endblock %}
 
 {% block content %}
-
-<section class="page-header">
+<section class="page-header topographic">
     <div class="container">
         <div class="eyebrow">ATTENDANCE MONITORING</div>
         <h1>Rekap Absensi</h1>
         <p>
-            Rekapitulasi kehadiran peserta berdasarkan data absensi
-            yang tercatat dalam kegiatan praktikum.
+            Informasi rekapitulasi kehadiran peserta berdasarkan data
+            absensi yang tercatat dalam kegiatan praktikum.
         </p>
     </div>
 </section>
@@ -18,13 +190,22 @@
 <section class="content-section">
     <div class="container">
 
-        <div class="table-wrap">
+        <div class="attendance-summary">
+            <div class="attendance-intro">
+                <h2>Data Kehadiran Peserta</h2>
+                <p>
+                    Tabel berikut menampilkan data peserta, kelompok,
+                    jumlah acara, nilai, dan persentase kehadiran
+                    berdasarkan rekap yang tersedia di sistem.
+                </p>
+            </div>
+        </div>
 
-            <table>
-
+        <div class="attendance-table-wrap">
+            <table class="attendance-table">
                 <thead>
                     <tr>
-                        <th>No</th>
+                        <th>No.</th>
                         <th>Peserta</th>
                         <th>NIM</th>
                         <th>Kelompok</th>
@@ -35,18 +216,21 @@
                 </thead>
 
                 <tbody>
-
                     {% for row in rows %}
-
                     <tr>
-
-                        <td>{{ forloop.counter }}</td>
-
-                        <td>
-                            <strong>{{ row.peserta.nama }}</strong>
+                        <td class="attendance-number">
+                            {{ forloop.counter }}
                         </td>
 
-                        <td>{{ row.peserta.nim }}</td>
+                        <td>
+                            <span class="attendance-name">
+                                {{ row.peserta.nama }}
+                            </span>
+                        </td>
+
+                        <td class="attendance-nim">
+                            {{ row.peserta.nim|default:"—" }}
+                        </td>
 
                         <td>
                             {% if row.peserta.kelompok %}
@@ -56,68 +240,54 @@
                             {% endif %}
                         </td>
 
-                        <td>{{ row.total_acara }}</td>
+                        <td class="attendance-value">
+                            {{ row.total_acara }}
+                        </td>
 
-                        <td>
-                            <strong>{{ row.total_nilai }}%</strong>
+                        <td class="attendance-value">
+                            {{ row.total_nilai }}%
                         </td>
 
                         <td>
                             {% if row.persentase >= 80 %}
-                                <span class="badge badge-green">
+                                <span class="attendance-badge attendance-badge-high">
                                     {{ row.persentase }}%
                                 </span>
                             {% elif row.persentase >= 60 %}
-                                <span class="badge badge-gold">
+                                <span class="attendance-badge attendance-badge-medium">
                                     {{ row.persentase }}%
                                 </span>
                             {% else %}
-                                <span class="badge badge-red">
+                                <span class="attendance-badge attendance-badge-low">
                                     {{ row.persentase }}%
                                 </span>
                             {% endif %}
                         </td>
-
                     </tr>
-
                     {% empty %}
-
                     <tr>
-                        <td colspan="7">
-                            <div class="empty">
-                                <div class="empty-icon">📋</div>
-                                Belum ada data absensi.
+                        <td colspan="7" class="attendance-empty">
+                            <div class="attendance-empty-icon" aria-hidden="true">
+                                ▤
                             </div>
+                            <p>Belum ada data absensi yang tersedia.</p>
                         </td>
                     </tr>
-
                     {% endfor %}
-
                 </tbody>
-
             </table>
-
         </div>
 
         <div class="attendance-note">
-            <strong>Catatan:</strong>
-            Persentase mengikuti data kehadiran yang telah dimasukkan
-            oleh administrator melalui sistem.
+            <span class="attendance-note-icon" aria-hidden="true">ⓘ</span>
+            <div>
+                <strong>Catatan Informasi</strong><br>
+                Persentase kehadiran mengikuti data yang telah dimasukkan
+                oleh administrator melalui sistem. Warna indikator merupakan
+                penanda visual berdasarkan ambang persentase pada halaman ini.
+            </div>
         </div>
 
     </div>
 </section>
-
-<style>
-    .attendance-note {
-        margin-top: 17px;
-        padding: 15px 18px;
-        border-left: 4px solid #d6a84f;
-        background: #fff8e7;
-        color: #74622d;
-        border-radius: 8px;
-        font-size: 12px;
-    }
-</style>
-
 {% endblock %}
