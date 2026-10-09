@@ -1,604 +1,487 @@
+
 {% extends "praktikum/base.html" %}
 
 {% block title %}Jadwal | Praktikum Perencanaan Tambang{% endblock %}
 
+{% block meta_description %}Jadwal kegiatan, waktu pelaksanaan, lokasi, penanggung jawab, dan pembawa acara Praktikum Perencanaan Tambang.{% endblock %}
+
 {% block content %}
 
-<section class="page-header">
+<section class="page-header topographic">
     <div class="container">
-        <div class="eyebrow">SCHEDULE</div>
-
+        <span class="eyebrow">Schedule & Activities</span>
         <h1>Jadwal Praktikum</h1>
-
         <p>
-            Jadwal kegiatan Praktikum Perencanaan Tambang dan informasi
-            pelaksanaannya.
+            Informasi waktu, lokasi, dan rangkaian kegiatan
+            Praktikum Perencanaan Tambang.
         </p>
+        <div class="breadcrumb">
+            <a href="{% url 'praktikum:home' %}">Beranda</a>
+            <span class="separator">/</span>
+            <span>Jadwal</span>
+        </div>
     </div>
 </section>
-
 
 <section class="content-section">
     <div class="container">
 
-        <div class="schedule-list">
+        {% if acara_list %}
+            <div class="jadwal-list">
 
-            {% for acara in acara_list %}
+                {% for acara in acara_list %}
+                    <article class="jadwal-card">
 
-            <article class="schedule-card">
-
-                <!-- TANGGAL -->
-                <div class="schedule-date">
-
-                    <strong>
-                        {{ acara.tanggal_mulai|date:"d" }}
-                    </strong>
-
-                    <span>
-                        {{ acara.tanggal_mulai|date:"M Y" }}
-                    </span>
-
-                </div>
-
-
-                <!-- INFORMASI ACARA -->
-                <div class="schedule-main">
-
-                    <div class="schedule-heading">
-
-                        <div>
-
-                            <span class="badge badge-green">
-                                {{ acara.status|default:"Terjadwal" }}
+                        <div class="jadwal-date-panel">
+                            <span class="jadwal-date-label">Tanggal</span>
+                            <strong>{{ acara.tanggal_mulai|date:"d" }}</strong>
+                            <span class="jadwal-month">
+                                {{ acara.tanggal_mulai|date:"M Y" }}
                             </span>
-
-                            <h2>
-                                {{ acara.nama }}
-                            </h2>
-
-                            {% if acara.sub_acara %}
-                                <p>
-                                    {{ acara.sub_acara }}
-                                </p>
-                            {% endif %}
-
+                            <span class="jadwal-date-decoration" aria-hidden="true">⛏</span>
                         </div>
 
-                    </div>
+                        <div class="jadwal-content">
 
-
-                    <!-- INFORMASI WAKTU & LOKASI -->
-
-                    <div class="schedule-info">
-
-                        <span>
-                            🕐
-                            {{ acara.tanggal_mulai|date:"d M Y H:i" }}
-
-                            {% if acara.tanggal_selesai %}
-                                —
-                                {{ acara.tanggal_selesai|date:"d M Y H:i" }}
-                            {% endif %}
-                        </span>
-
-
-                        {% if acara.lokasi %}
-
-                        <span>
-                            📍 {{ acara.lokasi }}
-                        </span>
-
-                        {% endif %}
-
-                    </div>
-
-
-                    <!-- PELAKSANA ACARA -->
-
-                    {% if acara.penanggung_jawab or acara.pembawa_acara.all %}
-
-                    <div class="event-team">
-
-                        <!-- PENANGGUNG JAWAB -->
-
-                        {% if acara.penanggung_jawab %}
-
-                        <div class="event-person">
-
-                            <div class="person-icon pj-icon">
-                                PJ
-                            </div>
-
-                            <div class="person-content">
-
-                                <span class="person-label">
-                                    PENANGGUNG JAWAB
-                                </span>
-
-                                <strong>
-                                    {{ acara.penanggung_jawab.nama }}
-                                </strong>
-
-                            </div>
-
-                        </div>
-
-                        {% endif %}
-
-
-                        <!-- PEMBAWA ACARA -->
-
-                        {% if acara.pembawa_acara.all %}
-
-                        <div class="event-person">
-
-                            <div class="person-icon mc-icon">
-                                MC
-                            </div>
-
-                            <div class="person-content">
-
-                                <span class="person-label">
-                                    PEMBAWA ACARA
-                                </span>
-
-                                <div class="mc-list">
-
-                                    {% for mc in acara.pembawa_acara.all %}
-
-                                    <span class="mc-name">
-                                        🎤 {{ mc.nama }}
+                            <div class="jadwal-heading">
+                                <div class="jadwal-title-area">
+                                    <span class="badge badge-gold">
+                                        {{ acara.status|default:"Terjadwal" }}
                                     </span>
 
-                                    {% empty %}
+                                    <h2>{{ acara.nama }}</h2>
 
-                                    <span class="no-person">
-                                        Belum ditentukan
-                                    </span>
+                                    {% if acara.sub_acara %}
+                                        <p class="jadwal-subtitle">{{ acara.sub_acara }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
 
-                                    {% endfor %}
-
+                            <div class="jadwal-meta">
+                                <div class="jadwal-meta-item">
+                                    <span class="jadwal-meta-icon" aria-hidden="true">◷</span>
+                                    <div>
+                                        <span class="jadwal-meta-label">Waktu Pelaksanaan</span>
+                                        <strong>
+                                            {{ acara.tanggal_mulai|date:"d M Y, H:i" }}
+                                            {% if acara.tanggal_selesai %}
+                                                – {{ acara.tanggal_selesai|date:"d M Y, H:i" }}
+                                            {% endif %}
+                                        </strong>
+                                    </div>
                                 </div>
 
+                                {% if acara.lokasi %}
+                                    <div class="jadwal-meta-item">
+                                        <span class="jadwal-meta-icon" aria-hidden="true">⌖</span>
+                                        <div>
+                                            <span class="jadwal-meta-label">Lokasi</span>
+                                            <strong>{{ acara.lokasi }}</strong>
+                                        </div>
+                                    </div>
+                                {% endif %}
                             </div>
 
+                            {% if acara.penanggung_jawab or acara.pembawa_acara.all %}
+                                <div class="jadwal-team">
+
+                                    {% if acara.penanggung_jawab %}
+                                        <div class="jadwal-person-card">
+                                            <div class="jadwal-person-icon">PJ</div>
+                                            <div class="jadwal-person-content">
+                                                <span class="jadwal-person-label">
+                                                    Penanggung Jawab
+                                                </span>
+                                                <strong>{{ acara.penanggung_jawab.nama }}</strong>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if acara.pembawa_acara.all %}
+                                        <div class="jadwal-person-card">
+                                            <div class="jadwal-person-icon jadwal-mc-icon">MC</div>
+                                            <div class="jadwal-person-content">
+                                                <span class="jadwal-person-label">
+                                                    Pembawa Acara
+                                                </span>
+
+                                                <div class="jadwal-mc-list">
+                                                    {% for mc in acara.pembawa_acara.all %}
+                                                        <span class="jadwal-mc-name">
+                                                            {{ mc.nama }}
+                                                        </span>
+                                                    {% empty %}
+                                                        <span class="text-muted">
+                                                            Belum ditentukan
+                                                        </span>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+                            {% endif %}
+
+                            {% if acara.deskripsi %}
+                                <div class="jadwal-description">
+                                    <span class="jadwal-description-label">
+                                        Informasi Kegiatan
+                                    </span>
+                                    <div>{{ acara.deskripsi|linebreaks }}</div>
+                                </div>
+                            {% endif %}
+
                         </div>
-
-                        {% endif %}
-
-                    </div>
-
-                    {% endif %}
-
-
-                    <!-- DESKRIPSI -->
-
-                    {% if acara.deskripsi %}
-
-                    <div class="description">
-                        {{ acara.deskripsi|linebreaks }}
-                    </div>
-
-                    {% endif %}
-
-                </div>
-
-            </article>
-
-
-            {% empty %}
-
-            <div class="empty">
-
-                <div class="empty-icon">
-                    📅
-                </div>
-
-                <strong>
-                    Belum ada jadwal kegiatan.
-                </strong>
-
-                <span>
-                    Jadwal praktikum akan ditampilkan di halaman ini.
-                </span>
+                    </article>
+                {% endfor %}
 
             </div>
-
-            {% endfor %}
-
-        </div>
+        {% else %}
+            <div class="empty">
+                <div class="empty-icon">◷</div>
+                <h3>Belum Ada Jadwal Kegiatan</h3>
+                <p>
+                    Jadwal Praktikum Perencanaan Tambang akan ditampilkan
+                    setelah kegiatan tersedia.
+                </p>
+            </div>
+        {% endif %}
 
     </div>
 </section>
 
-
 <style>
-
-/* ============================================================
-   SCHEDULE LIST
-   ============================================================ */
-
-.schedule-list {
-    display: flex;
-    flex-direction: column;
-    gap: 17px;
-}
-
-
-/* ============================================================
-   SCHEDULE CARD
-   ============================================================ */
-
-.schedule-card {
-    display: grid;
-    grid-template-columns: 115px 1fr;
-
-    background: white;
-
-    border: 1px solid #dfe5df;
-    border-radius: 18px;
-
-    overflow: hidden;
-
-    box-shadow:
-        0 8px 25px rgba(16,37,27,.06);
-}
-
-
-/* ============================================================
-   DATE
-   ============================================================ */
-
-.schedule-date {
-    background: #173c2b;
-
-    color: white;
-
-    padding: 25px 15px;
-
-    display: flex;
-    flex-direction: column;
-
-    align-items: center;
-    justify-content: center;
-
-    text-align: center;
-}
-
-.schedule-date strong {
-    font-size: 36px;
-    line-height: 1;
-}
-
-.schedule-date span {
-    margin-top: 7px;
-
-    color: #d6a84f;
-
-    font-size: 11px;
-    font-weight: 800;
-
-    text-transform: uppercase;
-}
-
-
-/* ============================================================
-   MAIN CONTENT
-   ============================================================ */
-
-.schedule-main {
-    padding: 24px;
-}
-
-.schedule-main h2 {
-    margin: 8px 0 3px;
-
-    color: #173c2b;
-
-    font-size: 21px;
-}
-
-.schedule-main p {
-    color: #6b756e;
-    font-size: 13px;
-}
-
-
-/* ============================================================
-   DATE / LOCATION
-   ============================================================ */
-
-.schedule-info {
-    display: flex;
-    flex-wrap: wrap;
-
-    gap: 9px;
-
-    margin-top: 17px;
-}
-
-.schedule-info span {
-    padding: 7px 10px;
-
-    border-radius: 8px;
-
-    background: #f0f4f0;
-
-    color: #526057;
-
-    font-size: 11px;
-}
-
-
-/* ============================================================
-   EVENT TEAM
-   ============================================================ */
-
-.event-team {
-    display: grid;
-
-    grid-template-columns:
-        minmax(220px, 1fr)
-        minmax(300px, 1.4fr);
-
-    gap: 12px;
-
-    margin-top: 15px;
-}
-
-
-/* ============================================================
-   PERSON CARD
-   ============================================================ */
-
-.event-person {
-    display: flex;
-
-    align-items: flex-start;
-
-    gap: 11px;
-
-    padding: 13px 14px;
-
-    background: #f7f9f7;
-
-    border: 1px solid #e5eae5;
-
-    border-radius: 12px;
-}
-
-
-.person-icon {
-    width: 34px;
-    height: 34px;
-
-    flex-shrink: 0;
-
-    border-radius: 9px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    font-size: 10px;
-    font-weight: 900;
-}
-
-
-/* ============================================================
-   PJ ICON
-   ============================================================ */
-
-.pj-icon {
-    background: #173c2b;
-    color: #ffffff;
-}
-
-
-/* ============================================================
-   MC ICON
-   ============================================================ */
-
-.mc-icon {
-    background: #d6a84f;
-    color: #173c2b;
-}
-
-
-/* ============================================================
-   PERSON CONTENT
-   ============================================================ */
-
-.person-content {
-    min-width: 0;
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 4px;
-}
-
-.person-label {
-    color: #879188;
-
-    font-size: 9px;
-
-    font-weight: 900;
-
-    letter-spacing: .08em;
-
-    text-transform: uppercase;
-}
-
-.person-content strong {
-    color: #173c2b;
-
-    font-size: 13px;
-}
-
-
-/* ============================================================
-   MC LIST
-   ============================================================ */
-
-.mc-list {
-    display: flex;
-
-    flex-wrap: wrap;
-
-    gap: 6px;
-}
-
-.mc-name {
-    display: inline-flex;
-
-    align-items: center;
-
-    padding: 5px 8px;
-
-    background: white;
-
-    border: 1px solid #dfe5df;
-
-    border-radius: 7px;
-
-    color: #34423a;
-
-    font-size: 11px;
-    font-weight: 700;
-}
-
-
-/* ============================================================
-   EMPTY PERSON
-   ============================================================ */
-
-.no-person {
-    color: #8a938c;
-
-    font-size: 11px;
-}
-
-
-/* ============================================================
-   DESCRIPTION
-   ============================================================ */
-
-.description {
-    border-top: 1px solid #edf0ed;
-
-    margin-top: 17px;
-
-    padding-top: 15px;
-
-    color: #667169;
-
-    font-size: 13px;
-}
-
-
-/* ============================================================
-   EMPTY
-   ============================================================ */
-
-.empty {
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-    justify-content: center;
-
-    text-align: center;
-
-    padding: 60px 20px;
-
-    background: white;
-
-    border: 1px solid #dfe5df;
-
-    border-radius: 18px;
-
-    color: #69736c;
-}
-
-.empty-icon {
-    font-size: 38px;
-
-    margin-bottom: 10px;
-}
-
-.empty strong {
-    color: #173c2b;
-
-    font-size: 15px;
-}
-
-.empty span {
-    margin-top: 5px;
-
-    font-size: 12px;
-}
-
-
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
-
-@media (max-width: 800px) {
-
-    .event-team {
-        grid-template-columns: 1fr;
+    .jadwal-list {
+        display: grid;
+        gap: 20px;
     }
 
-}
-
-
-@media (max-width: 600px) {
-
-    .schedule-card {
-        grid-template-columns: 1fr;
+    .jadwal-card {
+        display: grid;
+        grid-template-columns: 125px minmax(0, 1fr);
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-lg);
+        background: var(--paper);
+        box-shadow: var(--shadow-sm);
+        transition: border-color .2s ease, box-shadow .2s ease;
     }
 
-
-    .schedule-date {
-        padding: 15px;
+    .jadwal-card:hover {
+        border-color: #d8bd83;
+        box-shadow: var(--shadow);
     }
 
-
-    .schedule-date strong {
-        font-size: 27px;
-    }
-
-
-    .schedule-main {
-        padding: 18px;
-    }
-
-
-    .schedule-main h2 {
-        font-size: 18px;
-    }
-
-
-    .schedule-info {
+    .jadwal-date-panel {
+        position: relative;
+        display: flex;
         flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+        padding: 25px 13px;
+        overflow: hidden;
+        isolation: isolate;
+        background:
+            radial-gradient(ellipse at 90% 0%, rgba(220, 165, 46, .25), transparent 48%),
+            var(--ink-2);
+        color: white;
+        text-align: center;
     }
 
-
-    .schedule-info span {
-        width: 100%;
-        box-sizing: border-box;
+    .jadwal-date-panel::after {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        inset: 0;
+        opacity: .45;
+        background: repeating-radial-gradient(
+            ellipse at 100% 100%,
+            transparent 0 14px,
+            rgba(255, 201, 74, .16) 15px 16px,
+            transparent 17px 29px
+        );
+        pointer-events: none;
     }
 
+    .jadwal-date-label {
+        color: #d7c9b6;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+    }
 
-    .event-person {
+    .jadwal-date-panel > strong {
+        margin-top: 5px;
+        color: var(--yellow);
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 54px;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .jadwal-month {
+        margin-top: 7px;
+        color: #fff3d7;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .jadwal-date-decoration {
+        margin-top: 23px;
+        color: rgba(255, 201, 74, .7);
+        font-size: 22px;
+    }
+
+    .jadwal-content {
+        min-width: 0;
+        padding: 25px;
+    }
+
+    .jadwal-title-area h2 {
+        margin-top: 10px;
+        color: var(--ink);
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: clamp(24px, 3vw, 32px);
+        font-weight: 700;
+        line-height: 1.15;
+        overflow-wrap: anywhere;
+    }
+
+    .jadwal-subtitle {
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .jadwal-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 11px;
+        margin-top: 21px;
+    }
+
+    .jadwal-meta-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        flex: 1 1 220px;
+        min-width: 0;
         padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        background: #fcf8ef;
     }
 
-}
+    .jadwal-meta-icon {
+        display: grid;
+        place-items: center;
+        width: 33px;
+        height: 33px;
+        flex: 0 0 33px;
+        border: 1px solid #eddfc1;
+        border-radius: 10px;
+        background: #fbf0d5;
+        color: var(--earth);
+        font-size: 19px;
+    }
 
+    .jadwal-meta-item > div {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        min-width: 0;
+    }
+
+    .jadwal-meta-label {
+        color: var(--muted);
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: .8px;
+        text-transform: uppercase;
+    }
+
+    .jadwal-meta-item strong {
+        color: var(--text);
+        font-size: 11px;
+        font-weight: 800;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
+    }
+
+    .jadwal-team {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 11px;
+        margin-top: 13px;
+    }
+
+    .jadwal-person-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+        min-width: 0;
+        padding: 13px;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        background: #fffefa;
+    }
+
+    .jadwal-person-icon {
+        display: grid;
+        place-items: center;
+        width: 37px;
+        height: 37px;
+        flex: 0 0 37px;
+        border-radius: 11px;
+        background: var(--ink-2);
+        color: var(--yellow);
+        font-size: 10px;
+        font-weight: 900;
+    }
+
+    .jadwal-mc-icon {
+        background: #f5e7c7;
+        color: var(--brown);
+    }
+
+    .jadwal-person-content {
+        min-width: 0;
+    }
+
+    .jadwal-person-label {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--muted);
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: .6px;
+        text-transform: uppercase;
+    }
+
+    .jadwal-person-content > strong {
+        display: block;
+        color: var(--ink);
+        font-size: 12px;
+        overflow-wrap: anywhere;
+    }
+
+    .jadwal-mc-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .jadwal-mc-name {
+        display: inline-flex;
+        padding: 5px 8px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: var(--cream);
+        color: var(--brown);
+        font-size: 10px;
+        font-weight: 800;
+        overflow-wrap: anywhere;
+    }
+
+    .jadwal-description {
+        margin-top: 17px;
+        padding-top: 15px;
+        border-top: 1px solid var(--line);
+    }
+
+    .jadwal-description-label {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--earth);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .8px;
+        text-transform: uppercase;
+    }
+
+    .jadwal-description > div {
+        color: var(--muted);
+        font-size: 12px;
+        overflow-wrap: anywhere;
+    }
+
+    .jadwal-description p {
+        margin-bottom: 8px;
+    }
+
+    .jadwal-description p:last-child {
+        margin-bottom: 0;
+    }
+
+    .empty h3 {
+        color: var(--ink);
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 25px;
+    }
+
+    .empty p {
+        margin-top: 5px;
+        font-size: 12px;
+    }
+
+    @media (max-width: 760px) {
+        .jadwal-card {
+            grid-template-columns: 95px minmax(0, 1fr);
+        }
+
+        .jadwal-content {
+            padding: 19px;
+        }
+
+        .jadwal-date-panel > strong {
+            font-size: 45px;
+        }
+
+        .jadwal-team {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 540px) {
+        .jadwal-card {
+            grid-template-columns: 1fr;
+        }
+
+        .jadwal-date-panel {
+            align-items: flex-start;
+            padding: 15px 19px;
+            text-align: left;
+        }
+
+        .jadwal-date-panel > strong {
+            margin-top: 4px;
+            font-size: 38px;
+        }
+
+        .jadwal-date-decoration {
+            position: absolute;
+            right: 20px;
+            bottom: 17px;
+            margin: 0;
+            font-size: 27px;
+        }
+
+        .jadwal-content {
+            padding: 18px;
+        }
+
+        .jadwal-meta {
+            flex-direction: column;
+        }
+
+        .jadwal-meta-item {
+            flex-basis: auto;
+        }
+    }
 </style>
 
 {% endblock %}
