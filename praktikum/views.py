@@ -216,6 +216,7 @@ def home(request):
 
 
 
+
 # ============================================================
 # PERSONEL
 # ============================================================
@@ -223,13 +224,14 @@ def home(request):
 def personel(request):
     setting = get_setting()
 
-    # Ambil seluruh staff, diurutkan berdasarkan jabatan dan nama.
-    staff_list = Staff.objects.filter(
-        aktif=True
-    ).order_by("jabatan", "urutan", "nama")
+    # Seluruh personel aktif.
+    staff_list = (
+        Staff.objects
+        .filter(aktif=True)
+        .order_by("jabatan", "urutan", "nama")
+    )
 
-   # Ambil SELURUH penanggung jawab praktikum.
-    # Tidak menggunakan .first() agar semua data ditampilkan.
+    # Seluruh Penanggung Jawab Praktikum.
     penanggung_jawab = staff_list.filter(
         jabatan__in=[
             "penanggung_jawab",
@@ -239,7 +241,7 @@ def personel(request):
         ]
     ).order_by("urutan", "nama")
 
-    # Koordinator Asisten Dosen.
+    # Seluruh Koordinator Asisten Dosen.
     koordinator = staff_list.filter(
         jabatan__in=[
             "koordinator",
@@ -257,7 +259,7 @@ def personel(request):
         ]
     ).order_by("urutan", "nama")
 
-     context = {
+    context = {
         "setting": setting,
         "staff": staff_list,
         "staff_list": staff_list,
@@ -274,7 +276,6 @@ def personel(request):
         "praktikum/personel.html",
         context,
     )
-
 
 # ============================================================
 # KELOMPOK DAN LAPORAN ACC UNTUK PUBLIK
