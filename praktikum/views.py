@@ -1128,17 +1128,23 @@ def download_file_kelompok(request, file_id):
 # KONSULTASI - JADWAL KELOMPOK DAN PENDAMPING
 # ============================================================
 
+
 @require_POST
 def ajukan_konsultasi(request):
     kelompok_obj = get_kelompok_login(request)
 
     if not kelompok_obj:
-        messages.warning(request, "Silakan login terlebih dahulu.")
+        messages.warning(
+            request,
+            "Silakan login terlebih dahulu.",
+        )
         return redirect("praktikum:login_kelompok")
 
     tujuan_id = request.POST.get("tujuan", "").strip()
     acara_id = request.POST.get("acara", "").strip()
-    tanggal_input = request.POST.get("tanggal_konsultasi", "").strip()
+    tanggal_input = request.POST.get(
+        "tanggal_konsultasi", ""
+    ).strip()
     mulai_input = request.POST.get("waktu_mulai", "").strip()
     selesai_input = request.POST.get("waktu_selesai", "").strip()
     lokasi = request.POST.get("lokasi", "").strip()
@@ -1157,18 +1163,10 @@ def ajukan_konsultasi(request):
     ]):
         messages.error(
             request,
-            "Pendamping, acara, tanggal, waktu mulai, waktu selesai, "
-            "dan lokasi wajib diisi.",
+            "Pendamping, acara, tanggal, waktu mulai, "
+            "waktu selesai, dan lokasi wajib diisi.",
         )
         return redirect("praktikum:dashboard_kelompok")
-
-    tujuan_obj = get_object_or_404(
-        Staff,
-        pk=tujuan_id,
-        aktif=True,
-    )
-
-    acara_obj = get_object_or_404(Acara, pk=acara_id)
 
     if waktu_selesai <= waktu_mulai:
         messages.error(
@@ -1176,6 +1174,18 @@ def ajukan_konsultasi(request):
             "Waktu selesai harus lebih akhir daripada waktu mulai.",
         )
         return redirect("praktikum:dashboard_kelompok")
+
+    tujuan_obj = get_object_or_404(
+        Staff,
+        pk=tujuan_id,
+        aktif=True,
+        jabatan__in=["penanggung_jawab", "koordinator", "asisten"],
+    )
+
+    acara_obj = get_object_or_404(
+        Acara,
+        pk=acara_id,
+    )
 
     Konsultasi.objects.create(
         topik=f"Konsultasi {kelompok_obj.nama}",
@@ -1186,7 +1196,11 @@ def ajukan_konsultasi(request):
         waktu_mulai=waktu_mulai,
         waktu_selesai=waktu_selesai,
         lokasi=lokasi,
+        pertanyaan="Permohonan jadwal konsultasi.",
     )
 
-    messages.success(request, "Jadwal konsultasi berhasil disimpan.")
+    messages.success(
+        request,
+        "Jadwal konsultasi berhasil disimpan.",
+    )
     return redirect("praktikum:dashboard_kelompok")
