@@ -5,11 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>
-        Dashboard {{ kelompok.nama }} -
-        {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
-    </title>
+    <title>Dashboard {{ kelompok.nama }} - {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}</title>
 
     <style>
         * { box-sizing: border-box; }
@@ -75,28 +71,11 @@
             color: #0f172a;
         }
 
-        .welcome p { margin: 0; color: #64748b; }
-
-        .welcome-heading {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            flex-wrap: wrap;
-        }
-
-        .group-logo {
-            width: 95px;
-            height: 95px;
-            object-fit: contain;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 6px;
-            background: white;
-        }
+        .welcome p { margin: 0; color: #64748b; line-height: 1.6; }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 16px;
             margin-bottom: 25px;
         }
@@ -206,27 +185,7 @@
         .mom-small {
             color: #64748b;
             font-size: 12px;
-        }
-
-        .progress-wrapper { margin-top: 15px; }
-
-        .progress-bar {
-            height: 18px;
-            background: #e2e8f0;
-            border-radius: 20px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: #2563eb;
-            border-radius: 20px;
-        }
-
-        .progress-text {
-            margin-top: 8px;
-            font-size: 14px;
-            color: #475569;
+            margin-top: 4px;
         }
 
         table {
@@ -267,10 +226,7 @@
             border-radius: 10px;
         }
 
-        .upload-form {
-            display: grid;
-            gap: 13px;
-        }
+        .upload-form { display: grid; gap: 13px; }
 
         .upload-form label {
             display: block;
@@ -339,7 +295,7 @@
 
         .consultation-info {
             line-height: 1.7;
-            min-width: 190px;
+            min-width: 170px;
         }
 
         @media (max-width: 900px) {
@@ -389,9 +345,7 @@
         <small>Dashboard Kelompok</small>
     </div>
 
-    <a href="{% url 'praktikum:logout_kelompok' %}" class="logout">
-        Keluar
-    </a>
+    <a href="{% url 'praktikum:logout_kelompok' %}" class="logout">Keluar</a>
 </nav>
 
 <div class="container">
@@ -404,33 +358,11 @@
 
     <!-- PROFIL KELOMPOK -->
     <div class="welcome">
-        <div class="welcome-heading">
-            {% if kelompok.logo %}
-                <img
-                    src="{{ kelompok.logo.url }}"
-                    alt="Logo {{ kelompok.nama }}"
-                    class="group-logo"
-                >
-            {% endif %}
-
-            <div>
-                <h1>{{ kelompok.nama }}</h1>
-                <p>Selamat datang di dashboard kelompok. Kelola laporan, progress, file, dan konsultasi melalui halaman ini.</p>
-            </div>
-        </div>
-
-        <div class="progress-wrapper">
-            <div class="progress-bar">
-                <div
-                    class="progress-fill"
-                    style="width: {{ progress|default:0 }}%;"
-                ></div>
-            </div>
-            <div class="progress-text">
-                Progress kelompok:
-                <strong>{{ progress|default:0 }}%</strong>
-            </div>
-        </div>
+        <h1>{{ kelompok.nama }}</h1>
+        <p>
+            Selamat datang di dashboard kelompok. Kelola laporan, file,
+            Daily MOM, dan jadwal konsultasi melalui halaman ini.
+        </p>
     </div>
 
     <!-- STATISTIK -->
@@ -446,47 +378,9 @@
         </div>
 
         <div class="stat-card">
-            <div class="stat-title">Progress Acara</div>
-            <div class="stat-value">{{ progress_acara|length }}</div>
-        </div>
-
-        <div class="stat-card">
             <div class="stat-title">File Kelompok</div>
             <div class="stat-value">{{ file_kelompok|length }}</div>
         </div>
-    </div>
-
-    <!-- LOGO KELOMPOK -->
-    <div class="section">
-        <h2>Logo Kelompok</h2>
-        <p class="help-text">
-            Unggah logo kelompok dalam format JPG, JPEG, PNG, atau WEBP.
-            Logo yang baru diunggah akan menggantikan logo sebelumnya.
-        </p>
-
-        <form
-            method="post"
-            action="{% url 'praktikum:upload_logo_kelompok' %}"
-            enctype="multipart/form-data"
-            class="upload-form"
-        >
-            {% csrf_token %}
-
-            <div>
-                <label for="logo">Pilih logo kelompok</label>
-                <input
-                    type="file"
-                    id="logo"
-                    name="logo"
-                    accept=".jpg,.jpeg,.png,.webp"
-                    required
-                >
-            </div>
-
-            <div>
-                <button type="submit" class="button">Unggah Logo</button>
-            </div>
-        </form>
     </div>
 
     <!-- ANGGOTA DAN MENTOR -->
@@ -545,8 +439,8 @@
         <h2>Upload Laporan Mingguan</h2>
 
         <p class="help-text">
-            Pilih acara dan peserta pengunggah dengan benar. Laporan akan
-            dikirim untuk diperiksa oleh admin atau asisten yang ditetapkan.
+            Pilih acara dan peserta pengunggah. Laporan akan dikirim untuk
+            diperiksa admin atau asisten yang berwenang.
         </p>
 
         <form
@@ -597,6 +491,7 @@
                     type="file"
                     id="file_laporan"
                     name="file_laporan"
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip"
                     required
                 >
             </div>
@@ -619,7 +514,7 @@
                         <th>Judul</th>
                         <th>Peserta</th>
                         <th>Acara</th>
-                        <th>Status</th>
+                        <th>Status dan Catatan</th>
                         <th>File</th>
                         <th>File Revisi</th>
                     </tr>
@@ -629,24 +524,12 @@
                         <tr>
                             <td>{{ forloop.counter }}</td>
                             <td>{{ item.judul|default:"Laporan Mingguan" }}</td>
-                            <td>
-                                {% if item.peserta %}
-                                    {{ item.peserta.nama }}
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if item.acara %}
-                                    {{ item.acara.nama }}
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
+                            <td>{{ item.peserta.nama|default:"-" }}</td>
+                            <td>{{ item.acara.nama|default:"-" }}</td>
                             <td>
                                 <span class="badge">{{ item.get_status_display }}</span>
                                 {% if item.catatan_admin %}
-                                    <div class="mom-small" style="margin-top:6px">
+                                    <div class="mom-small">
                                         Catatan: {{ item.catatan_admin }}
                                     </div>
                                 {% endif %}
@@ -680,43 +563,14 @@
         {% endif %}
     </div>
 
-    <!-- PROGRESS ACARA -->
-    <div class="section">
-        <h2>Progress Setiap Acara</h2>
-
-        {% if progress_acara %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>Acara</th>
-                        <th>Progress</th>
-                        <th>Laporan</th>
-                        <th>Peta</th>
-                        <th>PPT</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in progress_acara %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ item.acara.nama }}</td>
-                            <td>{{ item.nilai_progress }}%</td>
-                            <td>{{ item.laporan_acc|yesno:"ACC,-" }}</td>
-                            <td>{{ item.peta_acc|yesno:"ACC,-" }}</td>
-                            <td>{{ item.ppt_acc|yesno:"ACC,-" }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <div class="empty">Belum ada data progress acara.</div>
-        {% endif %}
-    </div>
-
     <!-- FILE KELOMPOK -->
     <div class="section">
         <h2>File Kelompok</h2>
+
+        <p class="help-text">
+            File yang disediakan admin ditampilkan berdasarkan kelompok
+            yang sedang login. Unduh file sesuai acara dan jenisnya.
+        </p>
 
         {% if file_kelompok %}
             <table>
@@ -736,13 +590,7 @@
                         <tr>
                             <td>{{ forloop.counter }}</td>
                             <td>{{ item.nama_file }}</td>
-                            <td>
-                                {% if item.acara %}
-                                    {{ item.acara.nama }}
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
+                            <td>{{ item.acara.nama|default:"-" }}</td>
                             <td>{{ item.get_jenis_display }}</td>
                             <td>{{ item.get_status_display }}</td>
                             <td>{{ item.catatan_admin|default:"-" }}</td>
@@ -761,7 +609,7 @@
                 </tbody>
             </table>
         {% else %}
-            <div class="empty">Belum ada file kelompok.</div>
+            <div class="empty">Belum ada file untuk kelompok ini.</div>
         {% endif %}
     </div>
 
@@ -804,13 +652,7 @@
                                     -
                                 {% endif %}
                             </td>
-                            <td>
-                                {% if item.dibuat_oleh %}
-                                    {{ item.dibuat_oleh.nama }}
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
+                            <td>{{ item.dibuat_oleh.nama|default:"-" }}</td>
                             <td>
                                 {% if item.isi %}
                                     <div class="mom-content">{{ item.isi }}</div>
@@ -863,9 +705,8 @@
         <h2>Upload Laporan Lengkap</h2>
 
         <p class="help-text">
-            Unggah laporan akhir kelompok untuk diperiksa admin. Setiap
-            unggahan disimpan sebagai entri baru; laporan sebelumnya tidak
-            dihapus secara otomatis.
+            Unggah laporan akhir kelompok untuk diperiksa admin.
+            Pilih file yang akan disimpan sebagai laporan lengkap.
         </p>
 
         <form
@@ -877,11 +718,11 @@
             {% csrf_token %}
 
             <div>
-                <label for="judul_laporan_lengkap">Judul Laporan</label>
+                <label for="judul_lengkap">Judul Laporan</label>
                 <input
                     type="text"
-                    id="judul_laporan_lengkap"
-                    name="judul_laporan_lengkap"
+                    id="judul_lengkap"
+                    name="judul"
                     maxlength="200"
                     placeholder="Contoh: Laporan Akhir Kelompok"
                     required
@@ -893,7 +734,8 @@
                 <input
                     type="file"
                     id="file_laporan_lengkap"
-                    name="file_laporan_lengkap"
+                    name="file_laporan"
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip"
                     required
                 >
             </div>
@@ -904,7 +746,7 @@
         </form>
     </div>
 
-    <!-- DAFTAR LAPORAN LENGKAP -->
+    <!-- RIWAYAT LAPORAN LENGKAP -->
     <div class="section">
         <h2>Riwayat Laporan Lengkap</h2>
 
@@ -917,6 +759,7 @@
                         <th>Status</th>
                         <th>Catatan Admin</th>
                         <th>File</th>
+                        <th>File Revisi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -924,7 +767,7 @@
                         <tr>
                             <td>{{ forloop.counter }}</td>
                             <td>{{ item.judul }}</td>
-                            <td>{{ item.get_status_display }}</td>
+                            <td><span class="badge">{{ item.get_status_display }}</span></td>
                             <td>{{ item.catatan_admin|default:"-" }}</td>
                             <td>
                                 {% if item.file %}
@@ -932,6 +775,16 @@
                                         href="{% url 'praktikum:download_laporan_lengkap' item.id %}"
                                         class="file-link"
                                     >Unduh Laporan</a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.file_revisi %}
+                                    <a
+                                        href="{% url 'praktikum:download_laporan_lengkap_revisi' item.id %}"
+                                        class="file-link"
+                                    >Unduh Revisi</a>
                                 {% else %}
                                     -
                                 {% endif %}
@@ -950,9 +803,8 @@
         <h2>Informasi Konsultasi Kelompok</h2>
 
         <p class="help-text">
-            Informasi konsultasi pada bagian ini ditujukan untuk kelompok
-            yang sedang login. Periksa acara, pendamping, tanggal, waktu,
-            dan lokasi yang diberikan oleh admin.
+            Periksa mentor atau pendamping, acara, jadwal, dan lokasi
+            konsultasi yang telah ditetapkan untuk kelompok ini.
         </p>
 
         {% if konsultasi %}
@@ -960,34 +812,25 @@
                 <thead>
                     <tr>
                         <th>No.</th>
-                        <th>Topik</th>
-                        <th>Peserta</th>
+                        <th>Kelompok</th>
                         <th>Pendamping</th>
                         <th>Acara</th>
-                        <th>Jadwal dan Lokasi</th>
-                        <th>Status</th>
-                        <th>Pertanyaan</th>
-                        <th>Jawaban / Catatan</th>
+                        <th>Tanggal</th>
+                        <th>Waktu</th>
+                        <th>Lokasi</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in konsultasi %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td>{{ item.topik|default:"Konsultasi" }}</td>
-                            <td>
-                                {% if item.peserta %}
-                                    {{ item.peserta.nama }}
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
+                            <td>{{ item.kelompok.nama|default:kelompok.nama }}</td>
                             <td>
                                 {% if item.tujuan %}
                                     {{ item.tujuan.nama }}
                                     <div class="mom-small">{{ item.tujuan.get_jabatan_display }}</div>
                                 {% else %}
-                                    -
+                                    Belum ditentukan
                                 {% endif %}
                             </td>
                             <td>
@@ -1001,44 +844,33 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <div class="consultation-info">
-                                    {% if item.tanggal_konsultasi %}
-                                        <strong>Tanggal:</strong>
-                                        {{ item.tanggal_konsultasi|date:"d/m/Y" }}<br>
-                                    {% endif %}
-
-                                    {% if item.waktu_mulai %}
-                                        <strong>Mulai:</strong>
-                                        {{ item.waktu_mulai|time:"H:i" }}<br>
-                                    {% endif %}
-
-                                    {% if item.waktu_selesai %}
-                                        <strong>Selesai:</strong>
-                                        {{ item.waktu_selesai|time:"H:i" }}<br>
-                                    {% endif %}
-
-                                    {% if item.lokasi %}
-                                        <strong>Lokasi:</strong>
-                                        {{ item.lokasi }}
-                                    {% endif %}
-
-                                    {% if not item.tanggal_konsultasi and not item.waktu_mulai and not item.waktu_selesai and not item.lokasi %}
-                                        Belum dijadwalkan
-                                    {% endif %}
-                                </div>
+                                {% if item.tanggal_konsultasi %}
+                                    {{ item.tanggal_konsultasi|date:"d/m/Y" }}
+                                {% else %}
+                                    Belum ditentukan
+                                {% endif %}
                             </td>
                             <td>
-                                <span class="badge">{{ item.get_status_display }}</span>
+                                {% if item.waktu_mulai %}
+                                    {{ item.waktu_mulai|time:"H:i" }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                                –
+                                {% if item.waktu_selesai %}
+                                    {{ item.waktu_selesai|time:"H:i" }}
+                                {% else %}
+                                    -
+                                {% endif %}
                             </td>
-                            <td>{{ item.pertanyaan|default:"-" }}</td>
-                            <td>{{ item.jawaban|default:"Belum ada jawaban atau catatan dari admin." }}</td>
+                            <td>{{ item.lokasi|default:"Belum ditentukan" }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         {% else %}
             <div class="empty">
-                Belum ada informasi konsultasi untuk kelompok ini.
+                Belum ada jadwal konsultasi untuk kelompok ini.
             </div>
         {% endif %}
     </div>
