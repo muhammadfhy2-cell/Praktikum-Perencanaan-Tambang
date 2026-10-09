@@ -219,44 +219,33 @@ def home(request):
 # PERSONEL
 # ============================================================
 
+
 def personel(request):
-    setting = get_setting()
+    staff_list = Staff.objects.filter(aktif=True).order_by("urutan", "nama")
 
-    staff_list = Staff.objects.filter(aktif=True).order_by(
-        "jabatan", "urutan", "nama"
-    )
-
-    # Penanggung jawab adalah satu objek Staff, bukan QuerySet.
+    # Tampilkan SELURUH staff yang menjabat sebagai Penanggung Jawab Praktikum
     penanggung_jawab = staff_list.filter(
         jabatan="penanggung_jawab"
-    ).first()
-
-    # Koordinator dan asisten adalah kumpulan objek Staff.
-    koordinator = staff_list.filter(
-        jabatan="koordinator"
     ).order_by("urutan", "nama")
 
+    # Tampilkan koordinator asisten dosen
+    koordinator = staff_list.filter(
+        jabatan="koordinator_asisten_dosen"
+    ).order_by("urutan", "nama")
+
+    # Tampilkan seluruh asisten dosen
     asisten_list = staff_list.filter(
-        jabatan="asisten"
+        jabatan="asisten_dosen"
     ).order_by("urutan", "nama")
 
     context = {
-        "setting": setting,
-        "staff": staff_list,
-        "staff_list": staff_list,
-        "personel": staff_list,
-        "personel_list": staff_list,
+        "setting": get_setting(),
         "penanggung_jawab": penanggung_jawab,
         "koordinator": koordinator,
-        "asisten": asisten_list,
         "asisten_list": asisten_list,
     }
 
-    return render(
-        request,
-        "praktikum/personel.html",
-        context,
-    )
+    return render(request, "praktikum/personel.html", context)
 
 
 # ============================================================
