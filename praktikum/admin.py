@@ -1,4 +1,8 @@
+
 from django.contrib import admin
+from django.contrib.admin.utils import quote
+from django.urls import reverse, NoReverseMatch
+from django.utils.html import format_html
 
 from .models import (
     Setting,
@@ -22,7 +26,43 @@ from .models import (
 
 
 # ============================================================
-# SETTING PRAKTIKUM
+# HELPER TAUTAN FILE
+# ============================================================
+
+def tautan_unduh_laporan(obj, jenis, nama_url):
+    """
+    Membuat tautan unduh melalui endpoint Django.
+    File tetap diunduh lewat view yang memeriksa izin admin.
+    """
+    field = (
+        getattr(obj, "file_revisi", None)
+        if jenis == "revisi"
+        else getattr(obj, "file", None)
+    )
+
+    if not field or not getattr(field, "name", ""):
+        return "Belum ada file"
+
+    try:
+        url = reverse(
+            nama_url,
+            args=[obj.pk, jenis],
+        )
+    except NoReverseMatch:
+        return "Rute unduhan belum tersedia"
+
+    nama_file = field.name.rsplit("/", 1)[-1]
+
+    return format_html(
+        '<a href="{}" target="_blank" rel="noopener">'
+        'Unduh {}</a>',
+        url,
+        nama_file,
+    )
+
+
+# ============================================================
+# SETTING
 # ============================================================
 
 @admin.register(Setting)
@@ -54,22 +94,9 @@ class StaffAdmin(admin.ModelAdmin):
         "urutan",
         "aktif",
     )
-    list_filter = (
-        "jabatan",
-        "aktif",
-    )
-    search_fields = (
-        "nama",
-        "kontak",
-    )
-    list_editable = (
-        "aktif",
-        "urutan",
-    )
-    ordering = (
-        "urutan",
-        "nama",
-    )
+    list_filter = ("jabatan", "aktif")
+    search_fields = ("nama", "kontak")
+    list_editable = ("aktif", "urutan")
 
 
 # ============================================================
@@ -86,25 +113,15 @@ class KelompokAdmin(admin.ModelAdmin):
         "jumlah_event",
         "progress_persen",
     )
-    list_filter = (
-        "aktif",
-    )
-    search_fields = (
-        "nama",
-        "akun_login__username",
-    )
-    filter_horizontal = (
-        "mentor",
-    )
-    list_editable = (
-        "aktif",
-    )
+    list_filter = ("aktif",)
+    search_fields = ("nama", "akun_login__username")
+    filter_horizontal = ("mentor",)
+    list_editable = ("aktif",)
     readonly_fields = (
         "jumlah_anggota",
         "jumlah_event",
         "progress_persen",
     )
-
     fieldsets = (
         (
             "Informasi Kelompok",
@@ -114,16 +131,12 @@ class KelompokAdmin(admin.ModelAdmin):
                     "mentor",
                     "logo",
                     "aktif",
-                ),
+                )
             },
         ),
         (
             "Akun Login",
-            {
-                "fields": (
-                    "akun_login",
-                ),
-            },
+            {"fields": ("akun_login",)},
         ),
         (
             "Progress",
@@ -132,7 +145,7 @@ class KelompokAdmin(admin.ModelAdmin):
                     "progress",
                     "progress_persen",
                     "catatan",
-                ),
+                )
             },
         ),
         (
@@ -141,7 +154,7 @@ class KelompokAdmin(admin.ModelAdmin):
                 "fields": (
                     "jumlah_anggota",
                     "jumlah_event",
-                ),
+                )
             },
         ),
     )
@@ -173,9 +186,7 @@ class PesertaAdmin(admin.ModelAdmin):
         "email",
         "kelompok__nama",
     )
-    list_editable = (
-        "aktif",
-    )
+    list_editable = ("aktif",)
     autocomplete_fields = (
         "kelompok",
         "akun",
@@ -184,7 +195,7 @@ class PesertaAdmin(admin.ModelAdmin):
 
 
 # ============================================================
-# ACARA / SUB-ACARA
+# ACARA
 # ============================================================
 
 @admin.register(Acara)
@@ -198,30 +209,20 @@ class AcaraAdmin(admin.ModelAdmin):
         "urutan",
         "penanggung_jawab",
     )
-    list_filter = (
-        "status",
-        "penanggung_jawab",
-    )
+    list_filter = ("status", "penanggung_jawab")
     search_fields = (
         "nama",
         "sub_acara",
         "lokasi",
         "deskripsi",
     )
-    list_editable = (
-        "status",
-        "urutan",
-    )
-    filter_horizontal = (
-        "pembawa_acara",
-    )
-    autocomplete_fields = (
-        "penanggung_jawab",
-    )
+    list_editable = ("status", "urutan")
+    filter_horizontal = ("pembawa_acara",)
+    autocomplete_fields = ("penanggung_jawab",)
 
 
 # ============================================================
-# MATERI PRAKTIKUM
+# MATERI
 # ============================================================
 
 @admin.register(Materi)
@@ -232,17 +233,9 @@ class MateriAdmin(admin.ModelAdmin):
         "acara",
         "uploaded_at",
     )
-    list_filter = (
-        "kategori",
-        "acara",
-    )
-    search_fields = (
-        "judul",
-        "deskripsi",
-    )
-    autocomplete_fields = (
-        "acara",
-    )
+    list_filter = ("kategori", "acara")
+    search_fields = ("judul", "deskripsi")
+    autocomplete_fields = ("acara",)
 
 
 # ============================================================
@@ -284,10 +277,7 @@ class AbsensiAdmin(admin.ModelAdmin):
         "ishoma_3",
         "ls",
     )
-    autocomplete_fields = (
-        "peserta",
-        "acara",
-    )
+    autocomplete_fields = ("peserta", "acara")
 
 
 # ============================================================
@@ -296,21 +286,10 @@ class AbsensiAdmin(admin.ModelAdmin):
 
 @admin.register(Pengumuman)
 class PengumumanAdmin(admin.ModelAdmin):
-    list_display = (
-        "judul",
-        "aktif",
-        "dibuat",
-    )
-    list_filter = (
-        "aktif",
-    )
-    search_fields = (
-        "judul",
-        "isi",
-    )
-    list_editable = (
-        "aktif",
-    )
+    list_display = ("judul", "aktif", "dibuat")
+    list_filter = ("aktif",)
+    search_fields = ("judul", "isi")
+    list_editable = ("aktif",)
 
 
 # ============================================================
@@ -319,22 +298,10 @@ class PengumumanAdmin(admin.ModelAdmin):
 
 @admin.register(TataTertib)
 class TataTertibAdmin(admin.ModelAdmin):
-    list_display = (
-        "judul",
-        "aktif",
-        "urutan",
-    )
-    list_filter = (
-        "aktif",
-    )
-    search_fields = (
-        "judul",
-        "isi",
-    )
-    list_editable = (
-        "aktif",
-        "urutan",
-    )
+    list_display = ("judul", "aktif", "urutan")
+    list_filter = ("aktif",)
+    search_fields = ("judul", "isi")
+    list_editable = ("aktif", "urutan")
 
 
 # ============================================================
@@ -350,20 +317,10 @@ class TugasPendahuluanAdmin(admin.ModelAdmin):
         "aktif",
         "dibuat",
     )
-    list_filter = (
-        "aktif",
-        "acara",
-    )
-    search_fields = (
-        "judul",
-        "soal",
-    )
-    list_editable = (
-        "aktif",
-    )
-    autocomplete_fields = (
-        "acara",
-    )
+    list_filter = ("aktif", "acara")
+    search_fields = ("judul", "soal")
+    list_editable = ("aktif",)
+    autocomplete_fields = ("acara",)
 
 
 # ============================================================
@@ -378,32 +335,25 @@ class LaporanMingguanAdmin(admin.ModelAdmin):
         "peserta",
         "acara",
         "status",
+        "tautan_file_asli",
+        "tautan_file_revisi",
         "uploaded_at",
         "updated_at",
     )
-    list_filter = (
-        "status",
-        "kelompok",
-        "acara",
-    )
+    list_filter = ("status", "kelompok", "acara")
     search_fields = (
         "judul",
         "peserta__nama",
         "kelompok__nama",
     )
-    list_editable = (
-        "status",
-    )
-    autocomplete_fields = (
-        "peserta",
-        "kelompok",
-        "acara",
-    )
+    list_editable = ("status",)
+    autocomplete_fields = ("peserta", "kelompok", "acara")
     readonly_fields = (
         "uploaded_at",
         "updated_at",
+        "tautan_file_asli",
+        "tautan_file_revisi",
     )
-
     fieldsets = (
         (
             "Informasi Laporan",
@@ -413,16 +363,18 @@ class LaporanMingguanAdmin(admin.ModelAdmin):
                     "peserta",
                     "kelompok",
                     "acara",
-                ),
+                )
             },
         ),
         (
-            "File",
+            "File Laporan",
             {
                 "fields": (
                     "file",
+                    "tautan_file_asli",
                     "file_revisi",
-                ),
+                    "tautan_file_revisi",
+                )
             },
         ),
         (
@@ -431,7 +383,7 @@ class LaporanMingguanAdmin(admin.ModelAdmin):
                 "fields": (
                     "status",
                     "catatan_admin",
-                ),
+                )
             },
         ),
         (
@@ -440,10 +392,30 @@ class LaporanMingguanAdmin(admin.ModelAdmin):
                 "fields": (
                     "uploaded_at",
                     "updated_at",
-                ),
+                )
             },
         ),
     )
+
+    @admin.display(description="Unduh file asli")
+    def tautan_file_asli(self, obj):
+        if not obj or not obj.pk:
+            return "Simpan laporan terlebih dahulu"
+        return tautan_unduh_laporan(
+            obj,
+            "asli",
+            "praktikum:download_laporan_mingguan_admin",
+        )
+
+    @admin.display(description="Unduh file revisi")
+    def tautan_file_revisi(self, obj):
+        if not obj or not obj.pk:
+            return "Simpan laporan terlebih dahulu"
+        return tautan_unduh_laporan(
+            obj,
+            "revisi",
+            "praktikum:download_laporan_mingguan_admin",
+        )
 
 
 # ============================================================
@@ -468,20 +440,14 @@ class ProgressAcaraAdmin(admin.ModelAdmin):
         "peta_acc",
         "ppt_acc",
     )
-    search_fields = (
-        "kelompok__nama",
-        "acara__nama",
-    )
+    search_fields = ("kelompok__nama", "acara__nama")
     list_editable = (
         "nilai_progress",
         "laporan_acc",
         "peta_acc",
         "ppt_acc",
     )
-    autocomplete_fields = (
-        "kelompok",
-        "acara",
-    )
+    autocomplete_fields = ("kelompok", "acara")
 
 
 # ============================================================
@@ -499,20 +465,13 @@ class FileKelompokAdmin(admin.ModelAdmin):
         "uploaded_by",
         "uploaded_at",
     )
-    list_filter = (
-        "jenis",
-        "status",
-        "kelompok",
-        "acara",
-    )
+    list_filter = ("jenis", "status", "kelompok", "acara")
     search_fields = (
         "nama_file",
         "kelompok__nama",
         "uploaded_by__nama",
     )
-    list_editable = (
-        "status",
-    )
+    list_editable = ("status",)
     autocomplete_fields = (
         "kelompok",
         "acara",
@@ -534,11 +493,7 @@ class DailyMOMAdmin(admin.ModelAdmin):
         "dibuat_oleh",
         "dibuat",
     )
-    list_filter = (
-        "tanggal",
-        "kelompok",
-        "acara",
-    )
+    list_filter = ("tanggal", "kelompok", "acara")
     search_fields = (
         "judul",
         "isi",
@@ -550,10 +505,6 @@ class DailyMOMAdmin(admin.ModelAdmin):
         "kelompok",
         "acara",
         "dibuat_oleh",
-    )
-    ordering = (
-        "-tanggal",
-        "-id",
     )
 
 
@@ -567,28 +518,21 @@ class LaporanLengkapAdmin(admin.ModelAdmin):
         "judul",
         "kelompok",
         "status",
+        "tautan_file_asli",
+        "tautan_file_revisi",
         "uploaded_at",
         "updated_at",
     )
-    list_filter = (
-        "status",
-        "kelompok",
-    )
-    search_fields = (
-        "judul",
-        "kelompok__nama",
-    )
-    list_editable = (
-        "status",
-    )
-    autocomplete_fields = (
-        "kelompok",
-    )
+    list_filter = ("status", "kelompok")
+    search_fields = ("judul", "kelompok__nama")
+    list_editable = ("status",)
+    autocomplete_fields = ("kelompok",)
     readonly_fields = (
         "uploaded_at",
         "updated_at",
+        "tautan_file_asli",
+        "tautan_file_revisi",
     )
-
     fieldsets = (
         (
             "Informasi Laporan",
@@ -596,7 +540,7 @@ class LaporanLengkapAdmin(admin.ModelAdmin):
                 "fields": (
                     "judul",
                     "kelompok",
-                ),
+                )
             },
         ),
         (
@@ -604,8 +548,10 @@ class LaporanLengkapAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "file",
+                    "tautan_file_asli",
                     "file_revisi",
-                ),
+                    "tautan_file_revisi",
+                )
             },
         ),
         (
@@ -614,7 +560,7 @@ class LaporanLengkapAdmin(admin.ModelAdmin):
                 "fields": (
                     "status",
                     "catatan_admin",
-                ),
+                )
             },
         ),
         (
@@ -623,10 +569,30 @@ class LaporanLengkapAdmin(admin.ModelAdmin):
                 "fields": (
                     "uploaded_at",
                     "updated_at",
-                ),
+                )
             },
         ),
     )
+
+    @admin.display(description="Unduh file asli")
+    def tautan_file_asli(self, obj):
+        if not obj or not obj.pk:
+            return "Simpan laporan terlebih dahulu"
+        return tautan_unduh_laporan(
+            obj,
+            "asli",
+            "praktikum:download_laporan_lengkap_admin",
+        )
+
+    @admin.display(description="Unduh file revisi")
+    def tautan_file_revisi(self, obj):
+        if not obj or not obj.pk:
+            return "Simpan laporan terlebih dahulu"
+        return tautan_unduh_laporan(
+            obj,
+            "revisi",
+            "praktikum:download_laporan_lengkap_admin",
+        )
 
 
 # ============================================================
@@ -641,17 +607,9 @@ class FormatDokumenAdmin(admin.ModelAdmin):
         "aktif",
         "uploaded_at",
     )
-    list_filter = (
-        "jenis",
-        "aktif",
-    )
-    search_fields = (
-        "judul",
-        "deskripsi",
-    )
-    list_editable = (
-        "aktif",
-    )
+    list_filter = ("jenis", "aktif")
+    search_fields = ("judul", "deskripsi")
+    list_editable = ("aktif",)
 
 
 # ============================================================
@@ -663,86 +621,30 @@ class KonsultasiAdmin(admin.ModelAdmin):
     list_display = (
         "topik",
         "kelompok",
-        "acara",
+        "peserta",
         "tujuan",
-        "tanggal_konsultasi",
-        "waktu_mulai",
-        "waktu_selesai",
-        "lokasi",
+        "acara",
         "status",
+        "dibuat",
+        "dijawab_at",
     )
     list_filter = (
         "status",
-        "tanggal_konsultasi",
-        "acara",
         "tujuan",
+        "acara",
         "kelompok",
     )
     search_fields = (
         "topik",
+        "pertanyaan",
+        "jawaban",
         "kelompok__nama",
-        "acara__nama",
-        "tujuan__nama",
-        "lokasi",
+        "peserta__nama",
     )
-    list_per_page = 25
-    ordering = (
-        "-dibuat",
-        "-id",
-    )
+    list_editable = ("status",)
     autocomplete_fields = (
         "kelompok",
-        "acara",
+        "peserta",
         "tujuan",
+        "acara",
     )
-    readonly_fields = (
-        "dibuat",
-        "dijawab_at",
-    )
-
-    fieldsets = (
-        (
-            "Informasi Konsultasi",
-            {
-                "fields": (
-                    "topik",
-                    "kelompok",
-                    "acara",
-                    "tujuan",
-                    "status",
-                ),
-            },
-        ),
-        (
-            "Jadwal Konsultasi",
-            {
-                "fields": (
-                    "tanggal_konsultasi",
-                    "waktu_mulai",
-                    "waktu_selesai",
-                    "lokasi",
-                ),
-            },
-        ),
-        (
-            "Riwayat",
-            {
-                "fields": (
-                    "dibuat",
-                    "dijawab_at",
-                ),
-            },
-        ),
-    )
-
-    def save_model(self, request, obj, form, change):
-        """
-        Mengisi pertanyaan otomatis jika kosong karena field tersebut
-        tidak ditampilkan dalam formulir admin.
-        """
-        if not obj.pertanyaan:
-            obj.pertanyaan = (
-                f"Informasi jadwal konsultasi: {obj.topik}"
-            )
-
-        super().save_model(request, obj, form, change)
