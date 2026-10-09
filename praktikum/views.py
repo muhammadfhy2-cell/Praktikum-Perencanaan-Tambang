@@ -1805,3 +1805,251 @@ def download_file_revisi(
         raise Http404(
             "File revisi tidak dapat dibuka."
         )
+
+
+# ============================================================
+# VALIDASI FILE UPLOAD
+# ============================================================
+
+from django.core.files.images import get_image_dimensions
+from pathlib import Path
+
+
+MAX_FILE_SIZE = 25 * 1024 * 1024
+MAX_LOGO_SIZE = 5 * 1024 * 1024
+
+
+def _validasi_file_umum(file_obj):
+    if not file_obj:
+        return "File belum dipilih."
+
+    if file_obj.size > MAX_FILE_SIZE:
+        return "Ukuran file maksimal 25 MB."
+
+    return None
+
+
+def _validasi_logo(file_obj):
+    if not file_obj:
+        return "Logo belum dipilih."
+
+    if file_obj.size > MAX_LOGO_SIZE:
+        return "Ukuran logo maksimal 5 MB."
+
+    ekstensi = Path(file_obj.name).suffix.lower()
+
+    if ekstensi not in {".jpg", ".jpeg", ".png", ".webp"}:
+        return "Logo harus berupa JPG, JPEG, PNG, atau WEBP."
+
+    try:
+        get_image_dimensions(file_obj)
+        file_obj.seek(0)
+    except Exception:
+        return "File yang dipilih bukan gambar yang valid."
+
+    return None
+
+
+# ============================================================
+# UPLOAD LAPORAN LENGKAP
+# ============================================================
+
+def upload_laporan_lengkap(request):
+    kelompok = get_kelompok_login(request)
+
+    if not kelompok:
+        messages.warning(request, "Silakan login terlebih dahulu.")
+        return redirect("praktikum:login_kelompok")
+
+    if request.method != "POST":
+        return redirect("praktikum:dashboard_kelompok")
+
+    file_obj = request.FILES.get("file_laporan_lengkap")
+    judul = request.POST.get("judul_laporan_lengkap", "").strip()
+
+    error = _validasi_file_umum(file_obj)
+
+    if error:
+        messages.error(request, error)
+        return redirect("praktikum:dashboard_kelompok")
+
+    if not judul:
+        judul = "Laporan Lengkap"
+
+    if len(judul) > 200:
+        messages.error(request, "Judul laporan maksimal 200 karakter.")
+        return redirect("praktikum:dashboard_kelompok")
+
+    LaporanLengkap.objects.create(
+        kelompok=kelompok,
+        judul=judul,
+        file=file_obj,
+    )
+
+    messages.success(
+        request,
+        "Laporan lengkap berhasil diunggah dan menunggu pemeriksaan admin.",
+    )
+
+    return redirect("praktikum:dashboard_kelompok")
+
+
+# ============================================================
+# UPLOAD / GANTI LOGO KELOMPOK
+# ============================================================
+
+def upload_logo_kelompok(request):
+    kelompok = get_kelompok_login(request)
+
+    if not kelompok:
+        messages.warning(request, "Silakan login terlebih dahulu.")
+        return redirect("praktikum:login_kelompok")
+
+    if request.method != "POST":
+        return redirect("praktikum:dashboard_kelompok")
+
+    logo_baru = request.FILES.get("logo")
+
+    error = _validasi_logo(logo_baru)
+
+    if error:
+        messages.error(request, error)
+        return redirect("praktikum:dashboard_kelompok")
+
+    # Simpan logo baru tanpa mengubah data kelompok lainnya.
+    # File logo sebelumnya tidak dihapus otomatis agar tidak
+    # merusak file yang mungkin masih dipakai atau dibutuhkan.
+    kelompok.logo = logo_baru
+    kelompok.save(update_fields=["logo"])
+
+    messages.success(request, "Logo kelompok berhasil diperbarui.")
+
+    return redirect("praktikum:dashboard_kelompok")
+
+
+# ============================================================
+# HELPER MENGIRIM FILE
+# ============================================================
+
+def _kirim_file(field_file, filename=None, as_attachment=True):
+    if not field_file:
+        raise Http404("File tidak ditemukan.")
+
+    try:
+        file_handle = field_file.open("rb")
+    except (OSError, ValueError, FileNotFoundError):
+        raise Http404(
+            "File tidak tersedia pada penyimpanan server."
+        )
+
+    return FileResponse(
+        file_handle,
+        as_attachment=as_attachment,
+        filename=filename or Path(field_file.name).name,
+    )
+
+
+# ============================================================
+# DOWNLOAD LAPORAN MINGGUAN ASLI
+# KHUSUS KELOMPOK PEMILIK
+# ============================================================
+
+def download_laporan_mingguan(request, laporan_id):
+    kelompok = get_kelompok_login(request)
+
+    if not kelompok:
+        messages.warning(request, "Silakan login terlebih dahulu.")
+        return redirect("praktikum:login_kelompok")
+
+    laporan = get_object_or_404(
+        LaporanMingguan,
+        id=laporan_id,
+        kelompok=kelompok,
+    )
+
+    return _kirim_file(
+        laporan.file,
+        as_attachment=True,
+    )
+
+
+# ============================================================
+# DOWNLOAD FILE KELOMPOK
+# KHUSUS KELOMPOK PEMILIK
+# ============================================================
+
+def download_file_kelompok(request, file_id):
+    kelompok = get_kelompok_login(request)
+
+    if not kelompok:
+        messages.warning(request, "Silakan login terlebih dahulu.")
+        return redirect("praktikum:login_kelompok")
+
+    item = get_object_or_404(
+        FileKelompok,
+        id=file_id,
+        kelompok=kelompok,
+    )
+
+    return _kirim_file(
+        item.file,
+        filename=item.nama_file or None,
+        as_attachment=True,
+    )
+
+
+# ============================================================
+# DOWNLOAD LAPORAN LENGKAP
+# KHUSUS KELOMPOK PEMILIK
+# ============================================================
+
+def download_laporan_lengkap(request, laporan_id):
+    kelompok = get_kelompok_login(request)
+
+    if not kelompok:
+        messages.warning(request, "Silakan login terlebih dahulu.")
+        return redirect("praktikum:login_kelompok")
+
+    laporan = get_object_or_404(
+        LaporanLengkap,
+        id=laporan_id,
+        kelompok=kelompok,
+    )
+
+    return _kirim_file(
+        laporan.file,
+        as_attachment=True,
+    )
+
+
+# ============================================================
+# DOWNLOAD MATERI PUBLIK
+# ============================================================
+
+def download_materi(request, materi_id):
+    materi = get_object_or_404(
+        Materi,
+        id=materi_id,
+    )
+
+    return _kirim_file(
+        materi.file,
+        as_attachment=True,
+    )
+
+
+# ============================================================
+# DOWNLOAD FORMAT DOKUMEN AKTIF
+# ============================================================
+
+def download_format_dokumen(request, dokumen_id):
+    dokumen = get_object_or_404(
+        FormatDokumen,
+        id=dokumen_id,
+        aktif=True,
+    )
+
+    return _kirim_file(
+        dokumen.file,
+        as_attachment=True,
+    )
