@@ -1,1251 +1,973 @@
 
 {% extends "praktikum/base.html" %}
+{% load static %}
 
-{% block title %}Praktikum Perencanaan Tambang | Mining Portal{% endblock %}
+{% block title %}Beranda | Praktikum Perencanaan Tambang{% endblock %}
 
-{% block content %}
+{% block meta_description %}
+Portal resmi Praktikum Perencanaan Tambang untuk informasi kegiatan,
+jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
+{% endblock %}
 
+{% block extra_css %}
 <style>
-/* =====================================================
-   MINING DESIGN SYSTEM — NICKEL LATERITE
-===================================================== */
-:root {
-    --mine-yellow: #e5a928;
-    --mine-yellow-light: #ffd777;
-    --mine-brown: #684329;
-    --mine-earth: #94613c;
-    --mine-charcoal: #211e19;
-    --mine-dark: #30271e;
-    --mine-cream: #f5f0e6;
-    --mine-paper: #fffdf8;
-    --mine-text: #30291f;
-    --mine-muted: #786e61;
-    --mine-border: #e4dac9;
-    --mine-shadow: 0 18px 50px rgba(53, 36, 20, .09);
-}
-
-.mine-home {
-    color: var(--mine-text);
-    background: var(--mine-paper);
-    font-family: "Inter", "Segoe UI", Arial, sans-serif;
-    overflow: hidden;
-}
-
-.mine-home * { box-sizing: border-box; }
-
-.mine-home a { transition: .22s ease; }
-
-.mine-home .container {
-    width: min(1240px, 91%);
-    margin-inline: auto;
-}
-
-.mine-home h1,
-.mine-home h2,
-.mine-home h3,
-.mine-home p { overflow-wrap: anywhere; }
-
-.mine-home h1,
-.mine-home h2,
-.mine-home h3 {
-    font-family: "Montserrat", "Segoe UI", sans-serif;
-}
-
-.mine-home .eyebrow {
-    color: #95681d;
-    font-size: 10px;
-    font-weight: 900;
-    letter-spacing: 2.1px;
-    text-transform: uppercase;
-}
-
-.mine-home .section {
-    padding: 78px 0;
-}
-
-.mine-home .section-alt {
-    background: var(--mine-cream);
-}
-
-.mine-home .section-heading {
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
-    gap: 24px;
-    margin-bottom: 28px;
-}
-
-.mine-home .section-heading h2 {
-    margin: 8px 0 10px;
-    color: var(--mine-charcoal);
-    font-size: clamp(25px, 3.5vw, 39px);
-    line-height: 1.15;
-    letter-spacing: -1.2px;
-}
-
-.mine-home .section-heading p {
-    max-width: 610px;
-    margin: 0;
-    color: var(--mine-muted);
-    font-size: 13px;
-    line-height: 1.8;
-}
-
-.mine-home .section-link {
-    color: #79501f;
-    font-size: 12px;
-    font-weight: 850;
-    text-decoration: none;
-    white-space: nowrap;
-}
-
-.mine-home .section-link:hover { color: #b47b19; }
-
-/* =====================================================
-   HERO — PIT MINE
-===================================================== */
-.mine-hero {
+/* =========================
+   HERO
+========================= */
+.home-hero {
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    padding: 86px 0 95px;
-    color: white;
+    min-height: 510px;
+    display: flex;
+    align-items: center;
     background:
-        radial-gradient(ellipse at 78% 22%, rgba(229,169,40,.22), transparent 32%),
-        linear-gradient(115deg, #211d17 0%, #3d2b1e 53%, #684329 100%);
+        radial-gradient(ellipse at 88% 15%, rgba(255,201,74,.18), transparent 29%),
+        radial-gradient(ellipse at 75% 95%, rgba(117,80,45,.42), transparent 35%),
+        linear-gradient(125deg, #241a11 0%, #342419 52%, #513720 100%);
+    color: #fffdf8;
 }
 
-.mine-hero::before {
+.home-hero::before,
+.home-hero::after {
     content: "";
     position: absolute;
     z-index: -1;
+    pointer-events: none;
+}
+
+.home-hero::before {
     inset: 0;
-    opacity: .28;
+    opacity: .25;
     background-image:
-        repeating-linear-gradient(
-            0deg,
-            transparent 0 39px,
-            rgba(255,255,255,.065) 40px
-        ),
-        repeating-linear-gradient(
-            90deg,
-            transparent 0 39px,
-            rgba(255,255,255,.065) 40px
+        repeating-radial-gradient(
+            ellipse at 85% 50%,
+            transparent 0,
+            transparent 27px,
+            rgba(255,201,74,.38) 28px,
+            transparent 29px,
+            transparent 45px
         );
-    mask-image: linear-gradient(90deg, transparent, black);
+    mask-image: linear-gradient(90deg, transparent 5%, #000 100%);
 }
 
-.mine-hero::after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    width: 520px;
-    height: 520px;
-    right: -190px;
-    top: -260px;
-    border: 1px solid rgba(255,215,119,.24);
+.home-hero::after {
+    width: 430px;
+    height: 430px;
+    right: -100px;
+    top: 35px;
+    border: 1px solid rgba(255,201,74,.28);
     border-radius: 50%;
     box-shadow:
-        0 0 0 45px rgba(255,215,119,.035),
-        0 0 0 90px rgba(255,215,119,.03),
-        0 0 0 140px rgba(255,215,119,.025);
+        0 0 0 24px rgba(255,201,74,.035),
+        0 0 0 48px rgba(255,201,74,.035),
+        0 0 0 72px rgba(255,201,74,.025);
 }
 
-.mine-hero-grid {
+.home-hero-inner {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 80px 0 86px;
     display: grid;
-    grid-template-columns: 1.02fr .98fr;
-    gap: 38px;
+    grid-template-columns: minmax(0, 1.3fr) minmax(250px, .7fr);
     align-items: center;
+    gap: 48px;
 }
 
-.mine-kicker {
+.home-hero-content {
+    max-width: 720px;
+}
+
+.home-kicker {
     display: inline-flex;
     align-items: center;
     gap: 9px;
-    padding: 9px 13px;
-    border: 1px solid rgba(255,215,119,.32);
-    border-radius: 4px;
-    background: rgba(229,169,40,.09);
-    color: var(--mine-yellow-light);
-    font-size: 10px;
+    margin-bottom: 23px;
+    color: #ffda7a;
+    font-size: 11px;
     font-weight: 900;
-    letter-spacing: 1.8px;
+    letter-spacing: 2.4px;
+    text-transform: uppercase;
 }
 
-.mine-kicker::before {
+.home-kicker::before {
     content: "";
-    width: 7px;
-    height: 7px;
-    background: var(--mine-yellow);
-    transform: rotate(45deg);
+    width: 28px;
+    height: 2px;
+    background: #ffc94a;
 }
 
-.mine-hero h1 {
-    margin: 25px 0 18px;
-    color: #fffaf0;
-    font-size: clamp(40px, 5.8vw, 72px);
-    line-height: 1.02;
-    letter-spacing: -2.7px;
-    font-weight: 950;
+.home-hero h1 {
+    max-width: 760px;
+    margin: 0 0 23px;
+    color: #fffdf8;
+    font-size: clamp(37px, 5.5vw, 68px);
+    font-weight: 900;
+    letter-spacing: -1.8px;
+    line-height: 1.04;
 }
 
-.mine-hero h1 span {
-    display: block;
-    color: var(--mine-yellow-light);
+.home-hero h1 span {
+    color: #ffc94a;
 }
 
-.mine-hero-copy {
-    max-width: 600px;
-    color: #e0d6c9;
-    font-size: 14px;
+.home-hero-description {
+    max-width: 640px;
+    margin-bottom: 30px;
+    color: #e1d5c3;
+    font-size: 15px;
     line-height: 1.9;
 }
 
-.mine-actions {
+.home-hero-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 11px;
-    margin-top: 27px;
+    gap: 12px;
 }
 
-.mine-btn {
+.home-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 9px;
     min-height: 46px;
-    padding: 12px 18px;
+    padding: 12px 19px;
     border: 1px solid transparent;
-    border-radius: 5px;
+    border-radius: 11px;
+    font-size: 12px;
+    font-weight: 900;
+    text-decoration: none;
+    transition: transform .2s ease, filter .2s ease, background .2s ease;
+}
+
+.home-btn:hover {
+    transform: translateY(-2px);
+}
+
+.home-btn-primary {
+    background: linear-gradient(135deg, #ffc94a, #dca52e);
+    color: #241a11;
+    box-shadow: 0 8px 24px rgba(220,165,46,.2);
+}
+
+.home-btn-primary:hover {
+    filter: brightness(1.05);
+}
+
+.home-btn-secondary {
+    border-color: rgba(255,255,255,.24);
+    background: rgba(255,255,255,.055);
+    color: #fffdf8;
+}
+
+.home-btn-secondary:hover {
+    background: rgba(255,255,255,.12);
+}
+
+/* =========================
+   HERO VISUAL
+========================= */
+.home-hero-visual {
+    position: relative;
+    min-height: 310px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mine-emblem {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 255px;
+    height: 255px;
+    border: 1px solid rgba(255,201,74,.48);
+    border-radius: 50%;
+    background:
+        radial-gradient(circle, rgba(255,201,74,.12), transparent 67%),
+        rgba(36,26,17,.15);
+    box-shadow:
+        0 0 0 18px rgba(255,201,74,.035),
+        0 0 0 38px rgba(255,201,74,.025);
+}
+
+.mine-emblem-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+}
+
+.mine-emblem-icon {
+    font-size: 76px;
+    line-height: 1;
+    filter: drop-shadow(0 8px 14px rgba(0,0,0,.2));
+}
+
+.mine-emblem-label {
+    color: #ffda7a;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.mine-emblem-title {
+    color: #fffdf8;
+    font-size: 17px;
+    font-weight: 900;
+    letter-spacing: .8px;
+}
+
+.mine-floating-label {
+    position: absolute;
+    padding: 10px 13px;
+    border: 1px solid rgba(255,201,74,.3);
+    border-radius: 10px;
+    background: rgba(36,26,17,.84);
+    color: #f7edda;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.15);
+    backdrop-filter: blur(8px);
+}
+
+.mine-floating-label.one {
+    top: 27px;
+    right: -5px;
+}
+
+.mine-floating-label.two {
+    bottom: 34px;
+    left: -12px;
+}
+
+/* =========================
+   SECTION GENERAL
+========================= */
+.home-section {
+    padding: 72px 0;
+}
+
+.home-container {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+}
+
+.home-section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+.home-section-heading-main {
+    max-width: 700px;
+}
+
+.home-eyebrow {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: #936a24;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.home-section-heading h2 {
+    margin: 0 0 10px;
+    color: #241a11;
+    font-size: clamp(26px, 3.5vw, 36px);
+    font-weight: 900;
+    letter-spacing: -.6px;
+    line-height: 1.2;
+}
+
+.home-section-heading p {
+    max-width: 650px;
+    color: #796e60;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.home-text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    padding-bottom: 4px;
+    color: #75502d;
     font-size: 12px;
     font-weight: 900;
     text-decoration: none;
 }
 
-.mine-btn-primary {
-    background: var(--mine-yellow);
-    color: #241b10;
-    box-shadow: 0 8px 24px rgba(229,169,40,.17);
+.home-text-link:hover {
+    color: #a57620;
 }
 
-.mine-btn-primary:hover {
-    background: var(--mine-yellow-light);
-    color: #241b10;
-    transform: translateY(-2px);
-}
-
-.mine-btn-outline {
-    border-color: rgba(255,255,255,.27);
-    background: rgba(255,255,255,.04);
-    color: white;
-}
-
-.mine-btn-outline:hover {
-    border-color: var(--mine-yellow);
-    color: var(--mine-yellow-light);
-}
-
-/* Original CSS terrain illustration: no external image required */
-.mine-pit-visual {
-    position: relative;
-    min-width: 0;
-    min-height: 400px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,.13);
-    border-radius: 4px;
-    background:
-        radial-gradient(ellipse at 60% 32%, rgba(255,203,105,.2), transparent 36%),
-        linear-gradient(180deg, #4a3828, #2b251e);
-    box-shadow: 0 28px 65px rgba(0,0,0,.24);
-}
-
-.mine-pit-visual::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    opacity: .5;
-    background:
-        repeating-radial-gradient(
-            ellipse at 65% 38%,
-            transparent 0 15px,
-            rgba(255,221,156,.17) 16px 17px,
-            transparent 18px 30px
-        );
-}
-
-.pit-skyline {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        180deg,
-        rgba(255,215,119,.08),
-        transparent 50%,
-        rgba(15,13,10,.32)
-    );
-}
-
-.pit-bench {
-    position: absolute;
-    right: -5%;
-    width: 112%;
-    height: 58px;
-    transform: skewY(-10deg);
-    border-top: 3px solid rgba(255,218,145,.65);
-    background: linear-gradient(180deg, #a36c3d, #65412c);
-    box-shadow: 0 9px 15px rgba(0,0,0,.14);
-}
-
-.pit-bench.b1 { top: 28%; right: -10%; }
-.pit-bench.b2 { top: 43%; right: 4%; background: linear-gradient(180deg,#85532f,#513624); }
-.pit-bench.b3 { top: 59%; right: -9%; background: linear-gradient(180deg,#bd8145,#75472d); }
-.pit-bench.b4 { top: 76%; right: 9%; background: linear-gradient(180deg,#71452d,#30251c); }
-
-.pit-haul-road {
-    position: absolute;
-    top: 40%;
-    left: 17%;
-    width: 75%;
-    height: 27px;
-    transform: rotate(-13deg);
-    border-top: 3px solid #f2cc7c;
-    border-bottom: 2px solid rgba(38,27,17,.65);
-    background: #c28a4b;
-    box-shadow: 0 4px 12px rgba(0,0,0,.25);
-}
-
-.pit-machine {
-    position: absolute;
-    right: 15%;
-    bottom: 18%;
-    width: 130px;
-    height: 88px;
-    filter: drop-shadow(0 10px 7px rgba(0,0,0,.38));
-}
-
-.machine-track {
-    position: absolute;
-    bottom: 2px;
-    left: 7px;
-    width: 105px;
-    height: 22px;
-    border: 5px solid #25231f;
-    border-radius: 16px;
-    background: #514b3e;
-}
-
-.machine-body {
-    position: absolute;
-    bottom: 23px;
-    left: 19px;
-    width: 72px;
-    height: 34px;
-    background: #e5a928;
-    border: 2px solid #6e4a16;
-    clip-path: polygon(8% 0, 90% 0, 100% 100%, 0 100%);
-}
-
-.machine-cabin {
-    position: absolute;
-    bottom: 48px;
-    left: 45px;
-    width: 31px;
-    height: 26px;
-    background: #292820;
-    border: 4px solid #e5a928;
-    transform: skew(-8deg);
-}
-
-.machine-arm {
-    position: absolute;
-    bottom: 53px;
-    left: 4px;
-    width: 66px;
-    height: 10px;
-    background: #f0b933;
-    border: 2px solid #76501a;
-    transform: rotate(-36deg);
-    transform-origin: right center;
-}
-
-.machine-arm::after {
-    content: "";
-    position: absolute;
-    width: 49px;
-    height: 8px;
-    right: 50px;
-    top: -2px;
-    background: #d99b22;
-    border: 2px solid #76501a;
-    transform: rotate(-42deg);
-    transform-origin: right center;
-}
-
-.pit-label {
-    position: absolute;
-    z-index: 2;
-    padding: 12px 14px;
-    border: 1px solid rgba(255,255,255,.17);
-    border-left: 3px solid var(--mine-yellow);
-    background: rgba(33,28,21,.88);
-    box-shadow: 0 12px 30px rgba(0,0,0,.16);
-    backdrop-filter: blur(8px);
-}
-
-.pit-label strong {
-    display: block;
-    color: #fff5df;
-    font-size: 11px;
-}
-
-.pit-label small {
-    display: block;
-    margin-top: 4px;
-    color: #d4bd96;
-    font-size: 9px;
-}
-
-.pit-label.label-top { top: 20px; left: 18px; }
-.pit-label.label-bottom { right: 17px; bottom: 18px; }
-
-.pit-coordinates {
-    position: absolute;
-    top: 19px;
-    right: 17px;
-    color: rgba(255,239,207,.76);
-    font-size: 9px;
-    letter-spacing: 1.4px;
-}
-
-/* =====================================================
-   STATISTICS
-===================================================== */
-.mine-stats {
-    position: relative;
-    z-index: 4;
-    margin-top: -28px;
-}
-
-.mine-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-}
-
-.mine-stat {
-    padding: 22px;
-    border: 1px solid var(--mine-border);
-    border-top: 3px solid var(--mine-yellow);
-    background: var(--mine-paper);
-    box-shadow: var(--mine-shadow);
-}
-
-.mine-stat-icon {
-    color: #946321;
-    font-size: 20px;
-}
-
-.mine-stat strong {
-    display: block;
-    margin-top: 13px;
-    color: var(--mine-charcoal);
-    font-size: 31px;
-    line-height: 1.2;
-    font-weight: 950;
-}
-
-.mine-stat span {
-    display: block;
-    margin-top: 4px;
-    color: var(--mine-muted);
-    font-size: 11px;
-    font-weight: 750;
-}
-
-/* =====================================================
+/* =========================
    QUICK LINKS
-===================================================== */
-.mine-quick-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0,1fr));
-    gap: 14px;
-}
-
-.mine-quick-card {
+========================= */
+.home-shortcuts {
     position: relative;
-    min-height: 175px;
-    padding: 23px;
-    overflow: hidden;
-    border: 1px solid var(--mine-border);
-    border-bottom: 3px solid transparent;
-    background: white;
+    z-index: 2;
+    margin-top: -30px;
+}
+
+.home-shortcuts-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.home-shortcut {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid #e8dfd0;
+    border-radius: 16px;
+    background: #fffdf8;
+    box-shadow: 0 12px 28px rgba(36,26,17,.07);
     text-decoration: none;
+    transition: transform .2s ease, border-color .2s ease;
 }
 
-.mine-quick-card::after {
-    content: "";
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    right: -45px;
-    bottom: -52px;
-    border: 1px solid rgba(148,97,60,.18);
-    border-radius: 50%;
-    box-shadow: 0 0 0 15px rgba(148,97,60,.035);
-}
-
-.mine-quick-card:hover {
+.home-shortcut:hover {
     transform: translateY(-4px);
-    border-bottom-color: var(--mine-yellow);
-    box-shadow: var(--mine-shadow);
+    border-color: #d9bc7d;
 }
 
-.mine-quick-icon {
+.home-shortcut-icon {
     display: grid;
     place-items: center;
-    width: 44px;
-    height: 44px;
-    background: #f6ecd5;
-    color: #69451e;
-    font-size: 20px;
+    width: 43px;
+    height: 43px;
+    flex: 0 0 43px;
+    border-radius: 12px;
+    background: #f5e8c9;
+    color: #513720;
+    font-size: 21px;
 }
 
-.mine-quick-card strong {
-    display: block;
-    margin-top: 18px;
-    color: var(--mine-charcoal);
-    font-size: 15px;
+.home-shortcut h3 {
+    margin: 1px 0 5px;
+    color: #342419;
+    font-size: 13px;
     font-weight: 900;
 }
 
-.mine-quick-card span {
-    display: block;
-    margin-top: 7px;
-    color: var(--mine-muted);
-    font-size: 11px;
-    line-height: 1.75;
-}
-
-/* =====================================================
-   AGENDA
-===================================================== */
-.mine-agenda-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0,1fr));
-    gap: 14px;
-}
-
-.mine-agenda-card {
-    display: flex;
-    gap: 15px;
-    min-width: 0;
-    padding: 19px;
-    border: 1px solid var(--mine-border);
-    background: white;
-}
-
-.mine-date {
-    flex: 0 0 53px;
-    height: 62px;
-    padding-top: 8px;
-    text-align: center;
-    color: white;
-    background: var(--mine-brown);
-}
-
-.mine-date strong {
-    display: block;
-    color: var(--mine-yellow-light);
-    font-size: 22px;
-}
-
-.mine-date span {
-    font-size: 9px;
-    font-weight: 850;
-    text-transform: uppercase;
-}
-
-.mine-agenda-content { min-width: 0; }
-
-.mine-agenda-content small {
-    color: #8b7964;
-    font-size: 10px;
-}
-
-.mine-agenda-content h3 {
-    margin: 8px 0;
-    color: var(--mine-charcoal);
-    font-size: 14px;
-    line-height: 1.45;
-}
-
-.mine-agenda-content p {
-    margin: 5px 0 0;
-    color: var(--mine-muted);
+.home-shortcut p {
+    color: #796e60;
     font-size: 11px;
     line-height: 1.65;
 }
 
-.mine-agenda-team {
-    display: grid;
-    gap: 6px;
-    margin-top: 12px;
-    padding-top: 10px;
-    border-top: 1px solid #eee6d9;
-}
-
-.mine-agenda-team-row {
-    display: grid;
-    grid-template-columns: 54px 1fr;
-    gap: 7px;
-    font-size: 10px;
-    line-height: 1.5;
-}
-
-.mine-agenda-team-label {
-    color: #966b24;
-    font-weight: 900;
-}
-
-.mine-agenda-team-value {
-    color: #655c50;
-    overflow-wrap: anywhere;
-}
-
-/* =====================================================
-   GROUPS — NO PROGRESSACARA DEPENDENCY
-===================================================== */
-.mine-groups-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0,1fr));
-    gap: 14px;
-}
-
-.mine-group-card {
-    padding: 22px;
-    border: 1px solid var(--mine-border);
-    background: white;
-}
-
-.mine-group-top {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.mine-group-symbol {
-    display: grid;
-    place-items: center;
-    flex: 0 0 42px;
-    height: 42px;
-    background: #f4e5c5;
-    color: #67451f;
-    font-size: 19px;
-}
-
-.mine-group-name {
-    color: var(--mine-charcoal);
-    font-size: 14px;
-    font-weight: 900;
-}
-
-.mine-group-state {
-    margin-top: 5px;
-    color: #7e776b;
-    font-size: 10px;
-}
-
-.mine-group-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
-    margin-top: 17px;
-}
-
-.mine-group-meta span {
-    padding: 7px 9px;
+/* =========================
+   ABOUT / FEATURE
+========================= */
+.home-about {
     background: #f7f2e8;
-    color: #72522b;
-    font-size: 10px;
-    font-weight: 750;
 }
 
-/* =====================================================
-   LECTURER
-===================================================== */
-.mine-lecturer {
-    padding-bottom: 78px;
+.home-about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 58px;
 }
 
-.mine-lecturer-card {
+.home-about-copy h2 {
+    margin-bottom: 17px;
+    color: #241a11;
+    font-size: clamp(28px, 3.5vw, 39px);
+    font-weight: 900;
+    line-height: 1.2;
+}
+
+.home-about-copy h2 span {
+    color: #a87922;
+}
+
+.home-about-copy p {
+    margin-bottom: 14px;
+    color: #65594b;
+    font-size: 13px;
+    line-height: 1.95;
+}
+
+.home-about-panel {
     position: relative;
     overflow: hidden;
     padding: 30px;
-    border: 1px solid var(--mine-border);
-    border-left: 5px solid var(--mine-yellow);
+    border: 1px solid #d8c7a7;
+    border-radius: 22px;
     background:
-        repeating-radial-gradient(
-            ellipse at 100% 0%,
-            transparent 0 24px,
-            rgba(148,97,60,.055) 25px 26px,
-            transparent 27px 42px
-        ),
+        radial-gradient(ellipse at 100% 0%, rgba(255,201,74,.15), transparent 45%),
         #fffdf8;
+    box-shadow: 0 15px 38px rgba(36,26,17,.07);
 }
 
-.mine-lecturer-name {
-    margin-top: 10px;
-    color: var(--mine-charcoal);
-    font-size: clamp(21px,3vw,29px);
-    font-weight: 950;
+.home-about-panel::after {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    right: -90px;
+    bottom: -120px;
+    border: 1px solid rgba(117,80,45,.2);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 18px rgba(117,80,45,.025),
+        0 0 0 36px rgba(117,80,45,.025);
+    pointer-events: none;
 }
 
-.mine-lecturer-period {
-    margin-top: 8px;
-    color: var(--mine-muted);
-    font-size: 12px;
+.home-about-panel h3 {
+    margin-bottom: 22px;
+    color: #342419;
+    font-size: 17px;
+    font-weight: 900;
 }
 
-/* =====================================================
-   ANNOUNCEMENTS
-===================================================== */
-.mine-announcement {
-    position: relative;
-    overflow: hidden;
-    padding: 78px 0;
-    color: white;
-    background:
-        radial-gradient(ellipse at 90% 0%, rgba(229,169,40,.16), transparent 35%),
-        linear-gradient(120deg, #252019, #523721);
+.home-feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
 }
 
-.mine-announcement .section-heading h2 { color: #fffaf0; }
-.mine-announcement .section-heading p { color: #d3c4b0; }
-.mine-announcement .eyebrow { color: var(--mine-yellow-light); }
-
-.mine-announcement-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0,1fr));
+.home-feature {
+    display: flex;
+    align-items: flex-start;
     gap: 13px;
 }
 
-.mine-announcement-card {
-    display: flex;
-    gap: 15px;
-    padding: 21px;
-    border: 1px solid rgba(255,255,255,.12);
-    background: rgba(255,255,255,.045);
+.home-feature-check {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+    border-radius: 9px;
+    background: #f5e8c9;
+    color: #75502d;
+    font-size: 13px;
+    font-weight: 900;
 }
 
-.mine-announcement-number {
-    color: var(--mine-yellow-light);
+.home-feature h4 {
+    margin: 1px 0 4px;
+    color: #342419;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.home-feature p {
+    color: #796e60;
     font-size: 12px;
-    font-weight: 950;
+    line-height: 1.7;
 }
 
-.mine-announcement-card small {
-    color: #c6ad8a;
+/* =========================
+   LATEST ANNOUNCEMENTS
+========================= */
+.home-announcements {
+    background: #fffdf8;
+}
+
+.home-announcement-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.home-announcement-card {
+    min-width: 0;
+    padding: 23px;
+    border: 1px solid #e8dfd0;
+    border-radius: 17px;
+    background: #fffdf8;
+    box-shadow: 0 8px 24px rgba(36,26,17,.045);
+    transition: transform .2s ease, border-color .2s ease;
+}
+
+.home-announcement-card:hover {
+    transform: translateY(-3px);
+    border-color: #d9bc7d;
+}
+
+.home-announcement-date {
+    display: inline-flex;
+    margin-bottom: 13px;
+    padding: 6px 9px;
+    border-radius: 999px;
+    background: #f7edda;
+    color: #79531c;
     font-size: 10px;
+    font-weight: 800;
 }
 
-.mine-announcement-card h3 {
-    margin: 7px 0;
-    color: #fff9ef;
-    font-size: 14px;
+.home-announcement-card h3 {
+    margin-bottom: 10px;
+    color: #342419;
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
 }
 
-.mine-announcement-card p {
-    margin: 0;
-    color: #d4c8b8;
-    font-size: 11px;
+.home-announcement-card p {
+    color: #796e60;
+    font-size: 12px;
     line-height: 1.8;
+    overflow-wrap: anywhere;
 }
 
-/* =====================================================
-   LOGIN CTA
-===================================================== */
-.mine-login {
-    padding: 78px 0;
-    background: var(--mine-cream);
+.home-announcement-empty {
+    grid-column: 1 / -1;
+    padding: 35px 20px;
+    border: 1px dashed #d8c7a7;
+    border-radius: 16px;
+    color: #796e60;
+    text-align: center;
+    font-size: 13px;
 }
 
-.mine-login-box {
+/* =========================
+   FINAL CTA
+========================= */
+.home-cta {
+    padding: 0 0 75px;
+    background: #fffdf8;
+}
+
+.home-cta-panel {
     position: relative;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 25px;
-    padding: 40px;
-    color: white;
+    padding: 36px 40px;
+    border: 1px solid #72522d;
+    border-radius: 22px;
     background:
-        repeating-radial-gradient(
-            ellipse at 100% 0%,
-            transparent 0 28px,
-            rgba(255,215,119,.07) 29px 30px,
-            transparent 31px 49px
-        ),
-        linear-gradient(120deg, #28221b, #60412a);
+        radial-gradient(ellipse at 100% 0%, rgba(255,201,74,.17), transparent 35%),
+        linear-gradient(120deg, #241a11, #513720);
+    color: #fffdf8;
 }
 
-.mine-login-box h2 {
-    margin: 10px 0;
-    color: #fff9ee;
-    font-size: clamp(23px,3vw,34px);
-    line-height: 1.2;
+.home-cta-panel::after {
+    content: "";
+    position: absolute;
+    right: -60px;
+    top: -120px;
+    width: 260px;
+    height: 260px;
+    border: 1px solid rgba(255,201,74,.23);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 22px rgba(255,201,74,.03),
+        0 0 0 44px rgba(255,201,74,.03);
+    pointer-events: none;
 }
 
-.mine-login-box p {
+.home-cta-copy {
+    position: relative;
+    z-index: 1;
     max-width: 650px;
-    margin: 0;
-    color: #ddcfbb;
-    font-size: 12px;
-    line-height: 1.85;
 }
 
-.mine-login-label {
-    color: var(--mine-yellow-light);
-    font-size: 10px;
+.home-cta-copy h2 {
+    margin-bottom: 9px;
+    color: #fffdf8;
+    font-size: clamp(23px, 3vw, 32px);
     font-weight: 900;
-    letter-spacing: 2px;
+    line-height: 1.25;
 }
 
-.mine-empty {
-    grid-column: 1 / -1;
-    padding: 28px;
-    border: 1px dashed #d5c6af;
-    color: #837563;
-    text-align: center;
-    font-size: 12px;
+.home-cta-copy p {
+    color: #e1d5c3;
+    font-size: 13px;
     line-height: 1.8;
-    background: rgba(255,255,255,.65);
 }
 
-/* =====================================================
-   RESPONSIVE & ACCESSIBILITY
-===================================================== */
+.home-cta-action {
+    position: relative;
+    z-index: 1;
+    flex: 0 0 auto;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
 @media (max-width: 1000px) {
-    .mine-hero-grid { grid-template-columns: 1fr; }
-    .mine-pit-visual { min-height: 360px; }
-    .mine-stats-grid { grid-template-columns: repeat(2,1fr); }
-    .mine-quick-grid,
-    .mine-agenda-grid,
-    .mine-groups-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .home-hero-inner {
+        grid-template-columns: minmax(0, 1fr) 280px;
+        gap: 20px;
+    }
+
+    .home-hero-visual {
+        transform: scale(.86);
+    }
+
+    .home-shortcuts-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-announcement-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-about-grid {
+        gap: 30px;
+    }
 }
 
-@media (max-width: 680px) {
-    .mine-hero { padding: 65px 0 75px; }
-    .mine-hero h1 { letter-spacing: -1.8px; }
-    .mine-pit-visual { min-height: 300px; }
-    .mine-stats-grid,
-    .mine-quick-grid,
-    .mine-agenda-grid,
-    .mine-groups-grid,
-    .mine-announcement-grid { grid-template-columns: 1fr; }
-    .mine-home .section,
-    .mine-announcement,
-    .mine-login { padding: 57px 0; }
-    .mine-lecturer { padding-bottom: 57px; }
-    .mine-home .section-heading {
+@media (max-width: 720px) {
+    .home-hero {
+        min-height: auto;
+    }
+
+    .home-hero-inner {
+        grid-template-columns: 1fr;
+        padding: 65px 0 75px;
+    }
+
+    .home-hero h1 {
+        letter-spacing: -1px;
+    }
+
+    .home-hero-visual {
+        display: none;
+    }
+
+    .home-section {
+        padding: 52px 0;
+    }
+
+    .home-section-heading {
         align-items: flex-start;
+        flex-direction: column;
+        gap: 13px;
+    }
+
+    .home-about-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .home-announcement-list {
+        grid-template-columns: 1fr;
+    }
+
+    .home-cta-panel {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 28px 24px;
+    }
+
+    .home-cta {
+        padding-bottom: 52px;
+    }
+}
+
+@media (max-width: 480px) {
+    .home-container,
+    .home-hero-inner {
+        width: calc(100% - 28px);
+    }
+
+    .home-hero-inner {
+        padding: 52px 0 65px;
+    }
+
+    .home-hero h1 {
+        font-size: 39px;
+    }
+
+    .home-hero-description {
+        font-size: 13px;
+    }
+
+    .home-hero-actions {
+        align-items: stretch;
         flex-direction: column;
     }
-    .mine-login-box {
-        align-items: flex-start;
-        flex-direction: column;
-        padding: 27px;
+
+    .home-btn {
+        width: 100%;
+    }
+
+    .home-shortcuts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .home-shortcut {
+        padding: 17px;
+    }
+
+    .home-about-panel {
+        padding: 23px 19px;
+    }
+
+    .home-cta-panel {
+        padding: 25px 20px;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .mine-home *,
-    .mine-home *::before,
-    .mine-home *::after {
-        scroll-behavior: auto !important;
-        transition: none !important;
+    .home-btn,
+    .home-shortcut,
+    .home-announcement-card {
+        transition: none;
+    }
+
+    .home-btn:hover,
+    .home-shortcut:hover,
+    .home-announcement-card:hover {
+        transform: none;
     }
 }
 </style>
+{% endblock %}
 
-<div class="mine-home">
+{% block content %}
 
-    <!-- HERO -->
-    <section class="mine-hero">
-        <div class="container mine-hero-grid">
+<!-- HERO -->
+<section class="home-hero">
+    <div class="home-hero-inner">
+        <div class="home-hero-content">
+            <div class="home-kicker">
+                Mining Education Platform
+            </div>
 
-            <div>
-                <div class="mine-kicker">NICKEL MINING · MINE PLANNING</div>
+            <h1>
+                Praktikum<br>
+                Perencanaan<br>
+                <span>Tambang.</span>
+            </h1>
 
-                <h1>
-                    Plan.
-                    <span>Design.</span>
-                    Evaluate.
-                </h1>
+            <p class="home-hero-description">
+                Pusat informasi dan pembelajaran praktikum untuk mendukung
+                pemahaman perencanaan tambang, mulai dari persiapan kegiatan,
+                pengolahan data, hingga penyusunan laporan teknis.
+            </p>
 
-                <p class="mine-hero-copy">
-                    Portal digital Praktikum Perencanaan Tambang untuk
-                    mengakses jadwal, materi, kelompok, personel,
-                    tugas pendahuluan, dan informasi kegiatan dalam
-                    satu platform akademik.
+            <div class="home-hero-actions">
+                <a href="{% url 'praktikum:materi' %}"
+                   class="home-btn home-btn-primary">
+                    <span aria-hidden="true">▤</span>
+                    Jelajahi Materi
+                    <span aria-hidden="true">→</span>
+                </a>
+
+                <a href="{% url 'praktikum:jadwal' %}"
+                   class="home-btn home-btn-secondary">
+                    <span aria-hidden="true">◷</span>
+                    Lihat Jadwal
+                </a>
+            </div>
+        </div>
+
+        <div class="home-hero-visual" aria-hidden="true">
+            <div class="mine-emblem">
+                <div class="mine-emblem-inner">
+                    <div class="mine-emblem-icon">⛏</div>
+                    <div class="mine-emblem-label">MINING EDUCATION</div>
+                    <div class="mine-emblem-title">PLAN · DESIGN · MINE</div>
+                </div>
+                <div class="mine-floating-label one">OPEN PIT PLANNING</div>
+                <div class="mine-floating-label two">LEARN · ANALYZE · DESIGN</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- QUICK ACCESS -->
+<section class="home-shortcuts">
+    <div class="home-container">
+        <div class="home-shortcuts-grid">
+
+            <a href="{% url 'praktikum:personel' %}" class="home-shortcut">
+                <div class="home-shortcut-icon" aria-hidden="true">♙</div>
+                <div>
+                    <h3>Personel Praktikum</h3>
+                    <p>Kenali penanggung jawab dan asisten dosen.</p>
+                </div>
+            </a>
+
+            <a href="{% url 'praktikum:kelompok' %}" class="home-shortcut">
+                <div class="home-shortcut-icon" aria-hidden="true">♧</div>
+                <div>
+                    <h3>Kelompok</h3>
+                    <p>Lihat informasi kelompok dan pembimbing.</p>
+                </div>
+            </a>
+
+            <a href="{% url 'praktikum:tata_tertib' %}" class="home-shortcut">
+                <div class="home-shortcut-icon" aria-hidden="true">☷</div>
+                <div>
+                    <h3>Tata Tertib</h3>
+                    <p>Pahami ketentuan selama praktikum.</p>
+                </div>
+            </a>
+
+            <a href="{% url 'praktikum:pengumuman' %}" class="home-shortcut">
+                <div class="home-shortcut-icon" aria-hidden="true">⚑</div>
+                <div>
+                    <h3>Pengumuman</h3>
+                    <p>Periksa informasi terbaru dari pengelola.</p>
+                </div>
+            </a>
+
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT -->
+<section class="home-section home-about">
+    <div class="home-container">
+        <div class="home-about-grid">
+
+            <div class="home-about-copy">
+                <div class="home-eyebrow">Tentang Platform</div>
+
+                <h2>
+                    Satu Portal untuk
+                    <span>Seluruh Kegiatan Praktikum.</span>
+                </h2>
+
+                <p>
+                    Portal Praktikum Perencanaan Tambang menjadi pusat
+                    informasi bagi peserta dan pengelola praktikum.
+                    Informasi kegiatan disusun dalam satu tempat agar
+                    lebih mudah diakses dan dipantau.
                 </p>
 
-                <div class="mine-actions">
-                    <a href="{% url 'praktikum:jadwal' %}"
-                       class="mine-btn mine-btn-primary">
-                        ▦ Lihat Jadwal
-                    </a>
+                <p>
+                    Melalui portal ini, peserta dapat melihat jadwal,
+                    mengakses materi, mengenali personel dan kelompok,
+                    serta memperoleh informasi resmi terkait kegiatan.
+                </p>
 
-                    <a href="{% url 'praktikum:kelompok' %}"
-                       class="mine-btn mine-btn-outline">
-                        ⛏ Jelajahi Kelompok
-                    </a>
-                </div>
-            </div>
-
-            <!-- Pit illustration built with CSS -->
-            <div class="mine-pit-visual" aria-label="Ilustrasi pit tambang bertingkat">
-                <div class="pit-skyline"></div>
-
-                <div class="pit-bench b1"></div>
-                <div class="pit-bench b2"></div>
-                <div class="pit-bench b3"></div>
-                <div class="pit-bench b4"></div>
-                <div class="pit-haul-road"></div>
-
-                <div class="pit-machine" aria-hidden="true">
-                    <div class="machine-arm"></div>
-                    <div class="machine-cabin"></div>
-                    <div class="machine-body"></div>
-                    <div class="machine-track"></div>
-                </div>
-
-                <div class="pit-label label-top">
-                    <strong>OPEN-PIT MINING</strong>
-                    <small>Bench · Haul Road · Pit Design</small>
-                </div>
-
-                <div class="pit-coordinates">MINE PLANNING / 01</div>
-
-                <div class="pit-label label-bottom">
-                    <strong>Laterite Mine Design</strong>
-                    <small>PLAN · DESIGN · EVALUATE</small>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- STATISTICS -->
-    <section class="mine-stats">
-        <div class="container mine-stats-grid">
-
-            <div class="mine-stat">
-                <div class="mine-stat-icon">♟</div>
-                <strong>{{ peserta_list|length }}</strong>
-                <span>Peserta Aktif</span>
-            </div>
-
-            <div class="mine-stat">
-                <div class="mine-stat-icon">⛏</div>
-                <strong>{{ kelompok_list|length }}</strong>
-                <span>Kelompok Praktikum</span>
-            </div>
-
-            <div class="mine-stat">
-                <div class="mine-stat-icon">▦</div>
-                <strong>{{ acara_list|length }}</strong>
-                <span>Kegiatan</span>
-            </div>
-
-            <div class="mine-stat">
-                <div class="mine-stat-icon">▤</div>
-                <strong>{{ materi_list|length }}</strong>
-                <span>Materi Pembelajaran</span>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- QUICK ACCESS -->
-    <section class="section">
-        <div class="container">
-
-            <div class="section-heading">
-                <div>
-                    <div class="eyebrow">PORTAL DIRECTORY / 01</div>
-                    <h2>Pusat Informasi</h2>
-                    <p>
-                        Seluruh informasi dan kebutuhan akademik praktikum
-                        tersedia melalui menu berikut.
-                    </p>
-                </div>
-            </div>
-
-            <div class="mine-quick-grid">
-
-                <a href="{% url 'praktikum:jadwal' %}" class="mine-quick-card">
-                    <div class="mine-quick-icon">▦</div>
-                    <strong>Jadwal Praktikum</strong>
-                    <span>Timeline, agenda, tanggal, dan lokasi kegiatan.</span>
+                <a href="{% url 'praktikum:informasi_peserta' %}"
+                   class="home-btn home-btn-primary">
+                    Informasi Peserta
+                    <span aria-hidden="true">→</span>
                 </a>
-
-                <a href="{% url 'praktikum:materi' %}" class="mine-quick-card">
-                    <div class="mine-quick-icon">▤</div>
-                    <strong>Materi Pembelajaran</strong>
-                    <span>Modul, dataset, template, dan berkas pendukung.</span>
-                </a>
-
-                <a href="{% url 'praktikum:kelompok' %}" class="mine-quick-card">
-                    <div class="mine-quick-icon">⛏</div>
-                    <strong>Kelompok Praktikum</strong>
-                    <span>Daftar kelompok, anggota, ketua, dan mentor.</span>
-                </a>
-
-                <a href="{% url 'praktikum:personel' %}" class="mine-quick-card">
-                    <div class="mine-quick-icon">♟</div>
-                    <strong>Personel Praktikum</strong>
-                    <span>Penanggung jawab, koordinator, dan asisten dosen.</span>
-                </a>
-
-                <a href="{% url 'praktikum:tugas_pendahuluan' %}" class="mine-quick-card">
-                    <div class="mine-quick-icon">▣</div>
-                    <strong>Tugas Pendahuluan</strong>
-                    <span>Instruksi tugas, materi terkait, dan tenggat waktu.</span>
-                </a>
-
-                <a href="{% url 'praktikum:format_dokumen' %}" class="mine-quick-card">
-                    <div class="mine-quick-icon">▧</div>
-                    <strong>Format Dokumen</strong>
-                    <span>Template laporan dan format dokumen praktikum.</span>
-                </a>
-
             </div>
-        </div>
-    </section>
 
-    <!-- DOSEN PENGAMPU -->
-    <section class="mine-lecturer">
-        <div class="container">
-            <div class="mine-lecturer-card">
-                <div class="eyebrow">ACADEMIC SUPERVISOR</div>
+            <div class="home-about-panel">
+                <h3>Fasilitas Portal</h3>
 
-                {% if setting and setting.dosen_pengampu %}
-                    <div class="mine-lecturer-name">
-                        {{ setting.dosen_pengampu }}
+                <div class="home-feature-list">
+                    <div class="home-feature">
+                        <div class="home-feature-check" aria-hidden="true">✓</div>
+                        <div>
+                            <h4>Informasi Terpusat</h4>
+                            <p>Informasi personel, kelompok, jadwal, dan kegiatan dalam satu portal.</p>
+                        </div>
                     </div>
 
-                    {% if setting.periode %}
-                        <div class="mine-lecturer-period">
-                            Praktikum Perencanaan Tambang ·
-                            Periode {{ setting.periode }}
-                        </div>
-                    {% endif %}
-                {% else %}
-                    <p class="mine-lecturer-period">
-                        Data dosen pengampu belum diatur oleh administrator.
-                    </p>
-                {% endif %}
-            </div>
-        </div>
-    </section>
-
-    <!-- AGENDA -->
-    <section class="section section-alt">
-        <div class="container">
-
-            <div class="section-heading">
-                <div>
-                    <div class="eyebrow">OPERATION SCHEDULE / 02</div>
-                    <h2>Agenda Praktikum</h2>
-                    <p>
-                        Jadwal kegiatan yang dipublikasikan oleh pengelola
-                        praktikum.
-                    </p>
-                </div>
-
-                <a href="{% url 'praktikum:jadwal' %}" class="section-link">
-                    Lihat semua →
-                </a>
-            </div>
-
-            <div class="mine-agenda-grid">
-                {% for acara in acara_list|slice:":6" %}
-                    <article class="mine-agenda-card">
-
-                        <div class="mine-date">
-                            <strong>{{ acara.tanggal_mulai|date:"d" }}</strong>
-                            <span>{{ acara.tanggal_mulai|date:"M" }}</span>
-                        </div>
-
-                        <div class="mine-agenda-content">
-                            <small>
-                                {{ acara.tanggal_mulai|date:"H:i" }}
-                                · {{ acara.status|default:"Terjadwal" }}
-                            </small>
-
-                            <h3>{{ acara.nama }}</h3>
-
-                            {% if acara.sub_acara %}
-                                <p>{{ acara.sub_acara }}</p>
-                            {% endif %}
-
-                            {% if acara.lokasi %}
-                                <p>⌖ {{ acara.lokasi }}</p>
-                            {% endif %}
-
-                            <div class="mine-agenda-team">
-                                {% if acara.penanggung_jawab %}
-                                    <div class="mine-agenda-team-row">
-                                        <span class="mine-agenda-team-label">PJ ACARA</span>
-                                        <span class="mine-agenda-team-value">
-                                            {{ acara.penanggung_jawab.nama }}
-                                        </span>
-                                    </div>
-                                {% endif %}
-
-                                <div class="mine-agenda-team-row">
-                                    <span class="mine-agenda-team-label">PEMBAWA ACARA</span>
-                                    <span class="mine-agenda-team-value">
-                                        {% for mc in acara.pembawa_acara.all %}
-                                            {{ mc.nama }}{% if not forloop.last %}, {% endif %}
-                                        {% empty %}
-                                            Belum ditentukan
-                                        {% endfor %}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                {% empty %}
-                    <div class="mine-empty">Belum ada agenda praktikum.</div>
-                {% endfor %}
-            </div>
-        </div>
-    </section>
-
-    <!-- GROUPS: metadata only, no ProgressAcara -->
-    <section class="section">
-        <div class="container">
-
-            <div class="section-heading">
-                <div>
-                    <div class="eyebrow">MINING TEAMS / 03</div>
-                    <h2>Kelompok Praktikum</h2>
-                    <p>
-                        Informasi kelompok dan jumlah anggota yang terdaftar.
-                        Bagian ini tidak menampilkan persentase progres.
-                    </p>
-                </div>
-
-                <a href="{% url 'praktikum:kelompok' %}" class="section-link">
-                    Lihat semua →
-                </a>
-            </div>
-
-            <div class="mine-groups-grid">
-                {% for kelompok in kelompok_list|slice:":6" %}
-                    <article class="mine-group-card">
-                        <div class="mine-group-top">
-                            <div class="mine-group-symbol">⛏</div>
-
-                            <div>
-                                <div class="mine-group-name">{{ kelompok.nama }}</div>
-                                <div class="mine-group-state">
-                                    {% if kelompok.aktif %}
-                                        Kelompok aktif
-                                    {% else %}
-                                        Kelompok nonaktif
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mine-group-meta">
-                            <span>♟ {{ kelompok.jumlah_anggota }} anggota</span>
-                            <span>Mentor:
-                                {% for mentor in kelompok.mentor.all %}
-                                    {% if mentor.aktif %}
-                                        {{ mentor.nama }}{% if not forloop.last %}, {% endif %}
-                                    {% endif %}
-                                {% empty %}
-                                    Belum ditentukan
-                                {% endfor %}
-                            </span>
-                        </div>
-                    </article>
-                {% empty %}
-                    <div class="mine-empty">Belum ada kelompok praktikum.</div>
-                {% endfor %}
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ANNOUNCEMENTS -->
-    <section class="mine-announcement">
-        <div class="container">
-
-            <div class="section-heading">
-                <div>
-                    <div class="eyebrow">OFFICIAL INFORMATION / 04</div>
-                    <h2>Pengumuman Terbaru</h2>
-                    <p>
-                        Informasi resmi dari pengelola Praktikum
-                        Perencanaan Tambang.
-                    </p>
-                </div>
-
-                <a href="{% url 'praktikum:pengumuman' %}"
-                   class="section-link"
-                   style="color:#ffd777;">
-                    Semua pengumuman →
-                </a>
-            </div>
-
-            <div class="mine-announcement-grid">
-                {% for item in items|slice:":4" %}
-                    <article class="mine-announcement-card">
-                        <div class="mine-announcement-number">
-                            {{ forloop.counter|stringformat:"02d" }}
-                        </div>
-
+                    <div class="home-feature">
+                        <div class="home-feature-check" aria-hidden="true">✓</div>
                         <div>
-                            <small>{{ item.dibuat|date:"d M Y" }}</small>
-                            <h3>{{ item.judul }}</h3>
-                            <p>{{ item.isi|striptags|truncatechars:180 }}</p>
+                            <h4>Materi dan Dokumen</h4>
+                            <p>Akses modul praktikum dan dokumen pendukung yang dipublikasikan.</p>
                         </div>
-                    </article>
-                {% empty %}
-                    <div class="mine-empty">Belum ada pengumuman.</div>
-                {% endfor %}
+                    </div>
+
+                    <div class="home-feature">
+                        <div class="home-feature-check" aria-hidden="true">✓</div>
+                        <div>
+                            <h4>Informasi Resmi</h4>
+                            <p>Pengumuman dan pembaruan kegiatan dari pengelola praktikum.</p>
+                        </div>
+                    </div>
+
+                    <div class="home-feature">
+                        <div class="home-feature-check" aria-hidden="true">✓</div>
+                        <div>
+                            <h4>Akses Lebih Praktis</h4>
+                            <p>Halaman dirancang agar mudah digunakan melalui komputer maupun ponsel.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- LOGIN CTA -->
-    <section class="mine-login">
-        <div class="container">
-            <div class="mine-login-box">
+<!-- LATEST ANNOUNCEMENTS -->
+<section class="home-section home-announcements">
+    <div class="home-container">
+        <div class="home-section-heading">
+            <div class="home-section-heading-main">
+                <div class="home-eyebrow">Pusat Informasi</div>
+                <h2>Pengumuman Terbaru</h2>
+                <p>
+                    Informasi dan pemberitahuan yang dipublikasikan oleh
+                    pengelola Praktikum Perencanaan Tambang.
+                </p>
+            </div>
 
-                <div>
-                    <div class="mine-login-label">GROUP PORTAL</div>
-                    <h2>Siapkan rencana. Bangun hasil terbaik.</h2>
-                    <p>
-                        Masuk ke dashboard kelompok untuk mengelola laporan,
-                        mengunduh file pendukung, melihat jadwal konsultasi,
-                        dan mengakses kebutuhan praktikum kelompok.
-                    </p>
+            <a href="{% url 'praktikum:pengumuman' %}" class="home-text-link">
+                Semua Pengumuman
+                <span aria-hidden="true">→</span>
+            </a>
+        </div>
+
+        <div class="home-announcement-list">
+            {% for item in items|slice:":3" %}
+            <article class="home-announcement-card">
+                <div class="home-announcement-date">
+                    {{ item.dibuat|date:"d M Y" }}
                 </div>
 
-                <a href="{% url 'praktikum:login_kelompok' %}"
-                   class="mine-btn mine-btn-primary">
-                    Login Kelompok →
-                </a>
+                <h3>{{ item.judul }}</h3>
 
+                <p>
+                    {{ item.isi|striptags|truncatechars:150 }}
+                </p>
+            </article>
+            {% empty %}
+            <div class="home-announcement-empty">
+                Belum ada pengumuman yang dipublikasikan.
+                Silakan kunjungi halaman pengumuman secara berkala.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CALL TO ACTION -->
+<section class="home-cta">
+    <div class="home-container">
+        <div class="home-cta-panel">
+            <div class="home-cta-copy">
+                <h2>Siap Mengikuti Kegiatan Praktikum?</h2>
+                <p>
+                    Pastikan kamu mengetahui jadwal, memahami tata tertib,
+                    dan telah mengakses materi yang dibutuhkan.
+                </p>
+            </div>
+
+            <div class="home-cta-action">
+                <a href="{% url 'praktikum:tugas_pendahuluan' %}"
+                   class="home-btn home-btn-primary">
+                    Tugas Pendahuluan
+                    <span aria-hidden="true">→</span>
+                </a>
             </div>
         </div>
-    </section>
-
-</div>
+    </div>
+</section>
 
 {% endblock %}
