@@ -51,6 +51,11 @@ urlpatterns = [
         views.download_format_dokumen,
         name="download_format_dokumen",
     ),
+    path(
+        "laporan-lengkap/<int:laporan_id>/publik/download/",
+        views.download_laporan_lengkap_publik,
+        name="download_laporan_lengkap_publik",
+    ),
 
     # ========================================================
     # LOGIN DAN LOGOUT
@@ -118,6 +123,13 @@ urlpatterns = [
         name="download_file_revisi",
     ),
 
+    # Unduhan laporan mingguan untuk admin yang berwenang.
+    path(
+        "admin-file/laporan-mingguan/<int:laporan_id>/<str:jenis>/",
+        views.download_laporan_mingguan_admin,
+        name="download_laporan_mingguan_admin",
+    ),
+
     # ========================================================
     # LAPORAN LENGKAP
     # ========================================================
@@ -130,6 +142,18 @@ urlpatterns = [
         "laporan-lengkap/<int:laporan_id>/download/",
         views.download_laporan_lengkap,
         name="download_laporan_lengkap",
+    ),
+    path(
+        "laporan-lengkap/<int:laporan_id>/revisi/download/",
+        views.download_laporan_lengkap_revisi,
+        name="download_laporan_lengkap_revisi",
+    ),
+
+    # Unduhan laporan lengkap untuk admin yang berwenang.
+    path(
+        "admin-file/laporan-lengkap/<int:laporan_id>/<str:jenis>/",
+        views.download_laporan_lengkap_admin,
+        name="download_laporan_lengkap_admin",
     ),
 
     # ========================================================
