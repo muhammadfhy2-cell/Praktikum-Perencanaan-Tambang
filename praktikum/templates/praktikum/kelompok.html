@@ -3,819 +3,488 @@
 
 {% block title %}Kelompok Praktikum | Praktikum Perencanaan Tambang{% endblock %}
 
+{% block meta_description %}Daftar kelompok praktikum, anggota aktif, mentor pembimbing, dan informasi kelompok Praktikum Perencanaan Tambang.{% endblock %}
+
 {% block content %}
 
+<section class="page-header topographic">
+    <div class="container">
+        <span class="eyebrow">Team Directory</span>
+        <h1>Kelompok Praktikum</h1>
+        <p>
+            Kenali kelompok praktikum, anggota, dan asisten pembimbing
+            yang mendukung kegiatan Praktikum Perencanaan Tambang.
+        </p>
+        <div class="breadcrumb">
+            <a href="{% url 'praktikum:home' %}">Beranda</a>
+            <span class="separator">/</span>
+            <span>Kelompok</span>
+        </div>
+    </div>
+</section>
+
+<section class="content-section">
+    <div class="container">
+
+        {% if kelompok_list %}
+            <div class="kelompok-list">
+                {% for kelompok in kelompok_list %}
+                    <article class="kelompok-card">
+
+                        <header class="kelompok-card-header">
+                            <div class="kelompok-logo">
+                                {% if kelompok.logo %}
+                                    <img
+                                        src="{{ kelompok.logo.url }}"
+                                        alt="Logo {{ kelompok.nama }}"
+                                        loading="lazy"
+                                    >
+                                {% else %}
+                                    <span class="kelompok-logo-placeholder">
+                                        {{ kelompok.nama|slice:":1"|upper }}
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <div class="kelompok-heading">
+                                <span class="badge badge-gold">Kelompok Praktikum</span>
+                                <h2>{{ kelompok.nama }}</h2>
+                                <div class="kelompok-summary">
+                                    <span>♙ {{ kelompok.jumlah_anggota }} anggota</span>
+                                    <span class="summary-separator">·</span>
+                                    <span>⛏ {{ kelompok.mentor.count }} mentor</span>
+                                </div>
+                            </div>
+
+                            <div class="kelompok-header-accent" aria-hidden="true">
+                                ⛏
+                            </div>
+                        </header>
+
+                        <div class="kelompok-card-body">
+                            <div class="kelompok-info-grid">
+
+                                <!-- MENTOR -->
+                                <section class="kelompok-info-panel">
+                                    <div class="kelompok-panel-heading">
+                                        <span class="kelompok-panel-icon" aria-hidden="true">♙</span>
+                                        <div>
+                                            <h3>Mentor Pembimbing</h3>
+                                            <p>Asisten dosen pendamping kelompok</p>
+                                        </div>
+                                    </div>
+
+                                    {% with mentors=kelompok.mentor.all %}
+                                        {% if mentors %}
+                                            <ul class="kelompok-person-list">
+                                                {% for mentor in mentors %}
+                                                    <li>
+                                                        <span class="kelompok-person-avatar">
+                                                            {{ mentor.nama|first|upper }}
+                                                        </span>
+                                                        <span class="kelompok-person-detail">
+                                                            <strong>{{ mentor.nama }}</strong>
+                                                            <span>{{ mentor.get_jabatan_display }}</span>
+                                                        </span>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <div class="kelompok-empty">
+                                                Belum ada mentor yang ditetapkan.
+                                            </div>
+                                        {% endif %}
+                                    {% endwith %}
+                                </section>
+
+                                <!-- ANGGOTA -->
+                                <section class="kelompok-info-panel">
+                                    <div class="kelompok-panel-heading">
+                                        <span class="kelompok-panel-icon" aria-hidden="true">♧</span>
+                                        <div>
+                                            <h3>Anggota Kelompok</h3>
+                                            <p>Daftar praktikan aktif</p>
+                                        </div>
+                                    </div>
+
+                                    {% with peserta_list=kelompok.peserta.all %}
+                                        {% if peserta_list %}
+                                            <ul class="kelompok-person-list">
+                                                {% for peserta in peserta_list %}
+                                                    {% if peserta.aktif %}
+                                                        <li>
+                                                            <span class="kelompok-person-avatar">
+                                                                {{ peserta.nama|first|upper }}
+                                                            </span>
+                                                            <span class="kelompok-person-detail">
+                                                                <strong>{{ peserta.nama }}</strong>
+                                                                {% if peserta.jabatan == "ketua" %}
+                                                                    <span class="badge badge-gold">Ketua Kelompok</span>
+                                                                {% else %}
+                                                                    <span class="kelompok-member-label">Anggota</span>
+                                                                {% endif %}
+                                                            </span>
+                                                        </li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <div class="kelompok-empty">
+                                                Belum ada data anggota kelompok.
+                                            </div>
+                                        {% endif %}
+                                    {% endwith %}
+                                </section>
+
+                            </div>
+
+                            {% if kelompok.catatan %}
+                                <section class="kelompok-note">
+                                    <span class="kelompok-note-icon" aria-hidden="true">◆</span>
+                                    <div>
+                                        <h3>Catatan Kelompok</h3>
+                                        <p>{{ kelompok.catatan }}</p>
+                                    </div>
+                                </section>
+                            {% endif %}
+                        </div>
+
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty">
+                <div class="empty-icon">⛏</div>
+                <h3>Data Kelompok Belum Tersedia</h3>
+                <p>Informasi kelompok akan ditampilkan setelah data tersedia.</p>
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+
 <style>
-    .kelompok-page {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 30px 20px 60px;
-    }
-
-    .page-header {
-        text-align: center;
-        margin-bottom: 35px;
-    }
-
-    .page-header h1 {
-        margin: 0 0 10px;
-        color: #0b5d3b;
-        font-size: 32px;
-        font-weight: 800;
-    }
-
-    .page-header p {
-        margin: 0;
-        color: #666;
-        font-size: 15px;
-        line-height: 1.7;
+    .kelompok-list {
+        display: grid;
+        gap: 25px;
     }
 
     .kelompok-card {
-        background: #fff;
-        border-radius: 18px;
-        margin-bottom: 30px;
         overflow: hidden;
-        border: 1px solid #e5e5e5;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-lg);
+        background: var(--paper);
+        box-shadow: var(--shadow-sm);
     }
 
-    .kelompok-header {
-        background: linear-gradient(135deg, #075c39, #0b7a4b);
-        color: #fff;
-        padding: 24px 28px;
+    .kelompok-card-header {
+        position: relative;
         display: flex;
         align-items: center;
-        gap: 20px;
+        gap: 21px;
+        min-width: 0;
+        padding: 27px;
+        overflow: hidden;
+        isolation: isolate;
+        background:
+            radial-gradient(ellipse at 90% 10%, rgba(220, 165, 46, .2), transparent 40%),
+            linear-gradient(115deg, var(--ink), var(--brown));
+        color: white;
+    }
+
+    .kelompok-card-header::after {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        inset: 0 0 0 48%;
+        opacity: .6;
+        background: repeating-radial-gradient(
+            ellipse at 100% 50%,
+            transparent 0 17px,
+            rgba(255, 201, 74, .15) 18px 19px,
+            transparent 20px 33px
+        );
+        pointer-events: none;
     }
 
     .kelompok-logo {
-        width: 75px;
-        height: 75px;
-        border-radius: 15px;
-        background: rgba(255, 255, 255, 0.15);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: grid;
+        place-items: center;
+        width: 83px;
+        height: 83px;
+        flex: 0 0 83px;
         overflow: hidden;
-        flex-shrink: 0;
-        border: 2px solid rgba(255, 255, 255, 0.35);
+        border: 1px solid rgba(255, 201, 74, .4);
+        border-radius: 19px;
+        background: rgba(255, 253, 248, .09);
     }
 
     .kelompok-logo img {
+        display: block;
         width: 100%;
         height: 100%;
+        padding: 5px;
         object-fit: contain;
     }
 
-    .logo-placeholder {
-        font-size: 28px;
+    .kelompok-logo-placeholder {
+        color: var(--yellow);
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 39px;
         font-weight: 800;
-        color: #fff;
     }
 
-    .kelompok-header-info {
-        flex: 1;
+    .kelompok-heading {
+        z-index: 1;
         min-width: 0;
+        flex: 1;
     }
 
-    .kelompok-header-info h2 {
-        margin: 0 0 6px;
-        font-size: 25px;
-        font-weight: 800;
+    .kelompok-heading h2 {
+        margin-top: 9px;
+        color: white;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: clamp(28px, 4vw, 39px);
+        line-height: 1.1;
         overflow-wrap: anywhere;
     }
 
-    .kelompok-header-info p {
-        margin: 0;
-        opacity: 0.9;
-        font-size: 14px;
-    }
-
-    .progress-box {
-        min-width: 180px;
-        text-align: right;
-    }
-
-    .progress-label {
-        font-size: 13px;
-        margin-bottom: 7px;
-        opacity: 0.9;
-    }
-
-    .progress-track {
-        width: 100%;
-        height: 9px;
-        background: rgba(255, 255, 255, 0.25);
-        border-radius: 20px;
-        overflow: hidden;
-    }
-
-    .progress-fill {
-        height: 100%;
-        background: #f3c54b;
-        border-radius: 20px;
-    }
-
-    .progress-value {
-        margin-top: 6px;
-        font-size: 13px;
+    .kelompok-summary {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 9px;
+        margin-top: 10px;
+        color: #e7d9c4;
+        font-size: 11px;
         font-weight: 700;
     }
 
-    .kelompok-body {
-        padding: 28px;
+    .summary-separator {
+        color: var(--yellow);
     }
 
-    .section-title {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: #0b5d3b;
-        font-size: 19px;
-        font-weight: 800;
-        margin: 0 0 18px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #f0f0f0;
+    .kelompok-header-accent {
+        z-index: 1;
+        display: grid;
+        place-items: center;
+        width: 55px;
+        height: 55px;
+        flex: 0 0 55px;
+        border: 1px solid rgba(255, 201, 74, .3);
+        border-radius: 16px;
+        background: rgba(255, 201, 74, .09);
+        color: var(--yellow);
+        font-size: 26px;
     }
 
-    .section-title .icon {
-        width: 32px;
-        height: 32px;
-        background: #e9f6ef;
-        color: #0b5d3b;
-        border-radius: 9px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 16px;
-        flex-shrink: 0;
+    .kelompok-card-body {
+        padding: 27px;
     }
 
-    .info-grid {
+    .kelompok-info-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 20px;
-        margin-bottom: 30px;
+        gap: 19px;
     }
 
-    .info-card {
+    .kelompok-info-panel {
         min-width: 0;
-        background: #fafafa;
-        border: 1px solid #ededed;
-        border-radius: 14px;
-        padding: 20px;
+        padding: 21px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #fffefa;
     }
 
-    .info-card h3 {
-        margin: 0 0 14px;
-        color: #333;
-        font-size: 16px;
-        font-weight: 800;
+    .kelompok-panel-heading {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--line);
     }
 
-    .mentor-list,
-    .anggota-list {
-        margin: 0;
+    .kelompok-panel-icon {
+        display: grid;
+        place-items: center;
+        width: 43px;
+        height: 43px;
+        flex: 0 0 43px;
+        border: 1px solid #eddfc1;
+        border-radius: 13px;
+        background: #fbf0d5;
+        color: var(--earth);
+        font-size: 21px;
+    }
+
+    .kelompok-panel-heading h3 {
+        color: var(--ink);
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 23px;
+        line-height: 1.2;
+    }
+
+    .kelompok-panel-heading p {
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 10px;
+    }
+
+    .kelompok-person-list {
+        display: grid;
+        gap: 0;
+        margin: 7px 0 0;
         padding: 0;
         list-style: none;
     }
 
-    .mentor-list li,
-    .anggota-list li {
-        padding: 10px 0;
-        border-bottom: 1px solid #eaeaea;
-        font-size: 14px;
-        overflow-wrap: anywhere;
-    }
-
-    .mentor-list li:last-child,
-    .anggota-list li:last-child {
-        border-bottom: none;
-    }
-
-    .person-name {
-        font-weight: 700;
-        color: #333;
-    }
-
-    .person-role {
-        display: inline-block;
-        margin-left: 7px;
-        padding: 3px 8px;
-        border-radius: 20px;
-        background: #eaf6ef;
-        color: #0b5d3b;
-        font-size: 11px;
-        font-weight: 700;
-    }
-
-    .ketua-badge {
-        background: #fff4cf;
-        color: #896400;
-    }
-
-    .empty-text {
-        color: #888;
-        font-size: 14px;
-        font-style: italic;
-        margin: 0;
-    }
-
-    .progress-section {
-        margin-top: 30px;
-    }
-
-    .progress-intro {
-        background: linear-gradient(135deg, #f5fbf7, #eef8f2);
-        border: 1px solid #dcefe4;
-        border-radius: 14px;
-        padding: 18px 20px;
-        margin-bottom: 22px;
-        color: #4d5b53;
-        font-size: 14px;
-        line-height: 1.7;
-    }
-
-    .progress-intro strong {
-        color: #0b5d3b;
-    }
-
-    .event-progress {
-        border: 1px solid #e6e6e6;
-        border-radius: 15px;
-        margin-bottom: 18px;
-        overflow: hidden;
-        background: #fff;
-    }
-
-    .event-header {
-        padding: 16px 20px;
-        background: #f8faf9;
-        border-bottom: 1px solid #e8e8e8;
-    }
-
-    .event-header h4 {
-        margin: 0 0 5px;
-        color: #0b5d3b;
-        font-size: 16px;
-        font-weight: 800;
-    }
-
-    .event-header p {
-        margin: 0;
-        color: #777;
-        font-size: 13px;
-        line-height: 1.6;
-    }
-
-    .event-body {
-        padding: 20px;
-    }
-
-    .mom-list,
-    .laporan-list {
+    .kelompok-person-list li {
         display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .mom-item {
-        border: 1px solid #e5e5e5;
-        border-radius: 13px;
-        padding: 17px;
-        background: #fff;
-        transition: 0.2s ease;
-    }
-
-    .mom-item:hover {
-        border-color: #cfe5d8;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
-    }
-
-    .mom-top {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 15px;
-        margin-bottom: 10px;
-    }
-
-    .mom-title {
-        margin: 0;
-        color: #333;
-        font-size: 15px;
-        font-weight: 800;
-        overflow-wrap: anywhere;
-    }
-
-    .mom-date {
-        color: #0b5d3b;
-        font-size: 12px;
-        font-weight: 700;
-        white-space: nowrap;
-        background: #eaf6ef;
-        padding: 5px 9px;
-        border-radius: 20px;
-    }
-
-    .mom-meta {
-        color: #777;
-        font-size: 12px;
-        line-height: 1.7;
-        margin-bottom: 12px;
-    }
-
-    .mom-meta strong {
-        color: #555;
-    }
-
-    .mom-content {
-        color: #555;
-        font-size: 13px;
-        line-height: 1.7;
-        white-space: pre-line;
-        overflow-wrap: anywhere;
-        margin-bottom: 12px;
-    }
-
-    .mom-detail {
-        background: #f8faf9;
-        border-radius: 10px;
-        padding: 12px 14px;
-        margin-top: 9px;
-    }
-
-    .mom-detail strong {
-        display: block;
-        color: #0b5d3b;
-        font-size: 12px;
-        margin-bottom: 4px;
-    }
-
-    .mom-detail span {
-        display: block;
-        color: #555;
-        font-size: 13px;
-        line-height: 1.6;
-        white-space: pre-line;
-        overflow-wrap: anywhere;
-    }
-
-    /* LAPORAN ACC: INFORMASI SAJA, TANPA FILE */
-
-    .laporan-item {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 15px;
-        padding: 15px 17px;
-        border: 1px solid #dcefe4;
-        border-radius: 12px;
-        background: #f7fcf9;
-    }
-
-    .laporan-info {
+        align-items: center;
+        gap: 11px;
         min-width: 0;
-        flex: 1;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0e9de;
     }
 
-    .laporan-title {
-        margin: 0 0 7px;
-        color: #333;
-        font-size: 14px;
-        font-weight: 800;
-        overflow-wrap: anywhere;
+    .kelompok-person-list li:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
     }
 
-    .laporan-meta {
-        margin: 0;
-        color: #777;
-        font-size: 12px;
-        line-height: 1.7;
-        overflow-wrap: anywhere;
-    }
-
-    .laporan-approval {
-        margin-top: 10px;
-        color: #256344;
-        font-size: 12px;
-        line-height: 1.7;
-    }
-
-    .acc-badge {
-        flex-shrink: 0;
-        background: #dff4e7;
-        color: #12683f;
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 800;
-    }
-
-    .empty-progress {
-        padding: 20px;
-        text-align: center;
-        background: #fafafa;
-        border: 1px dashed #ddd;
+    .kelompok-person-avatar {
+        display: grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        flex: 0 0 38px;
+        border: 1px solid #e8d7b3;
         border-radius: 12px;
-        color: #888;
-        font-size: 13px;
-        line-height: 1.7;
+        background: #f8edda;
+        color: var(--brown);
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 19px;
+        font-weight: 800;
     }
 
-    .catatan-box {
-        margin-top: 25px;
-        background: #fff9e8;
-        border: 1px solid #f0df9c;
-        border-radius: 13px;
+    .kelompok-person-detail {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+    }
+
+    .kelompok-person-detail strong {
+        color: var(--text);
+        font-size: 12px;
+        overflow-wrap: anywhere;
+    }
+
+    .kelompok-person-detail > span:not(.badge) {
+        color: var(--muted);
+        font-size: 10px;
+    }
+
+    .kelompok-member-label {
+        padding: 2px 7px;
+        border-radius: 999px;
+        background: #f1eee8;
+        color: #6f6253 !important;
+    }
+
+    .kelompok-empty {
+        padding: 20px 5px 5px;
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .kelompok-note {
+        display: flex;
+        gap: 13px;
+        margin-top: 20px;
         padding: 18px;
+        border: 1px solid #f0dfb5;
+        border-radius: 13px;
+        background: #fbf4e3;
     }
 
-    .catatan-box h4 {
-        margin: 0 0 8px;
-        color: #896400;
-        font-size: 15px;
+    .kelompok-note-icon {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        flex: 0 0 34px;
+        border-radius: 10px;
+        background: #f3e2b8;
+        color: var(--earth);
     }
 
-    .catatan-box p {
-        margin: 0;
-        color: #66582e;
-        font-size: 13px;
-        line-height: 1.7;
+    .kelompok-note h3 {
+        color: var(--brown);
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 20px;
+    }
+
+    .kelompok-note p {
+        margin-top: 3px;
+        color: #6e5a3c;
+        font-size: 12px;
         white-space: pre-line;
         overflow-wrap: anywhere;
     }
 
-    @media (max-width: 768px) {
-        .kelompok-page {
-            padding: 20px 14px 40px;
-        }
+    .empty h3 {
+        color: var(--ink);
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 25px;
+    }
 
-        .page-header h1 {
-            font-size: 26px;
-        }
+    .empty p {
+        margin-top: 5px;
+        font-size: 12px;
+    }
 
-        .kelompok-header {
-            flex-direction: column;
-            text-align: center;
-            padding: 22px 18px;
-        }
-
-        .kelompok-header-info h2 {
-            font-size: 22px;
-        }
-
-        .progress-box {
-            width: 100%;
-            min-width: 0;
-            text-align: left;
-        }
-
-        .info-grid {
+    @media (max-width: 760px) {
+        .kelompok-info-grid {
             grid-template-columns: 1fr;
         }
 
-        .kelompok-body {
-            padding: 20px 16px;
+        .kelompok-header-accent {
+            display: none;
+        }
+    }
+
+    @media (max-width: 540px) {
+        .kelompok-card-header {
+            align-items: flex-start;
+            gap: 15px;
+            padding: 20px;
         }
 
-        .mom-top {
-            flex-direction: column;
-            gap: 8px;
+        .kelompok-logo {
+            width: 61px;
+            height: 61px;
+            flex-basis: 61px;
+            border-radius: 15px;
         }
 
-        .mom-date {
-            white-space: normal;
+        .kelompok-logo-placeholder {
+            font-size: 30px;
         }
 
-        .laporan-item {
-            flex-direction: column;
+        .kelompok-heading h2 {
+            font-size: 29px;
         }
 
-        .acc-badge {
-            align-self: flex-start;
+        .kelompok-card-body {
+            padding: 15px;
+        }
+
+        .kelompok-info-panel {
+            padding: 16px;
         }
     }
 </style>
-
-<div class="kelompok-page">
-
-    <div class="page-header">
-        <h1>Kelompok Praktikum</h1>
-        <p>
-            Informasi kelompok, anggota, mentor, dan perkembangan
-            kegiatan Praktikum Perencanaan Tambang.
-        </p>
-    </div>
-
-    {% if kelompok_list %}
-
-        {% for kelompok in kelompok_list %}
-
-            <article class="kelompok-card">
-
-                <header class="kelompok-header">
-
-                    <div class="kelompok-logo">
-                        {% if kelompok.logo %}
-                            <img
-                                src="{{ kelompok.logo.url }}"
-                                alt="Logo {{ kelompok.nama }}"
-                            >
-                        {% else %}
-                            <div class="logo-placeholder">
-                                {{ kelompok.nama|slice:":1"|upper }}
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="kelompok-header-info">
-                        <h2>{{ kelompok.nama }}</h2>
-                        <p>
-                            {{ kelompok.jumlah_anggota }} anggota
-                            · {{ kelompok.mentor.count }} mentor
-                        </p>
-                    </div>
-
-                    <div class="progress-box">
-                        <div class="progress-label">Progress Kelompok</div>
-                        <div class="progress-track">
-                            <div
-                                class="progress-fill"
-                                style="width: {{ kelompok.progress_persen|default:0 }}%;"
-                            ></div>
-                        </div>
-                        <div class="progress-value">
-                            {{ kelompok.progress_persen|default:0 }}%
-                        </div>
-                    </div>
-
-                </header>
-
-                <div class="kelompok-body">
-
-                    <div class="info-grid">
-
-                        <section class="info-card">
-                            <h3>👨‍🏫 Mentor / Asisten Pembimbing</h3>
-
-                            {% with mentors=kelompok.mentor.all %}
-                                {% if mentors %}
-                                    <ul class="mentor-list">
-                                        {% for mentor in mentors %}
-                                            <li>
-                                                <span class="person-name">
-                                                    {{ mentor.nama }}
-                                                </span>
-                                                <span class="person-role">
-                                                    {{ mentor.get_jabatan_display }}
-                                                </span>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                {% else %}
-                                    <p class="empty-text">
-                                        Belum ada mentor yang ditetapkan.
-                                    </p>
-                                {% endif %}
-                            {% endwith %}
-                        </section>
-
-                        <section class="info-card">
-                            <h3>👥 Anggota Kelompok</h3>
-
-                            {% with peserta_list=kelompok.peserta.all %}
-                                {% if peserta_list %}
-                                    <ul class="anggota-list">
-                                        {% for peserta in peserta_list %}
-                                            {% if peserta.aktif %}
-                                                <li>
-                                                    <span class="person-name">
-                                                        {{ peserta.nama }}
-                                                    </span>
-
-                                                    {% if peserta.jabatan == "ketua" %}
-                                                        <span class="person-role ketua-badge">
-                                                            Ketua
-                                                        </span>
-                                                    {% else %}
-                                                        <span class="person-role">
-                                                            Anggota
-                                                        </span>
-                                                    {% endif %}
-                                                </li>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </ul>
-                                {% else %}
-                                    <p class="empty-text">
-                                        Belum ada data anggota.
-                                    </p>
-                                {% endif %}
-                            {% endwith %}
-                        </section>
-
-                    </div>
-
-                    <section class="progress-section">
-
-                        <h3 class="section-title">
-                            <span class="icon">📊</span>
-                            Informasi Progres Kelompok
-                        </h3>
-
-                        <div class="progress-intro">
-                            <strong>Informasi Progres Kelompok</strong>
-                            berisi dokumentasi perkembangan kegiatan yang
-                            dilakukan selama Praktikum Perencanaan Tambang.
-                            DailyMOM memuat catatan kegiatan, keputusan,
-                            dan tindak lanjut. Laporan mingguan pada halaman
-                            publik hanya menampilkan informasi laporan
-                            yang telah berstatus <strong>ACC</strong>.
-                            File laporan tidak ditampilkan atau disediakan
-                            untuk diunduh dari halaman ini.
-                        </div>
-
-                        <!-- DAILY MOM -->
-
-                        <section class="event-progress">
-
-                            <div class="event-header">
-                                <h4>📝 DailyMOM</h4>
-                                <p>
-                                    Dokumentasi kegiatan dan perkembangan
-                                    kelompok.
-                                </p>
-                            </div>
-
-                            <div class="event-body">
-
-                                {% if kelompok.public_daily_mom %}
-
-                                    <div class="mom-list">
-
-                                        {% for mom in kelompok.public_daily_mom %}
-
-                                            <article class="mom-item">
-
-                                                <div class="mom-top">
-                                                    <h5 class="mom-title">
-                                                        {{ mom.judul }}
-                                                    </h5>
-                                                    <span class="mom-date">
-                                                        {{ mom.tanggal|date:"d M Y" }}
-                                                    </span>
-                                                </div>
-
-                                                <div class="mom-meta">
-
-                                                    {% if mom.acara %}
-                                                        <strong>Acara:</strong>
-                                                        {{ mom.acara.nama }}
-                                                    {% endif %}
-
-                                                    {% if mom.dibuat_oleh %}
-                                                        {% if mom.acara %} · {% endif %}
-                                                        <strong>Dibuat oleh:</strong>
-                                                        {{ mom.dibuat_oleh.nama }}
-                                                    {% endif %}
-
-                                                </div>
-
-                                                {% if mom.isi %}
-                                                    <div class="mom-content">{{ mom.isi }}</div>
-                                                {% endif %}
-
-                                                {% if mom.keputusan %}
-                                                    <div class="mom-detail">
-                                                        <strong>Keputusan</strong>
-                                                        <span>{{ mom.keputusan }}</span>
-                                                    </div>
-                                                {% endif %}
-
-                                                {% if mom.tindak_lanjut %}
-                                                    <div class="mom-detail">
-                                                        <strong>Tindak Lanjut</strong>
-                                                        <span>{{ mom.tindak_lanjut }}</span>
-                                                    </div>
-                                                {% endif %}
-
-                                            </article>
-
-                                        {% endfor %}
-
-                                    </div>
-
-                                {% else %}
-
-                                    <div class="empty-progress">
-                                        Belum ada DailyMOM yang dipublikasikan.
-                                    </div>
-
-                                {% endif %}
-
-                            </div>
-                        </section>
-
-                        <!-- LAPORAN MINGGUAN ACC: TANPA TAUTAN FILE -->
-
-                        <section class="event-progress">
-
-                            <div class="event-header">
-                                <h4>📄 Laporan Mingguan</h4>
-                                <p>
-                                    Informasi laporan kelompok yang telah
-                                    mendapatkan persetujuan.
-                                </p>
-                            </div>
-
-                            <div class="event-body">
-
-                                {% if kelompok.public_laporan_mingguan %}
-
-                                    <div class="laporan-list">
-
-                                        {% for laporan in kelompok.public_laporan_mingguan %}
-
-                                            <article class="laporan-item">
-
-                                                <div class="laporan-info">
-
-                                                    <h5 class="laporan-title">
-                                                        {{ laporan.judul }}
-                                                    </h5>
-
-                                                    <p class="laporan-meta">
-
-                                                        {% if laporan.acara %}
-                                                            Acara: {{ laporan.acara.nama }}
-                                                        {% endif %}
-
-                                                        {% if laporan.peserta %}
-                                                            {% if laporan.acara %} · {% endif %}
-                                                            Diunggah oleh:
-                                                            {{ laporan.peserta.nama }}
-                                                        {% endif %}
-
-                                                        {% if laporan.updated_at %}
-                                                            <br>
-                                                            Pembaruan status:
-                                                            {{ laporan.updated_at|date:"d M Y, H:i" }}
-                                                        {% endif %}
-
-                                                    </p>
-
-                                                    <p class="laporan-approval">
-                                                        Laporan mingguan kelompok
-                                                        <strong>{{ kelompok.nama }}</strong>
-                                                        telah berstatus
-                                                        <strong>Disetujui (ACC)</strong>.
-                                                    </p>
-
-                                                </div>
-
-                                                <span class="acc-badge">✓ ACC</span>
-
-                                            </article>
-
-                                        {% endfor %}
-
-                                    </div>
-
-                                {% else %}
-
-                                    <div class="empty-progress">
-                                        Belum ada laporan mingguan yang disetujui.
-                                    </div>
-
-                                {% endif %}
-
-                            </div>
-                        </section>
-
-                    </section>
-
-                    {% if kelompok.catatan %}
-                        <section class="catatan-box">
-                            <h4>📌 Catatan Kelompok</h4>
-                            <p>{{ kelompok.catatan }}</p>
-                        </section>
-                    {% endif %}
-
-                </div>
-            </article>
-
-        {% endfor %}
-
-    {% else %}
-
-        <div class="empty-progress">
-            Belum ada data kelompok yang tersedia.
-        </div>
-
-    {% endif %}
-
-</div>
 
 {% endblock %}
