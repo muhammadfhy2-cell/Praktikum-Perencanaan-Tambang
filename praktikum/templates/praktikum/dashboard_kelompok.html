@@ -5,442 +5,1378 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#21180f">
+
     <title>Dashboard {{ kelompok.nama }} - {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
-        * { box-sizing: border-box; }
+        :root {
+            --ink: #241a11;
+            --ink-2: #342419;
+            --brown: #513720;
+            --earth: #75502d;
+            --gold: #dca52e;
+            --yellow: #ffc94a;
+            --cream: #f7f2e8;
+            --paper: #fffdf8;
+            --line: #e8dfd0;
+            --text: #30271d;
+            --muted: #796e60;
+            --green: #216747;
+            --red: #a63228;
+            --blue: #2759a5;
+            --shadow: 0 12px 35px rgba(44, 29, 14, .07);
+            --radius: 17px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 95px;
+        }
 
         body {
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f1f5f9;
-            color: #1e293b;
+            font-family: "Manrope", "Segoe UI", Arial, sans-serif;
+            background: var(--cream);
+            color: var(--text);
+            line-height: 1.65;
+            font-size: 14px;
         }
 
+        a {
+            color: inherit;
+        }
+
+        button, input, select {
+            font: inherit;
+        }
+
+        button, a, input, select {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        a:focus-visible, button:focus-visible,
+        input:focus-visible, select:focus-visible {
+            outline: 3px solid var(--gold);
+            outline-offset: 3px;
+        }
+
+        /* NAVIGASI */
+
         .navbar {
-            background: #0f172a;
-            color: white;
-            padding: 16px 25px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(36, 26, 17, .97);
+            border-bottom: 1px solid rgba(255, 201, 74, .22);
+            backdrop-filter: blur(14px);
+        }
+
+        .nav-inner {
+            max-width: 1440px;
+            min-height: 76px;
+            margin: auto;
+            padding: 12px 4%;
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
             gap: 20px;
         }
 
-        .brand { font-size: 18px; font-weight: bold; }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            min-width: 0;
+        }
 
-        .brand small {
+        .brand-mark {
+            width: 46px;
+            height: 46px;
+            flex: 0 0 46px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            background: linear-gradient(145deg, var(--yellow), #d18b17);
+            color: var(--ink);
+            font-size: 25px;
+            box-shadow: 0 5px 18px rgba(255, 201, 74, .16);
+        }
+
+        .brand-name {
+            color: #fffaf0;
+            font-size: 13px;
+            font-weight: 800;
+            line-height: 1.45;
+        }
+
+        .brand-caption {
             display: block;
+            margin-bottom: 3px;
+            color: var(--yellow);
+            font-size: 9px;
+            letter-spacing: 2px;
+            font-weight: 800;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: #e8dfd0;
             font-size: 11px;
-            font-weight: normal;
-            color: #cbd5e1;
-            margin-top: 4px;
+            font-weight: 700;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #7fd39d;
+            box-shadow: 0 0 0 4px rgba(127, 211, 157, .12);
         }
 
         .logout {
-            background: #dc2626;
-            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--yellow);
+            color: var(--ink);
             text-decoration: none;
-            padding: 9px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 800;
+            transition: .2s ease;
         }
 
-        .logout:hover { background: #b91c1c; }
+        .logout:hover {
+            background: #ffdc7c;
+            transform: translateY(-1px);
+        }
+
+        /* HERO */
+
+        .hero {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse at 80% 25%, rgba(220, 165, 46, .16), transparent 33%),
+                linear-gradient(120deg, #241a11 0%, #352419 58%, #4b321e 100%);
+            color: #fffaf0;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            inset: 0;
+            opacity: .16;
+            background-image: repeating-radial-gradient(
+                ellipse at 95% 50%,
+                transparent 0 18px,
+                rgba(255, 201, 74, .55) 19px 20px,
+                transparent 21px 35px
+            );
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            position: relative;
+            max-width: 1440px;
+            min-height: 310px;
+            margin: auto;
+            padding: 48px 4% 43px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.25fr) minmax(250px, .75fr);
+            align-items: center;
+            gap: 25px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--yellow);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 27px;
+            height: 2px;
+            background: var(--yellow);
+        }
+
+        .hero h1 {
+            margin: 0 0 12px;
+            max-width: 720px;
+            color: #fffaf0;
+            font-family: "Barlow Condensed", Impact, sans-serif;
+            font-size: clamp(43px, 6vw, 72px);
+            font-weight: 800;
+            line-height: .98;
+            letter-spacing: .5px;
+            overflow-wrap: anywhere;
+        }
+
+        .hero h1 span {
+            color: var(--yellow);
+        }
+
+        .hero p {
+            max-width: 650px;
+            margin: 0;
+            color: #e0d3c1;
+            font-size: 13px;
+            line-height: 1.9;
+        }
+
+        .hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 23px;
+        }
+
+        .hero-tag {
+            padding: 7px 11px;
+            border: 1px solid rgba(255, 201, 74, .28);
+            border-radius: 7px;
+            background: rgba(255, 255, 255, .04);
+            color: #f7e9ce;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        /* ILUSTRASI PIT */
+
+        .pit-art {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            height: 235px;
+            justify-self: end;
+            overflow: hidden;
+            border: 1px solid rgba(255, 201, 74, .17);
+            border-radius: 17px;
+            background:
+                linear-gradient(180deg, rgba(20, 16, 12, .05), rgba(20, 16, 12, .4)),
+                radial-gradient(ellipse at 55% 15%, #8c683e 0%, #614328 43%, #352419 80%);
+        }
+
+        .pit-sun {
+            position: absolute;
+            width: 55px;
+            height: 55px;
+            top: 22px;
+            right: 36px;
+            border-radius: 50%;
+            background: #ffd777;
+            box-shadow: 0 0 35px rgba(255, 201, 74, .27);
+        }
+
+        .pit-layer {
+            position: absolute;
+            left: -8%;
+            width: 116%;
+            height: 65%;
+            transform: rotate(-7deg);
+            border-top: 2px solid rgba(255, 221, 147, .38);
+        }
+
+        .pit-layer.one {
+            bottom: -4%;
+            background: #68482c;
+            border-radius: 44% 55% 0 0;
+        }
+
+        .pit-layer.two {
+            bottom: 8%;
+            left: 3%;
+            width: 100%;
+            height: 48%;
+            background: #8a5c32;
+            border-radius: 45% 48% 0 0;
+        }
+
+        .pit-layer.three {
+            bottom: 19%;
+            left: 13%;
+            width: 85%;
+            height: 34%;
+            background: #b17b3b;
+            border-radius: 45% 45% 0 0;
+        }
+
+        .pit-layer.four {
+            bottom: 30%;
+            left: 25%;
+            width: 66%;
+            height: 22%;
+            background: #d6a04c;
+            border-radius: 45% 45% 0 0;
+        }
+
+        .pit-layer.five {
+            bottom: 41%;
+            left: 37%;
+            width: 43%;
+            height: 13%;
+            background: #efc36b;
+            border-radius: 45% 45% 0 0;
+        }
+
+        .pit-road {
+            position: absolute;
+            z-index: 3;
+            left: 9%;
+            bottom: 28%;
+            width: 82%;
+            height: 3px;
+            transform: rotate(-11deg);
+            background: #f6d99c;
+            box-shadow: 0 6px 0 rgba(46, 29, 15, .45);
+        }
+
+        .pit-label {
+            position: absolute;
+            z-index: 4;
+            left: 16px;
+            top: 15px;
+            color: #fff4dc;
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            font-weight: 800;
+        }
+
+        .pit-truck {
+            position: absolute;
+            z-index: 5;
+            right: 16%;
+            bottom: 19%;
+            width: 85px;
+            height: 32px;
+        }
+
+        .truck-body {
+            position: absolute;
+            right: 0;
+            bottom: 8px;
+            width: 58px;
+            height: 20px;
+            border-radius: 4px 5px 2px 2px;
+            background: #ffc94a;
+            border: 2px solid #3c2a17;
+            transform: skew(-7deg);
+        }
+
+        .truck-cabin {
+            position: absolute;
+            left: 4px;
+            bottom: 8px;
+            width: 23px;
+            height: 20px;
+            background: #e5a52c;
+            border: 2px solid #3c2a17;
+            clip-path: polygon(15% 0, 80% 0, 100% 100%, 0 100%);
+        }
+
+        .truck-wheel {
+            position: absolute;
+            bottom: 0;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #21180f;
+            border: 3px solid #b8a58b;
+        }
+
+        .truck-wheel.w1 { left: 12px; }
+        .truck-wheel.w2 { left: 55px; }
+        .truck-wheel.w3 { right: 0; }
+
+        /* LAYOUT */
 
         .container {
-            width: min(1200px, 94%);
-            margin: 30px auto;
+            width: min(1320px, 92%);
+            margin: 28px auto 55px;
         }
 
-        .welcome, .stat-card, .section {
-            background: white;
-            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.06);
+        .messages {
+            margin-bottom: 20px;
         }
 
-        .welcome {
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 22px;
+        .message {
+            padding: 13px 16px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border: 1px solid #e6d6af;
+            background: #fff4d5;
+            color: #624718;
+            font-size: 13px;
+            font-weight: 700;
+            overflow-wrap: anywhere;
         }
 
-        .welcome h1 {
-            margin: 0 0 8px;
-            font-size: 28px;
-            color: #0f172a;
+        .section {
+            min-width: 0;
+            padding: 24px;
+            margin-bottom: 23px;
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
         }
 
-        .welcome p { margin: 0; color: #64748b; line-height: 1.6; }
+        .section-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
 
-        .grid {
+        .section-heading h2,
+        .section h2 {
+            margin: 0;
+            color: var(--ink);
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -.3px;
+        }
+
+        .section-heading h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-heading h2::before,
+        .section > h2:first-child::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            flex: 0 0 4px;
+            border-radius: 4px;
+            background: var(--gold);
+        }
+
+        .section-kicker {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .help-text {
+            margin: 0 0 19px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.9;
+        }
+
+        /* STATISTIK */
+
+        .stats {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 16px;
+            gap: 17px;
             margin-bottom: 25px;
         }
 
         .stat-card {
-            padding: 20px;
-            border-radius: 14px;
+            position: relative;
+            overflow: hidden;
+            padding: 21px;
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            background: var(--paper);
+            box-shadow: 0 7px 22px rgba(44, 29, 14, .045);
         }
 
-        .stat-title {
-            color: #64748b;
-            font-size: 13px;
-            margin-bottom: 8px;
+        .stat-card::after {
+            content: "";
+            position: absolute;
+            width: 75px;
+            height: 75px;
+            right: -24px;
+            bottom: -28px;
+            border: 10px solid rgba(220, 165, 46, .12);
+            border-radius: 50%;
         }
 
-        .stat-value {
-            color: #0f172a;
-            font-size: 25px;
-            font-weight: bold;
-        }
-
-        .section {
-            border-radius: 16px;
-            padding: 22px;
-            margin-bottom: 22px;
-        }
-
-        .section h2 {
-            margin: 0 0 18px;
-            color: #0f172a;
-            font-size: 20px;
-        }
-
-        .section-header {
+        .stat-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 15px;
-            margin-bottom: 18px;
+            gap: 10px;
+            margin-bottom: 15px;
         }
 
-        .section-header h2 { margin: 0; }
-
-        .daily-mom-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: #0f172a;
-            color: white;
-            padding: 10px 14px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: bold;
-            white-space: nowrap;
+        .stat-icon {
+            display: grid;
+            place-items: center;
+            width: 39px;
+            height: 39px;
+            border-radius: 11px;
+            background: #f8eac5;
+            color: #6d4a12;
+            font-size: 18px;
         }
 
-        .daily-mom-button:hover { background: #1e293b; }
-
-        .mom-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 10px;
-            flex-wrap: wrap;
+        .stat-index {
+            color: #9b8c76;
+            font-family: "Barlow Condensed", sans-serif;
+            font-size: 20px;
+            font-weight: 700;
         }
 
-        .mom-edit-button, .mom-delete-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 7px 11px;
-            border-radius: 7px;
-            font-size: 12px;
-            font-weight: bold;
-            text-decoration: none;
-            cursor: pointer;
-            border: none;
+        .stat-title {
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
         }
 
-        .mom-edit-button {
-            background: #eff6ff;
-            color: #1d4ed8;
-            border: 1px solid #bfdbfe;
+        .stat-value {
+            margin-top: 3px;
+            color: var(--ink);
+            font-family: "Barlow Condensed", sans-serif;
+            font-size: 37px;
+            line-height: 1.1;
+            font-weight: 800;
         }
 
-        .mom-delete-button {
-            background: #fef2f2;
-            color: #b91c1c;
-            border: 1px solid #fecaca;
+        /* DUA KOLOM */
+
+        .two-column {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
+            gap: 23px;
+            margin-bottom: 23px;
+            align-items: start;
         }
 
-        .mom-content {
-            white-space: pre-line;
-            line-height: 1.6;
-            color: #475569;
+        .two-column > .section {
+            margin-bottom: 0;
+            height: 100%;
         }
 
-        .mom-date { white-space: nowrap; }
+        /* TABEL */
 
-        .mom-title {
-            font-weight: bold;
-            color: #0f172a;
-            margin-bottom: 5px;
-        }
-
-        .mom-small {
-            color: #64748b;
-            font-size: 12px;
-            margin-top: 4px;
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--line);
+            border-radius: 11px;
+            background: white;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 650px;
         }
 
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #e2e8f0;
+        th {
+            padding: 14px 13px;
+            background: var(--ink-2);
+            color: #ffedc5;
             text-align: left;
-            vertical-align: top;
-            font-size: 14px;
+            white-space: nowrap;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .7px;
+            text-transform: uppercase;
         }
 
-        th { background: #f8fafc; color: #334155; }
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #eee7dc;
+            color: #403529;
+            vertical-align: top;
+            font-size: 12px;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover td {
+            background: #fff9ec;
+        }
+
+        /* BADGE STATUS */
 
         .badge {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 100%;
             padding: 5px 9px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: bold;
-            background: #e2e8f0;
-            color: #334155;
+            border: 1px solid #e8dfd0;
+            border-radius: 7px;
+            background: #f3eee5;
+            color: #5d4b35;
+            font-size: 10px;
+            line-height: 1.5;
+            font-weight: 800;
+            overflow-wrap: anywhere;
         }
 
+        .badge-green {
+            background: #e5f5eb;
+            border-color: #c4e7d0;
+            color: #1c6540;
+        }
+
+        .badge-gold {
+            background: #fff1c9;
+            border-color: #f0d98f;
+            color: #76530c;
+        }
+
+        .badge-red {
+            background: #fce9e6;
+            border-color: #f0c9c2;
+            color: #922d25;
+        }
+
+        .badge-blue {
+            background: #e9f0ff;
+            border-color: #ccdafa;
+            color: #274d91;
+        }
+
+        /* MENTOR */
+
         .mentor-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            display: grid;
+            gap: 11px;
         }
 
         .mentor {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 10px 13px;
-            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #fffaf0;
         }
 
-        .upload-form { display: grid; gap: 13px; }
+        .mentor-avatar {
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            flex: 0 0 40px;
+            border-radius: 12px;
+            background: var(--ink-2);
+            color: var(--yellow);
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .mentor strong {
+            display: block;
+            color: var(--ink);
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .mentor small {
+            display: block;
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        /* FORM */
+
+        .upload-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 17px;
+        }
+
+        .form-field {
+            min-width: 0;
+        }
+
+        .form-field.full {
+            grid-column: 1 / -1;
+        }
 
         .upload-form label {
             display: block;
-            font-size: 13px;
-            font-weight: bold;
-            color: #334155;
-            margin-bottom: 6px;
+            margin-bottom: 7px;
+            color: var(--ink-2);
+            font-size: 11px;
+            font-weight: 800;
         }
 
-        .upload-form input, .upload-form select {
+        .upload-form input,
+        .upload-form select {
+            display: block;
             width: 100%;
-            padding: 11px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            background: white;
-            font: inherit;
+            min-width: 0;
+            padding: 12px 13px;
+            border: 1px solid #ded3c1;
+            border-radius: 9px;
+            background: #fffefa;
+            color: var(--text);
+            font-size: 12px;
+            transition: border-color .2s, box-shadow .2s;
         }
 
-        .button, .file-link {
-            display: inline-block;
-            border: none;
-            background: #0f172a;
-            color: white;
-            padding: 11px 16px;
-            border-radius: 8px;
+        .upload-form input::placeholder {
+            color: #a09483;
+        }
+
+        .upload-form input:focus,
+        .upload-form select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(220, 165, 46, .14);
+        }
+
+        .upload-form input[type="file"] {
+            padding: 9px;
+            background: #fffaf0;
+        }
+
+        .upload-form input[type="file"]::file-selector-button {
+            margin-right: 10px;
+            padding: 7px 10px;
+            border: 0;
+            border-radius: 6px;
+            background: #f2e5c7;
+            color: #4f3817;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        /* TOMBOL */
+
+        .button,
+        .file-link,
+        .daily-mom-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            border: 1px solid transparent;
+            border-radius: 9px;
             text-decoration: none;
             cursor: pointer;
-            font-weight: bold;
+            font-size: 11px;
+            font-weight: 800;
+            transition: .2s ease;
+        }
+
+        .button {
+            min-height: 43px;
+            padding: 11px 18px;
+            background: var(--gold);
+            color: var(--ink);
+        }
+
+        .button:hover {
+            background: var(--yellow);
+            transform: translateY(-1px);
         }
 
         .file-link {
-            padding: 7px 10px;
-            font-size: 12px;
+            padding: 8px 11px;
+            background: #f8eac5;
+            border-color: #eed89b;
+            color: #63450e;
             white-space: nowrap;
         }
 
-        .button:hover, .file-link:hover { background: #334155; }
+        .file-link:hover {
+            background: #f5d982;
+            color: #352419;
+        }
+
+        .daily-mom-button {
+            padding: 11px 14px;
+            background: var(--ink-2);
+            color: #fff4dc;
+            white-space: nowrap;
+        }
+
+        .daily-mom-button:hover {
+            background: var(--brown);
+            color: var(--yellow);
+        }
+
+        .mom-edit-button,
+        .mom-delete-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 7px 10px;
+            border: 1px solid transparent;
+            border-radius: 7px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .mom-edit-button {
+            background: #e9f0ff;
+            border-color: #ccdafa;
+            color: #274d91;
+        }
+
+        .mom-delete-button {
+            background: #fce9e6;
+            border-color: #f0c9c2;
+            color: #922d25;
+        }
+
+        .mom-edit-button:hover {
+            background: #d9e5ff;
+        }
+
+        .mom-delete-button:hover {
+            background: #f6d5d0;
+        }
+
+        .mom-actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .mom-actions form {
+            margin: 0;
+        }
+
+        /* DAILY MOM */
+
+        .mom-title {
+            color: var(--ink);
+            font-weight: 800;
+        }
+
+        .mom-content {
+            color: #514537;
+            white-space: pre-line;
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+        }
+
+        .mom-small {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 10px;
+            line-height: 1.7;
+        }
+
+        .mom-date {
+            white-space: nowrap;
+        }
+
+        /* INFORMASI KOSONG */
 
         .empty {
-            color: #94a3b8;
-            font-size: 14px;
-            padding: 10px 0;
-        }
-
-        .message {
-            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 17px;
+            border: 1px dashed #ddcfb9;
             border-radius: 10px;
-            background: #eff6ff;
-            color: #1d4ed8;
-            margin-bottom: 15px;
-            font-size: 14px;
+            background: #fffaf1;
+            color: #786b59;
+            font-size: 12px;
         }
 
-        .two-column {
+        .empty-icon {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 22px;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            flex: 0 0 34px;
+            border-radius: 9px;
+            background: #f3e5c6;
+            color: #79541a;
+            font-size: 17px;
         }
 
-        .help-text {
-            font-size: 13px;
-            color: #64748b;
-            line-height: 1.6;
-            margin: 0 0 15px;
+        /* CATATAN */
+
+        .group-note {
+            color: #514537;
+            line-height: 1.9;
+            overflow-wrap: anywhere;
         }
 
-        .consultation-info {
-            line-height: 1.7;
-            min-width: 170px;
+        .group-note p {
+            margin: 0 0 10px;
         }
 
-        @media (max-width: 900px) {
-            .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .two-column { grid-template-columns: 1fr; }
+        /* FOOTER */
+
+        .footer {
+            overflow: hidden;
+            position: relative;
+            background: var(--ink);
+            color: #e8dfd0;
         }
 
-        @media (max-width: 600px) {
-            .navbar {
-                flex-direction: column;
-                align-items: flex-start;
+        .footer::before {
+            content: "";
+            display: block;
+            height: 4px;
+            background: linear-gradient(90deg, #7c5020, var(--yellow), #a76d25);
+        }
+
+        .footer-inner {
+            max-width: 1320px;
+            margin: auto;
+            padding: 25px 4%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .footer-brand {
+            color: #fff5e3;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .footer-note {
+            margin-top: 4px;
+            color: #bcae9a;
+            font-size: 10px;
+        }
+
+        .footer-year {
+            color: var(--yellow);
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        /* RESPONSIVE */
+
+        @media (min-width: 1500px) {
+            .hero-inner {
+                min-height: 350px;
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .hero-inner {
+                grid-template-columns: minmax(0, 1fr) minmax(210px, .7fr);
             }
 
-            .grid { grid-template-columns: 1fr; }
-            .container { width: 92%; }
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .two-column > .section {
+                height: auto;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .nav-inner {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px 4%;
+            }
+
+            .nav-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .hero-inner {
+                grid-template-columns: 1fr;
+                padding-top: 37px;
+                padding-bottom: 30px;
+            }
+
+            .hero h1 {
+                font-size: clamp(43px, 11vw, 62px);
+            }
+
+            .pit-art {
+                justify-self: stretch;
+                max-width: none;
+                height: 190px;
+            }
+
+            .container {
+                width: 94%;
+                margin-top: 20px;
+            }
+
+            .stats {
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-value {
+                font-size: 32px;
+            }
+
+            .stat-title {
+                font-size: 10px;
+            }
 
             .section {
                 padding: 17px;
-                overflow-x: auto;
+                margin-bottom: 17px;
             }
 
-            table { min-width: 650px; }
+            .section-heading {
+                flex-direction: column;
+            }
 
-            .section-header {
+            .daily-mom-button {
+                width: 100%;
+                white-space: normal;
+            }
+
+            .upload-form {
+                grid-template-columns: 1fr;
+            }
+
+            .form-field.full {
+                grid-column: auto;
+            }
+
+            .footer-inner {
                 align-items: flex-start;
                 flex-direction: column;
             }
+        }
 
-            .daily-mom-button { width: 100%; }
-
-            .mom-actions {
-                flex-direction: column;
-                align-items: stretch;
+        @media (max-width: 430px) {
+            .brand-name {
+                font-size: 11px;
             }
 
-            .mom-edit-button, .mom-delete-button { width: 100%; }
+            .brand-mark {
+                width: 40px;
+                height: 40px;
+                flex-basis: 40px;
+            }
 
-            .welcome h1 { font-size: 23px; }
+            .nav-status {
+                font-size: 10px;
+            }
+
+            .logout {
+                padding: 9px 12px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                padding: 13px 15px;
+            }
+
+            .stat-top {
+                margin: 0;
+            }
+
+            .stat-icon {
+                width: 38px;
+                height: 38px;
+            }
+
+            .stat-index {
+                display: none;
+            }
+
+            .stat-info {
+                min-width: 0;
+            }
+
+            .stat-value {
+                margin-top: 0;
+                font-size: 29px;
+            }
+
+            .hero-tags {
+                gap: 6px;
+            }
+
+            .hero-tag {
+                font-size: 9px;
+            }
+
+            .section h2 {
+                font-size: 15px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *, *::before, *::after {
+                transition-duration: .01ms !important;
+            }
         }
     </style>
 </head>
 
 <body>
-<nav class="navbar">
-    <div class="brand">
-        {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
-        <small>Dashboard Kelompok</small>
-    </div>
 
-    <a href="{% url 'praktikum:logout_kelompok' %}" class="logout">Keluar</a>
+<nav class="navbar">
+    <div class="nav-inner">
+        <div class="brand">
+            <div class="brand-mark" aria-hidden="true">⛏</div>
+            <div class="brand-name">
+                <span class="brand-caption">MINING EDUCATION PLATFORM</span>
+                {{ setting.nama_praktikum|default:"Praktikum Perencanaan Tambang" }}
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <span class="nav-status">
+                <span class="status-dot"></span>
+                AKUN KELOMPOK AKTIF
+            </span>
+            <a href="{% url 'praktikum:logout_kelompok' %}" class="logout">
+                ↗ Keluar
+            </a>
+        </div>
+    </div>
 </nav>
 
-<div class="container">
+<header class="hero">
+    <div class="hero-inner">
+        <div class="hero-copy">
+            <div class="eyebrow">MINING OPERATIONS / GROUP PORTAL</div>
+
+            <h1>
+                GROUP<br>
+                <span>{{ kelompok.nama }}</span>
+            </h1>
+
+            <p>
+                Selamat datang di pusat administrasi kelompok praktikum.
+                Kelola laporan, dokumen, Daily MOM, dan jadwal konsultasi
+                dalam satu dashboard terpadu.
+            </p>
+
+            <div class="hero-tags">
+                <span class="hero-tag">◆ GROUP MANAGEMENT</span>
+                <span class="hero-tag">◆ REPORT CENTER</span>
+                <span class="hero-tag">◆ CONSULTATION</span>
+            </div>
+        </div>
+
+        <div class="pit-art" aria-label="Ilustrasi jenjang tambang terbuka">
+            <div class="pit-sun"></div>
+            <div class="pit-label">OPEN PIT / MINE DESIGN</div>
+            <div class="pit-layer one"></div>
+            <div class="pit-layer two"></div>
+            <div class="pit-layer three"></div>
+            <div class="pit-layer four"></div>
+            <div class="pit-layer five"></div>
+            <div class="pit-road"></div>
+            <div class="pit-truck" aria-hidden="true">
+                <div class="truck-cabin"></div>
+                <div class="truck-body"></div>
+                <div class="truck-wheel w1"></div>
+                <div class="truck-wheel w2"></div>
+                <div class="truck-wheel w3"></div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="container">
 
     {% if messages %}
-        {% for message in messages %}
-            <div class="message">{{ message }}</div>
-        {% endfor %}
+        <div class="messages" aria-live="polite">
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        </div>
     {% endif %}
 
-    <!-- PROFIL KELOMPOK -->
-    <div class="welcome">
-        <h1>{{ kelompok.nama }}</h1>
-        <p>
-            Selamat datang di dashboard kelompok. Kelola laporan, file,
-            Daily MOM, dan jadwal konsultasi melalui halaman ini.
-        </p>
-    </div>
-
-    <!-- STATISTIK -->
-    <div class="grid">
+    <!-- STATISTIK KELOMPOK -->
+    <section class="stats" aria-label="Ringkasan kelompok">
         <div class="stat-card">
-            <div class="stat-title">Jumlah Anggota</div>
-            <div class="stat-value">{{ anggota|length }}</div>
+            <div class="stat-top">
+                <div class="stat-icon" aria-hidden="true">♟</div>
+                <span class="stat-index">01</span>
+            </div>
+            <div class="stat-info">
+                <div class="stat-title">Jumlah Anggota</div>
+                <div class="stat-value">{{ anggota|length }}</div>
+            </div>
         </div>
 
         <div class="stat-card">
-            <div class="stat-title">Laporan Mingguan</div>
-            <div class="stat-value">{{ laporan|length }}</div>
+            <div class="stat-top">
+                <div class="stat-icon" aria-hidden="true">▤</div>
+                <span class="stat-index">02</span>
+            </div>
+            <div class="stat-info">
+                <div class="stat-title">Laporan Mingguan</div>
+                <div class="stat-value">{{ laporan|length }}</div>
+            </div>
         </div>
 
         <div class="stat-card">
-            <div class="stat-title">File Kelompok</div>
-            <div class="stat-value">{{ file_kelompok|length }}</div>
+            <div class="stat-top">
+                <div class="stat-icon" aria-hidden="true">▣</div>
+                <span class="stat-index">03</span>
+            </div>
+            <div class="stat-info">
+                <div class="stat-title">File Kelompok</div>
+                <div class="stat-value">{{ file_kelompok|length }}</div>
+            </div>
         </div>
-    </div>
+    </section>
 
     <!-- ANGGOTA DAN MENTOR -->
     <div class="two-column">
-        <div class="section">
-            <h2>Anggota Kelompok</h2>
+
+        <section class="section">
+            <div class="section-heading">
+                <div>
+                    <h2>Anggota Kelompok</h2>
+                    <div class="section-kicker">
+                        Daftar personel yang terdaftar dalam kelompok.
+                    </div>
+                </div>
+                <span class="badge badge-gold">
+                    {{ anggota|length }} PERSONEL
+                </span>
+            </div>
 
             {% if anggota %}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>No.</th>
-                            <th>Nama</th>
-                            <th>NIM</th>
-                            <th>Jabatan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for peserta in anggota %}
+                <div class="table-wrap">
+                    <table>
+                        <thead>
                             <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ peserta.nama }}</td>
-                                <td>{{ peserta.nim|default:"-" }}</td>
-                                <td>
-                                    <span class="badge">{{ peserta.get_jabatan_display }}</span>
-                                </td>
+                                <th>No.</th>
+                                <th>Nama</th>
+                                <th>NIM</th>
+                                <th>Jabatan</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for peserta in anggota %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><strong>{{ peserta.nama }}</strong></td>
+                                    <td>{{ peserta.nim|default:"-" }}</td>
+                                    <td>
+                                        <span class="badge">
+                                            {{ peserta.get_jabatan_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             {% else %}
-                <div class="empty">Belum ada anggota kelompok.</div>
+                <div class="empty">
+                    <span class="empty-icon">♟</span>
+                    Belum ada anggota kelompok.
+                </div>
             {% endif %}
-        </div>
+        </section>
 
-        <div class="section">
-            <h2>Mentor</h2>
+        <section class="section">
+            <div class="section-heading">
+                <div>
+                    <h2>Mentor & Pendamping</h2>
+                    <div class="section-kicker">
+                        Asisten atau pendamping yang ditetapkan untuk kelompok.
+                    </div>
+                </div>
+            </div>
 
             {% if mentor %}
                 <div class="mentor-list">
                     {% for item in mentor %}
                         <div class="mentor">
-                            <strong>{{ item.nama }}</strong><br>
-                            <small>{{ item.get_jabatan_display }}</small>
+                            <div class="mentor-avatar" aria-hidden="true">♙</div>
+                            <div>
+                                <strong>{{ item.nama }}</strong>
+                                <small>{{ item.get_jabatan_display }}</small>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="empty">Belum ada mentor yang ditetapkan.</div>
+                <div class="empty">
+                    <span class="empty-icon">♙</span>
+                    Belum ada mentor yang ditetapkan.
+                </div>
             {% endif %}
-        </div>
+        </section>
+
     </div>
 
     <!-- UPLOAD LAPORAN MINGGUAN -->
-    <div class="section">
-        <h2>Upload Laporan Mingguan</h2>
+    <section class="section" id="upload-mingguan">
+        <div class="section-heading">
+            <div>
+                <h2>Upload Laporan Mingguan</h2>
+                <div class="section-kicker">
+                    WEEKLY REPORT SUBMISSION
+                </div>
+            </div>
+            <span class="badge badge-gold">UPLOAD DOKUMEN</span>
+        </div>
 
         <p class="help-text">
             Pilih acara dan peserta pengunggah. Laporan akan dikirim untuk
-            diperiksa admin atau asisten yang berwenang.
+            diperiksa admin atau asisten yang berwenang. Pastikan dokumen
+            yang diunggah sudah sesuai dengan ketentuan praktikum.
         </p>
 
         <form
@@ -451,7 +1387,7 @@
         >
             {% csrf_token %}
 
-            <div>
+            <div class="form-field full">
                 <label for="judul">Judul Laporan</label>
                 <input
                     type="text"
@@ -463,8 +1399,8 @@
                 >
             </div>
 
-            <div>
-                <label for="acara">Acara</label>
+            <div class="form-field">
+                <label for="acara">Acara Praktikum</label>
                 <select id="acara" name="acara" required>
                     <option value="">-- Pilih Acara --</option>
                     {% for item in acara_list %}
@@ -475,7 +1411,7 @@
                 </select>
             </div>
 
-            <div>
+            <div class="form-field">
                 <label for="peserta">Peserta Pengunggah</label>
                 <select id="peserta" name="peserta" required>
                     <option value="">-- Pilih Peserta --</option>
@@ -485,7 +1421,7 @@
                 </select>
             </div>
 
-            <div>
+            <div class="form-field full">
                 <label for="file_laporan">File Laporan</label>
                 <input
                     type="file"
@@ -496,127 +1432,164 @@
                 >
             </div>
 
-            <div>
-                <button type="submit" class="button">Upload Laporan</button>
+            <div class="form-field full">
+                <button type="submit" class="button">
+                    ↑ &nbsp; Upload Laporan Mingguan
+                </button>
             </div>
         </form>
-    </div>
+    </section>
 
     <!-- DAFTAR LAPORAN MINGGUAN -->
-    <div class="section">
-        <h2>Laporan Mingguan</h2>
+    <section class="section" id="laporan-mingguan">
+        <div class="section-heading">
+            <div>
+                <h2>Laporan Mingguan</h2>
+                <div class="section-kicker">
+                    Riwayat pengumpulan, status pemeriksaan, dan file revisi.
+                </div>
+            </div>
+            <span class="badge">{{ laporan|length }} LAPORAN</span>
+        </div>
 
         {% if laporan %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>Judul</th>
-                        <th>Peserta</th>
-                        <th>Acara</th>
-                        <th>Status dan Catatan</th>
-                        <th>File</th>
-                        <th>File Revisi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in laporan %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
                         <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ item.judul|default:"Laporan Mingguan" }}</td>
-                            <td>{{ item.peserta.nama|default:"-" }}</td>
-                            <td>{{ item.acara.nama|default:"-" }}</td>
-                            <td>
-                                <span class="badge">{{ item.get_status_display }}</span>
-                                {% if item.catatan_admin %}
-                                    <div class="mom-small">
-                                        Catatan: {{ item.catatan_admin }}
-                                    </div>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if item.file %}
-                                    <a
-                                        href="{% url 'praktikum:download_laporan_mingguan' item.id %}"
-                                        class="file-link"
-                                    >Unduh Laporan</a>
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if item.file_revisi %}
-                                    <a
-                                        href="{% url 'praktikum:download_file_revisi' item.id %}"
-                                        class="file-link"
-                                    >Unduh Revisi</a>
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
+                            <th>No.</th>
+                            <th>Judul</th>
+                            <th>Peserta</th>
+                            <th>Acara</th>
+                            <th>Status dan Catatan</th>
+                            <th>File</th>
+                            <th>File Revisi</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for item in laporan %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                    <strong>{{ item.judul|default:"Laporan Mingguan" }}</strong>
+                                </td>
+                                <td>{{ item.peserta.nama|default:"-" }}</td>
+                                <td>{{ item.acara.nama|default:"-" }}</td>
+                                <td>
+                                    <span class="badge">{{ item.get_status_display }}</span>
+                                    {% if item.catatan_admin %}
+                                        <div class="mom-small">
+                                            <strong>Catatan:</strong>
+                                            {{ item.catatan_admin }}
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if item.file %}
+                                        <a
+                                            href="{% url 'praktikum:download_laporan_mingguan' item.id %}"
+                                            class="file-link"
+                                        >↓ Unduh</a>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if item.file_revisi %}
+                                        <a
+                                            href="{% url 'praktikum:download_file_revisi' item.id %}"
+                                            class="file-link"
+                                        >↓ Revisi</a>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         {% else %}
-            <div class="empty">Belum ada laporan mingguan.</div>
+            <div class="empty">
+                <span class="empty-icon">▤</span>
+                Belum ada laporan mingguan.
+            </div>
         {% endif %}
-    </div>
+    </section>
 
     <!-- FILE KELOMPOK -->
-    <div class="section">
-        <h2>File Kelompok</h2>
+    <section class="section" id="file-kelompok">
+        <div class="section-heading">
+            <div>
+                <h2>File Kelompok</h2>
+                <div class="section-kicker">
+                    GROUP DOCUMENT CENTER
+                </div>
+            </div>
+        </div>
 
         <p class="help-text">
             File yang disediakan admin ditampilkan berdasarkan kelompok
-            yang sedang login. Unduh file sesuai acara dan jenisnya.
+            yang sedang login. Unduh dokumen sesuai acara, jenis, dan statusnya.
         </p>
 
         {% if file_kelompok %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>Nama File</th>
-                        <th>Acara</th>
-                        <th>Jenis</th>
-                        <th>Status</th>
-                        <th>Catatan Admin</th>
-                        <th>File</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in file_kelompok %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
                         <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ item.nama_file }}</td>
-                            <td>{{ item.acara.nama|default:"-" }}</td>
-                            <td>{{ item.get_jenis_display }}</td>
-                            <td>{{ item.get_status_display }}</td>
-                            <td>{{ item.catatan_admin|default:"-" }}</td>
-                            <td>
-                                {% if item.file %}
-                                    <a
-                                        href="{% url 'praktikum:download_file_kelompok' item.id %}"
-                                        class="file-link"
-                                    >Unduh File</a>
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
+                            <th>No.</th>
+                            <th>Nama File</th>
+                            <th>Acara</th>
+                            <th>Jenis</th>
+                            <th>Status</th>
+                            <th>Catatan Admin</th>
+                            <th>File</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for item in file_kelompok %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><strong>{{ item.nama_file }}</strong></td>
+                                <td>{{ item.acara.nama|default:"-" }}</td>
+                                <td>{{ item.get_jenis_display }}</td>
+                                <td>
+                                    <span class="badge">{{ item.get_status_display }}</span>
+                                </td>
+                                <td>{{ item.catatan_admin|default:"-" }}</td>
+                                <td>
+                                    {% if item.file %}
+                                        <a
+                                            href="{% url 'praktikum:download_file_kelompok' item.id %}"
+                                            class="file-link"
+                                        >↓ Unduh File</a>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         {% else %}
-            <div class="empty">Belum ada file untuk kelompok ini.</div>
+            <div class="empty">
+                <span class="empty-icon">▣</span>
+                Belum ada file untuk kelompok ini.
+            </div>
         {% endif %}
-    </div>
+    </section>
 
     <!-- DAILY MOM -->
-    <div class="section">
-        <div class="section-header">
-            <h2>Daily MOM</h2>
+    <section class="section" id="daily-mom">
+        <div class="section-heading">
+            <div>
+                <h2>Daily MOM</h2>
+                <div class="section-kicker">
+                    DAILY MEETING MINUTES · Catatan pembahasan dan keputusan.
+                </div>
+            </div>
             <a
                 href="{% url 'praktikum:tambah_daily_mom' %}"
                 class="daily-mom-button"
@@ -624,89 +1597,110 @@
         </div>
 
         {% if daily_mom %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Tanggal</th>
-                        <th>Judul</th>
-                        <th>Acara</th>
-                        <th>Dibuat Oleh</th>
-                        <th>Isi / Pembahasan</th>
-                        <th>Keputusan</th>
-                        <th>Tindak Lanjut</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in daily_mom %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
                         <tr>
-                            <td class="mom-date">{{ item.tanggal|date:"d/m/Y" }}</td>
-                            <td><div class="mom-title">{{ item.judul }}</div></td>
-                            <td>
-                                {% if item.acara %}
-                                    {{ item.acara.nama }}
-                                    {% if item.acara.sub_acara %}
-                                        <div class="mom-small">{{ item.acara.sub_acara }}</div>
-                                    {% endif %}
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                            <td>{{ item.dibuat_oleh.nama|default:"-" }}</td>
-                            <td>
-                                {% if item.isi %}
-                                    <div class="mom-content">{{ item.isi }}</div>
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if item.keputusan %}
-                                    <div class="mom-content">{{ item.keputusan }}</div>
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if item.tindak_lanjut %}
-                                    <div class="mom-content">{{ item.tindak_lanjut }}</div>
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                            <td>
-                                <div class="mom-actions">
-                                    <a
-                                        href="{% url 'praktikum:edit_daily_mom' item.id %}"
-                                        class="mom-edit-button"
-                                    >Edit</a>
-
-                                    <form
-                                        method="post"
-                                        action="{% url 'praktikum:hapus_daily_mom' item.id %}"
-                                        onsubmit="return confirm('Yakin ingin menghapus Daily MOM ini?');"
-                                    >
-                                        {% csrf_token %}
-                                        <button type="submit" class="mom-delete-button">Hapus</button>
-                                    </form>
-                                </div>
-                            </td>
+                            <th>Tanggal</th>
+                            <th>Judul</th>
+                            <th>Acara</th>
+                            <th>Dibuat Oleh</th>
+                            <th>Isi / Pembahasan</th>
+                            <th>Keputusan</th>
+                            <th>Tindak Lanjut</th>
+                            <th>Aksi</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for item in daily_mom %}
+                            <tr>
+                                <td class="mom-date">
+                                    {{ item.tanggal|date:"d/m/Y" }}
+                                </td>
+                                <td>
+                                    <div class="mom-title">{{ item.judul }}</div>
+                                </td>
+                                <td>
+                                    {% if item.acara %}
+                                        {{ item.acara.nama }}
+                                        {% if item.acara.sub_acara %}
+                                            <div class="mom-small">
+                                                {{ item.acara.sub_acara }}
+                                            </div>
+                                        {% endif %}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.dibuat_oleh.nama|default:"-" }}</td>
+                                <td>
+                                    {% if item.isi %}
+                                        <div class="mom-content">{{ item.isi }}</div>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if item.keputusan %}
+                                        <div class="mom-content">{{ item.keputusan }}</div>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if item.tindak_lanjut %}
+                                        <div class="mom-content">{{ item.tindak_lanjut }}</div>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="mom-actions">
+                                        <a
+                                            href="{% url 'praktikum:edit_daily_mom' item.id %}"
+                                            class="mom-edit-button"
+                                        >Edit</a>
+
+                                        <form
+                                            method="post"
+                                            action="{% url 'praktikum:hapus_daily_mom' item.id %}"
+                                            onsubmit="return confirm('Yakin ingin menghapus Daily MOM ini?');"
+                                        >
+                                            {% csrf_token %}
+                                            <button type="submit" class="mom-delete-button">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         {% else %}
-            <div class="empty">Belum ada Daily MOM.</div>
+            <div class="empty">
+                <span class="empty-icon">▤</span>
+                Belum ada Daily MOM.
+            </div>
         {% endif %}
-    </div>
+    </section>
 
     <!-- UPLOAD LAPORAN LENGKAP -->
-    <div class="section">
-        <h2>Upload Laporan Lengkap</h2>
+    <section class="section" id="upload-laporan-lengkap">
+        <div class="section-heading">
+            <div>
+                <h2>Upload Laporan Lengkap</h2>
+                <div class="section-kicker">
+                    FINAL REPORT SUBMISSION
+                </div>
+            </div>
+            <span class="badge badge-gold">LAPORAN AKHIR</span>
+        </div>
 
         <p class="help-text">
             Unggah laporan akhir kelompok untuk diperiksa admin.
-            Pilih file yang akan disimpan sebagai laporan lengkap.
+            Pastikan dokumen sudah diperiksa kembali sebelum dikirim.
         </p>
 
         <form
@@ -717,7 +1711,7 @@
         >
             {% csrf_token %}
 
-            <div>
+            <div class="form-field full">
                 <label for="judul_lengkap">Judul Laporan</label>
                 <input
                     type="text"
@@ -729,7 +1723,7 @@
                 >
             </div>
 
-            <div>
+            <div class="form-field full">
                 <label for="file_laporan_lengkap">File Laporan Lengkap</label>
                 <input
                     type="file"
@@ -740,67 +1734,90 @@
                 >
             </div>
 
-            <div>
-                <button type="submit" class="button">Unggah Laporan Lengkap</button>
+            <div class="form-field full">
+                <button type="submit" class="button">
+                    ↑ &nbsp; Unggah Laporan Lengkap
+                </button>
             </div>
         </form>
-    </div>
+    </section>
 
     <!-- RIWAYAT LAPORAN LENGKAP -->
-    <div class="section">
-        <h2>Riwayat Laporan Lengkap</h2>
+    <section class="section" id="riwayat-laporan-lengkap">
+        <div class="section-heading">
+            <div>
+                <h2>Riwayat Laporan Lengkap</h2>
+                <div class="section-kicker">
+                    Pantau status pemeriksaan dan dokumen revisi laporan akhir.
+                </div>
+            </div>
+        </div>
 
         {% if laporan_lengkap %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>Judul</th>
-                        <th>Status</th>
-                        <th>Catatan Admin</th>
-                        <th>File</th>
-                        <th>File Revisi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in laporan_lengkap %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
                         <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ item.judul }}</td>
-                            <td><span class="badge">{{ item.get_status_display }}</span></td>
-                            <td>{{ item.catatan_admin|default:"-" }}</td>
-                            <td>
-                                {% if item.file %}
-                                    <a
-                                        href="{% url 'praktikum:download_laporan_lengkap' item.id %}"
-                                        class="file-link"
-                                    >Unduh Laporan</a>
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if item.file_revisi %}
-                                    <a
-                                        href="{% url 'praktikum:download_laporan_lengkap_revisi' item.id %}"
-                                        class="file-link"
-                                    >Unduh Revisi</a>
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
+                            <th>No.</th>
+                            <th>Judul</th>
+                            <th>Status</th>
+                            <th>Catatan Admin</th>
+                            <th>File</th>
+                            <th>File Revisi</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for item in laporan_lengkap %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><strong>{{ item.judul }}</strong></td>
+                                <td>
+                                    <span class="badge">{{ item.get_status_display }}</span>
+                                </td>
+                                <td>{{ item.catatan_admin|default:"-" }}</td>
+                                <td>
+                                    {% if item.file %}
+                                        <a
+                                            href="{% url 'praktikum:download_laporan_lengkap' item.id %}"
+                                            class="file-link"
+                                        >↓ Unduh</a>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if item.file_revisi %}
+                                        <a
+                                            href="{% url 'praktikum:download_laporan_lengkap_revisi' item.id %}"
+                                            class="file-link"
+                                        >↓ Revisi</a>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         {% else %}
-            <div class="empty">Belum ada laporan lengkap.</div>
+            <div class="empty">
+                <span class="empty-icon">▤</span>
+                Belum ada laporan lengkap.
+            </div>
         {% endif %}
-    </div>
+    </section>
 
     <!-- KONSULTASI -->
-    <div class="section">
-        <h2>Informasi Konsultasi Kelompok</h2>
+    <section class="section" id="konsultasi">
+        <div class="section-heading">
+            <div>
+                <h2>Informasi Konsultasi Kelompok</h2>
+                <div class="section-kicker">
+                    CONSULTATION SCHEDULE & MENTORING
+                </div>
+            </div>
+        </div>
 
         <p class="help-text">
             Periksa mentor atau pendamping, acara, jadwal, dan lokasi
@@ -808,81 +1825,114 @@
         </p>
 
         {% if konsultasi %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>Kelompok</th>
-                        <th>Pendamping</th>
-                        <th>Acara</th>
-                        <th>Tanggal</th>
-                        <th>Waktu</th>
-                        <th>Lokasi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in konsultasi %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
                         <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ item.kelompok.nama|default:kelompok.nama }}</td>
-                            <td>
-                                {% if item.tujuan %}
-                                    {{ item.tujuan.nama }}
-                                    <div class="mom-small">{{ item.tujuan.get_jabatan_display }}</div>
-                                {% else %}
-                                    Belum ditentukan
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if item.acara %}
-                                    {{ item.acara.nama }}
-                                    {% if item.acara.sub_acara %}
-                                        <div class="mom-small">{{ item.acara.sub_acara }}</div>
-                                    {% endif %}
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if item.tanggal_konsultasi %}
-                                    {{ item.tanggal_konsultasi|date:"d/m/Y" }}
-                                {% else %}
-                                    Belum ditentukan
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if item.waktu_mulai %}
-                                    {{ item.waktu_mulai|time:"H:i" }}
-                                {% else %}
-                                    -
-                                {% endif %}
-                                –
-                                {% if item.waktu_selesai %}
-                                    {{ item.waktu_selesai|time:"H:i" }}
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                            <td>{{ item.lokasi|default:"Belum ditentukan" }}</td>
+                            <th>No.</th>
+                            <th>Kelompok</th>
+                            <th>Pendamping</th>
+                            <th>Acara</th>
+                            <th>Tanggal</th>
+                            <th>Waktu</th>
+                            <th>Lokasi</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for item in konsultasi %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                    {{ item.kelompok.nama|default:kelompok.nama }}
+                                </td>
+                                <td>
+                                    {% if item.tujuan %}
+                                        <strong>{{ item.tujuan.nama }}</strong>
+                                        <div class="mom-small">
+                                            {{ item.tujuan.get_jabatan_display }}
+                                        </div>
+                                    {% else %}
+                                        Belum ditentukan
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if item.acara %}
+                                        {{ item.acara.nama }}
+                                        {% if item.acara.sub_acara %}
+                                            <div class="mom-small">
+                                                {{ item.acara.sub_acara }}
+                                            </div>
+                                        {% endif %}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if item.tanggal_konsultasi %}
+                                        {{ item.tanggal_konsultasi|date:"d/m/Y" }}
+                                    {% else %}
+                                        Belum ditentukan
+                                    {% endif %}
+                                </td>
+                                <td class="mom-date">
+                                    {% if item.waktu_mulai %}
+                                        {{ item.waktu_mulai|time:"H:i" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                    –
+                                    {% if item.waktu_selesai %}
+                                        {{ item.waktu_selesai|time:"H:i" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.lokasi|default:"Belum ditentukan" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         {% else %}
             <div class="empty">
+                <span class="empty-icon">◷</span>
                 Belum ada jadwal konsultasi untuk kelompok ini.
             </div>
         {% endif %}
-    </div>
+    </section>
 
     <!-- CATATAN KELOMPOK -->
     {% if kelompok.catatan %}
-        <div class="section">
-            <h2>Catatan Kelompok</h2>
-            <p>{{ kelompok.catatan|linebreaks }}</p>
-        </div>
+        <section class="section" id="catatan-kelompok">
+            <div class="section-heading">
+                <div>
+                    <h2>Catatan Kelompok</h2>
+                    <div class="section-kicker">
+                        GROUP NOTES & IMPORTANT INFORMATION
+                    </div>
+                </div>
+            </div>
+            <div class="group-note">{{ kelompok.catatan|linebreaks }}</div>
+        </section>
     {% endif %}
 
-</div>
+</main>
+
+<footer class="footer">
+    <div class="footer-inner">
+        <div>
+            <div class="footer-brand">
+                ⛏ Praktikum Perencanaan Tambang
+            </div>
+            <div class="footer-note">
+                Mining Education · Group Management Portal
+            </div>
+        </div>
+        <div class="footer-year">
+            © {% now "Y" %} · MINING ENGINEERING
+        </div>
+    </div>
+</footer>
+
 </body>
 </html>
