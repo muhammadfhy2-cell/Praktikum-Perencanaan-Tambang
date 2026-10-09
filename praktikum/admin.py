@@ -746,9 +746,10 @@ class FormatDokumenAdmin(admin.ModelAdmin):
     list_editable = ("aktif",)
 
 
+
 # ============================================================
 # KONSULTASI
-# Tetap dipertahankan; tidak ada perubahan fitur konsultasi.
+# Admin hanya mengatur jadwal konsultasi kelompok.
 # ============================================================
 
 @admin.register(Konsultasi)
@@ -756,34 +757,46 @@ class KonsultasiAdmin(admin.ModelAdmin):
     list_display = (
         "topik",
         "kelompok",
-        "peserta",
         "tujuan",
         "acara",
-        "status",
-        "dibuat",
-        "dijawab_at",
+        "tanggal_konsultasi",
+        "waktu_konsultasi",
     )
 
     list_filter = (
-        "status",
+        "kelompok",
         "tujuan",
         "acara",
-        "kelompok",
+        "tanggal_konsultasi",
     )
 
     search_fields = (
         "topik",
-        "pertanyaan",
-        "jawaban",
         "kelompok__nama",
-        "peserta__nama",
     )
-
-    list_editable = ("status",)
 
     autocomplete_fields = (
         "kelompok",
-        "peserta",
         "tujuan",
         "acara",
     )
+
+    fields = (
+        "topik",
+        "kelompok",
+        "tujuan",
+        "acara",
+        "tanggal_konsultasi",
+        "waktu_mulai",
+        "waktu_selesai",
+    )
+
+    @admin.display(description="Waktu konsultasi")
+    def waktu_konsultasi(self, obj):
+        if not obj.waktu_mulai or not obj.waktu_selesai:
+            return "-"
+
+        return (
+            f"{obj.waktu_mulai.strftime('%H:%M')}–"
+            f"{obj.waktu_selesai.strftime('%H:%M')}"
+        )
