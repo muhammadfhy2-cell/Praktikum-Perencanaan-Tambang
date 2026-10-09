@@ -1,143 +1,339 @@
 
 {% extends "praktikum/base.html" %}
+{% load static %}
 
-{% block title %}Materi Praktikum{% endblock %}
+{% block title %}Materi Praktikum | Praktikum Perencanaan Tambang{% endblock %}
+
+{% block meta_description %}
+Modul, dataset, template, dan berkas pendukung Praktikum Perencanaan Tambang.
+{% endblock %}
 
 {% block extra_css %}
 <style>
 .materi-page {
-    max-width: 1150px;
+    max-width: 1180px;
     margin: 0 auto;
-    padding: 32px 20px 48px;
+    padding: 36px 20px 68px;
 }
-.materi-heading {
-    margin-bottom: 24px;
+
+.materi-intro {
+    margin-bottom: 28px;
 }
-.materi-heading h1 {
+
+.materi-intro h2 {
+    color: var(--ink, #241a11);
+    font-size: clamp(22px, 3vw, 30px);
     margin-bottom: 8px;
 }
-.materi-heading p {
-    color: var(--muted, #64748b);
-    line-height: 1.7;
+
+.materi-intro p {
+    max-width: 760px;
+    color: var(--muted, #796e60);
+    line-height: 1.8;
+    font-size: 14px;
 }
+
+.materi-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 8px 13px;
+    border: 1px solid var(--line, #e8dfd0);
+    border-radius: 999px;
+    background: var(--paper, #fffdf8);
+    color: var(--brown, #513720);
+    font-size: 12px;
+    font-weight: 800;
+}
+
 .materi-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 20px;
 }
+
 .materi-card {
+    position: relative;
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    gap: 15px;
+    padding: 23px;
+    overflow: hidden;
+    background: var(--paper, #fffdf8);
+    border: 1px solid var(--line, #e8dfd0);
+    border-radius: var(--radius-lg, 20px);
+    box-shadow: var(--shadow-sm, 0 8px 24px rgba(36,26,17,.06));
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.materi-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--earth, #75502d), var(--yellow, #ffc94a));
+}
+
+.materi-card:hover {
+    transform: translateY(-4px);
+    border-color: #d9bc7d;
+    box-shadow: var(--shadow, 0 16px 36px rgba(36,26,17,.10));
+}
+
+.materi-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 12px;
-    padding: 22px;
-    border: 1px solid var(--border, #e2e8f0);
-    border-radius: 16px;
-    background: var(--card, #fff);
-    box-shadow: 0 5px 18px rgba(15, 23, 42, .04);
 }
-.materi-card h2 {
-    font-size: 1.1rem;
-    line-height: 1.5;
-    margin: 0;
-    overflow-wrap: anywhere;
+
+.materi-icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    border-radius: 14px;
+    background: #f5e8c9;
+    color: var(--brown, #513720);
+    font-size: 23px;
 }
+
 .materi-category {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     width: fit-content;
-    padding: 5px 10px;
-    border-radius: 20px;
-    background: var(--soft, #eff6ff);
-    color: var(--primary, #1d4ed8);
-    font-size: .8rem;
-    font-weight: 700;
-}
-.materi-description {
-    color: var(--muted, #64748b);
-    line-height: 1.7;
-    white-space: pre-line;
+    max-width: 100%;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #f7edda;
+    color: #79531c;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    text-transform: uppercase;
     overflow-wrap: anywhere;
 }
-.materi-meta {
-    color: var(--muted, #64748b);
-    font-size: .86rem;
-    line-height: 1.6;
+
+.materi-card h2 {
+    margin: 0;
+    color: var(--ink, #241a11);
+    font-size: 19px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
 }
+
+.materi-meta {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    color: var(--muted, #796e60);
+    font-size: 12px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.materi-meta-icon {
+    flex: 0 0 auto;
+}
+
+.materi-description {
+    color: var(--text, #30271d);
+    font-size: 13px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+    white-space: pre-line;
+}
+
+.materi-divider {
+    height: 1px;
+    margin-top: auto;
+    background: var(--line, #e8dfd0);
+}
+
 .materi-download {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-top: auto;
-    padding: 11px 16px;
-    border-radius: 10px;
-    background: var(--primary, #1d4ed8);
-    color: #fff;
+    gap: 9px;
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--gold, #dca52e);
+    border-radius: 11px;
+    background: linear-gradient(135deg, var(--yellow, #ffc94a), var(--gold, #dca52e));
+    color: var(--ink, #241a11);
+    font-size: 12px;
+    font-weight: 900;
     text-decoration: none;
-    font-weight: 700;
+    transition: filter .2s ease, transform .2s ease;
 }
+
 .materi-download:hover {
-    opacity: .9;
+    filter: brightness(1.04);
+    transform: translateY(-1px);
 }
-.materi-empty {
-    padding: 24px;
-    border: 1px dashed var(--border, #cbd5e1);
-    border-radius: 14px;
-    color: var(--muted, #64748b);
+
+.materi-unavailable {
+    padding: 11px 13px;
+    border: 1px dashed var(--line, #e8dfd0);
+    border-radius: 10px;
+    color: var(--muted, #796e60);
+    background: var(--cream, #f7f2e8);
+    font-size: 12px;
     text-align: center;
+}
+
+.materi-empty {
+    padding: 48px 22px;
+    border: 1px dashed #d8c7a7;
+    border-radius: var(--radius-lg, 20px);
+    background: var(--paper, #fffdf8);
+    color: var(--muted, #796e60);
+    text-align: center;
+}
+
+.materi-empty-icon {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 15px;
+    border-radius: 18px;
+    background: #f5e8c9;
+    font-size: 28px;
+}
+
+.materi-empty h2 {
+    margin-bottom: 7px;
+    color: var(--ink, #241a11);
+    font-size: 20px;
+}
+
+.materi-empty p {
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+@media (max-width: 950px) {
+    .materi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .materi-page {
+        padding: 26px 14px 48px;
+    }
+
+    .materi-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .materi-card {
+        padding: 19px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .materi-card,
+    .materi-download {
+        transition: none;
+    }
+
+    .materi-card:hover,
+    .materi-download:hover {
+        transform: none;
+    }
 }
 </style>
 {% endblock %}
 
 {% block content %}
-<main class="materi-page">
-    <header class="materi-heading">
+<section class="page-header topographic">
+    <div class="container">
+        <div class="eyebrow">MINING KNOWLEDGE CENTER</div>
         <h1>Materi Praktikum</h1>
         <p>
-            Akses modul, dataset, template, dan berkas pendukung
-            Praktikum Perencanaan Tambang.
+            Pusat akses modul pembelajaran, dataset, template, dan berkas
+            pendukung untuk menunjang kegiatan Praktikum Perencanaan Tambang.
         </p>
-    </header>
+    </div>
+</section>
+
+<section class="materi-page">
+    <div class="materi-intro">
+        <h2>Perpustakaan Materi</h2>
+        <p>
+            Pilih materi yang dibutuhkan untuk kegiatan praktikum.
+            Berkas yang tersedia dapat diunduh langsung melalui tombol
+            pada masing-masing kartu.
+        </p>
+
+        {% if materi_list %}
+        <div class="materi-count">
+            <span aria-hidden="true">▤</span>
+            {{ materi_list|length }} materi tersedia
+        </div>
+        {% endif %}
+    </div>
 
     {% if materi_list %}
-        <section class="materi-grid">
-            {% for materi in materi_list %}
-                <article class="materi-card">
-                    <span class="materi-category">
-                        {{ materi.get_kategori_display|default:materi.kategori }}
-                    </span>
+    <div class="materi-grid">
+        {% for materi in materi_list %}
+        <article class="materi-card">
+            <div class="materi-card-top">
+                <div class="materi-icon" aria-hidden="true">▤</div>
+                <span class="materi-category">
+                    {{ materi.get_kategori_display|default:materi.kategori }}
+                </span>
+            </div>
 
-                    <h2>{{ materi.judul }}</h2>
+            <h2>{{ materi.judul }}</h2>
 
-                    {% if materi.acara %}
-                        <div class="materi-meta">
-                            Acara: {{ materi.acara.nama }}
-                        </div>
-                    {% endif %}
+            {% if materi.acara %}
+            <div class="materi-meta">
+                <span class="materi-meta-icon" aria-hidden="true">◷</span>
+                <span>Acara: {{ materi.acara.nama }}</span>
+            </div>
+            {% endif %}
 
-                    {% if materi.deskripsi %}
-                        <div class="materi-description">
-                            {{ materi.deskripsi }}
-                        </div>
-                    {% endif %}
+            {% if materi.deskripsi %}
+            <div class="materi-description">{{ materi.deskripsi }}</div>
+            {% else %}
+            <div class="materi-meta">
+                Belum ada deskripsi untuk materi ini.
+            </div>
+            {% endif %}
 
-                    {% if materi.file %}
-                        <a
-                            class="materi-download"
-                            href="{% url 'praktikum:download_materi' materi.id %}"
-                        >
-                            Unduh Materi
-                        </a>
-                    {% else %}
-                        <div class="materi-meta">
-                            Berkas belum tersedia.
-                        </div>
-                    {% endif %}
-                </article>
-            {% endfor %}
-        </section>
+            <div class="materi-divider"></div>
+
+            {% if materi.file %}
+            <a
+                class="materi-download"
+                href="{% url 'praktikum:download_materi' materi.id %}"
+            >
+                <span aria-hidden="true">↓</span>
+                Unduh Materi
+            </a>
+            {% else %}
+            <div class="materi-unavailable">
+                Berkas belum tersedia.
+            </div>
+            {% endif %}
+        </article>
+        {% endfor %}
+    </div>
     {% else %}
-        <div class="materi-empty">
-            Belum ada materi yang dipublikasikan oleh admin.
-        </div>
+    <div class="materi-empty">
+        <div class="materi-empty-icon" aria-hidden="true">▤</div>
+        <h2>Belum Ada Materi</h2>
+        <p>Belum ada materi yang dipublikasikan oleh administrator.</p>
+    </div>
     {% endif %}
-</main>
+</section>
 {% endblock %}
