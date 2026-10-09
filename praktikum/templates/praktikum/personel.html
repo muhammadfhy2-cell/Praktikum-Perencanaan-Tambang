@@ -38,30 +38,41 @@
 
         {% if penanggung_jawab %}
             <div class="personel-feature-grid">
-                {% for x in penanggung_jawab %}
-                    <article class="personel-feature">
-                        <div class="personel-feature-mark">PJ</div>
-                        <div class="personel-feature-info">
-                            <span class="badge badge-gold">
-                                Penanggung Jawab Praktikum
-                            </span>
-                            <h3>{{ x.nama }}</h3>
-                            {% if x.kontak %}
-                                <a class="personel-contact" href="tel:{{ x.kontak }}">
-                                    <span aria-hidden="true">☎</span>
-                                    {{ x.kontak }}
-                                </a>
-                            {% endif %}
-                        </div>
-                        <div class="personel-feature-lines" aria-hidden="true"></div>
-                    </article>
-                {% endfor %}
+                <article class="personel-feature">
+                    <div class="personel-feature-mark">PJ</div>
+
+                    <div class="personel-feature-info">
+                        <span class="badge badge-gold">
+                            Penanggung Jawab Praktikum
+                        </span>
+
+                        <h3>{{ penanggung_jawab.nama }}</h3>
+
+                        {% if penanggung_jawab.kontak %}
+                            <a
+                                class="personel-contact"
+                                href="tel:{{ penanggung_jawab.kontak }}"
+                            >
+                                <span aria-hidden="true">☎</span>
+                                {{ penanggung_jawab.kontak }}
+                            </a>
+                        {% endif %}
+                    </div>
+
+                    <div
+                        class="personel-feature-lines"
+                        aria-hidden="true"
+                    ></div>
+                </article>
             </div>
         {% else %}
             <div class="empty personel-empty">
                 <div class="empty-icon">♙</div>
                 <h3>Penanggung Jawab Belum Ditentukan</h3>
-                <p>Informasi akan ditampilkan setelah data personel tersedia.</p>
+                <p>
+                    Informasi akan ditampilkan setelah data personel
+                    tersedia.
+                </p>
             </div>
         {% endif %}
 
@@ -78,12 +89,19 @@
         <div class="personel-grid">
             {% for x in koordinator %}
                 <article class="personel-card">
-                    <div class="personel-avatar">{{ x.nama|first|upper }}</div>
+                    <div class="personel-avatar">
+                        {{ x.nama|first|upper }}
+                    </div>
+
                     <div class="personel-info">
                         <span class="badge badge-gold">Koordinator</span>
                         <h3>{{ x.nama }}</h3>
+
                         {% if x.kontak %}
-                            <a class="personel-contact" href="tel:{{ x.kontak }}">
+                            <a
+                                class="personel-contact"
+                                href="tel:{{ x.kontak }}"
+                            >
                                 <span aria-hidden="true">☎</span>
                                 {{ x.kontak }}
                             </a>
@@ -94,7 +112,9 @@
                 <div class="empty personel-empty">
                     <div class="empty-icon">♙</div>
                     <h3>Koordinator Belum Ditentukan</h3>
-                    <p>Informasi koordinator akan ditampilkan di sini.</p>
+                    <p>
+                        Informasi koordinator akan ditampilkan di sini.
+                    </p>
                 </div>
             {% endfor %}
         </div>
@@ -112,12 +132,19 @@
         <div class="personel-grid">
             {% for x in asisten %}
                 <article class="personel-card">
-                    <div class="personel-avatar">{{ x.nama|first|upper }}</div>
+                    <div class="personel-avatar">
+                        {{ x.nama|first|upper }}
+                    </div>
+
                     <div class="personel-info">
                         <span class="badge badge-gray">Asisten Dosen</span>
                         <h3>{{ x.nama }}</h3>
+
                         {% if x.kontak %}
-                            <a class="personel-contact" href="tel:{{ x.kontak }}">
+                            <a
+                                class="personel-contact"
+                                href="tel:{{ x.kontak }}"
+                            >
                                 <span aria-hidden="true">☎</span>
                                 {{ x.kontak }}
                             </a>
@@ -128,7 +155,9 @@
                 <div class="empty personel-empty">
                     <div class="empty-icon">⛏</div>
                     <h3>Asisten Dosen Belum Ditentukan</h3>
-                    <p>Informasi asisten akan ditampilkan di sini.</p>
+                    <p>
+                        Informasi asisten akan ditampilkan di sini.
+                    </p>
                 </div>
             {% endfor %}
         </div>
@@ -139,7 +168,10 @@
 <style>
     .personel-feature-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(min(100%, 320px), 1fr)
+        );
         gap: 18px;
     }
 
@@ -156,7 +188,11 @@
         border: 1px solid rgba(255, 201, 74, .25);
         border-radius: var(--radius-lg);
         background:
-            radial-gradient(ellipse at 90% 10%, rgba(220, 165, 46, .22), transparent 42%),
+            radial-gradient(
+                ellipse at 90% 10%,
+                rgba(220, 165, 46, .22),
+                transparent 42%
+            ),
             linear-gradient(120deg, var(--ink), var(--brown));
         color: white;
         box-shadow: var(--shadow);
@@ -171,7 +207,11 @@
         flex: 0 0 76px;
         border: 1px solid rgba(36, 26, 17, .15);
         border-radius: 20px;
-        background: linear-gradient(145deg, var(--yellow), var(--gold));
+        background: linear-gradient(
+            145deg,
+            var(--yellow),
+            var(--gold)
+        );
         color: var(--ink);
         font-family: "Barlow Condensed", sans-serif;
         font-size: 27px;
@@ -219,7 +259,10 @@
 
     .personel-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 285px), 1fr));
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(min(100%, 285px), 1fr)
+        );
         gap: 17px;
     }
 
@@ -233,7 +276,10 @@
         border-radius: var(--radius);
         background: var(--paper);
         box-shadow: var(--shadow-sm);
-        transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+        transition:
+            transform .2s ease,
+            border-color .2s ease,
+            box-shadow .2s ease;
     }
 
     .personel-card:hover {
