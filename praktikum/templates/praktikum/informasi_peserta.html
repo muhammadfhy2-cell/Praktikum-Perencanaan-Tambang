@@ -1,274 +1,308 @@
 
 {% extends "praktikum/base.html" %}
-{% load static %}
 
 {% block title %}Informasi Peserta | Praktikum Perencanaan Tambang{% endblock %}
 
-{% block meta_description %}
-Informasi peserta Praktikum Perencanaan Tambang berdasarkan kelompok dan status peserta.
-{% endblock %}
-
 {% block extra_css %}
 <style>
-.peserta-page {
-    min-height: 65vh;
-    padding-bottom: 72px;
-    background: #fffdf8;
+.participant-page {
+    --p-ink: #241a11;
+    --p-brown: #513720;
+    --p-gold: #dca52e;
+    --p-cream: #f7f2e8;
+    --p-paper: #fffdf8;
+    --p-line: #e8dfd0;
+    --p-text: #30271d;
+    --p-muted: #796e60;
+    min-height: 75vh;
+    padding: 36px 0 70px;
+    color: var(--p-text);
+    background: var(--p-cream);
 }
 
-.peserta-container {
-    width: min(1180px, calc(100% - 40px));
-    margin: 0 auto;
+.participant-container {
+    width: min(1180px, calc(100% - 36px));
+    margin: auto;
 }
 
-/* Header halaman seragam */
-.peserta-page-header {
+.participant-hero {
     position: relative;
-    isolation: isolate;
     overflow: hidden;
-    padding: 55px 0 60px;
-    margin-bottom: 35px;
-    color: #fffdf8;
+    padding: 38px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(255,201,74,.22);
+    border-radius: 22px;
+    color: var(--p-paper);
     background:
-        radial-gradient(ellipse at 90% 10%, rgba(245,196,81,.15), transparent 35%),
-        linear-gradient(120deg, #20170f, #49321d);
+        radial-gradient(ellipse at 90% 0%, rgba(255,201,74,.16), transparent 36%),
+        linear-gradient(125deg, #241a11, #513720);
+    box-shadow: 0 15px 35px rgba(36,26,17,.10);
 }
 
-.peserta-page-header::before {
+.participant-hero::after {
     content: "";
     position: absolute;
-    inset: 0;
-    z-index: -1;
+    right: -55px;
+    bottom: -140px;
+    width: 300px;
+    height: 300px;
+    border: 1px solid rgba(255,201,74,.22);
+    border-radius: 50%;
+    box-shadow: 0 0 0 25px rgba(255,201,74,.035),
+                0 0 0 50px rgba(255,201,74,.025);
     pointer-events: none;
-    opacity: .25;
-    background-image: repeating-radial-gradient(
-        ellipse at 90% 45%,
-        transparent 0,
-        transparent 25px,
-        rgba(255,201,74,.38) 26px,
-        transparent 27px,
-        transparent 43px
-    );
-    mask-image: linear-gradient(90deg, transparent, #000);
 }
 
-.peserta-breadcrumb {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 9px;
-    margin-bottom: 19px;
-    color: #e1d5c3;
-    font-size: 12px;
-}
-
-.peserta-breadcrumb a {
-    color: #ffda7a;
-    text-decoration: none;
-}
-
-.peserta-breadcrumb a:hover {
-    color: #fffdf8;
-}
-
-.peserta-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
+.participant-eyebrow {
+    position: relative;
+    z-index: 1;
     margin-bottom: 12px;
     color: #ffda7a;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 900;
     letter-spacing: 2px;
     text-transform: uppercase;
 }
 
-.peserta-eyebrow::before {
-    content: "";
-    width: 26px;
-    height: 2px;
-    background: #ffc94a;
-}
-
-.peserta-page-header h1 {
-    margin: 0 0 13px;
+.participant-hero h1 {
+    position: relative;
+    z-index: 1;
+    margin: 0 0 12px;
     color: #fffdf8;
-    font-size: clamp(30px, 4vw, 44px);
+    font-size: clamp(29px, 4vw, 43px);
     font-weight: 900;
-    letter-spacing: -.7px;
     line-height: 1.15;
 }
 
-.peserta-page-header p {
-    max-width: 720px;
+.participant-hero p {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
     margin: 0;
-    color: #e8dfd1;
+    color: #e8dece;
     font-size: 14px;
     line-height: 1.85;
 }
 
-/* Statistik */
-.peserta-stats {
+.participant-breadcrumb {
+    margin-bottom: 17px;
+    color: var(--p-muted);
+    font-size: 12px;
+}
+
+.participant-breadcrumb a {
+    color: var(--p-brown);
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.participant-breadcrumb a:hover { color: #a57620; }
+
+.participant-stats {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 15px;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
 }
 
-.peserta-stat {
-    position: relative;
-    overflow: hidden;
+.participant-stat {
     padding: 22px;
-    border: 1px solid #e7dece;
+    border: 1px solid var(--p-line);
     border-radius: 16px;
-    background: #fffefa;
-    box-shadow: 0 8px 24px rgba(36,26,17,.045);
+    background: var(--p-paper);
+    box-shadow: 0 8px 22px rgba(36,26,17,.04);
 }
 
-.peserta-stat-label {
-    margin-bottom: 10px;
-    color: #6e6254;
+.participant-stat-label {
+    margin-bottom: 9px;
+    color: var(--p-muted);
     font-size: 11px;
     font-weight: 800;
-    line-height: 1.6;
 }
 
-.peserta-stat-value {
-    color: #302319;
-    font-size: clamp(26px, 3vw, 34px);
+.participant-stat-value {
+    color: var(--p-ink);
+    font-size: 32px;
     font-weight: 900;
-    line-height: 1.15;
+    line-height: 1.1;
 }
 
-.peserta-stat.active .peserta-stat-value {
-    color: #39714a;
-}
+.participant-stat.active .participant-stat-value { color: #237348; }
+.participant-stat.inactive .participant-stat-value { color: #b54738; }
 
-.peserta-stat.inactive .peserta-stat-value {
-    color: #a65a36;
-}
-
-/* Panel tabel */
-.peserta-table-panel {
+.participant-panel {
     overflow: hidden;
-    border: 1px solid #e7dece;
+    border: 1px solid var(--p-line);
     border-radius: 18px;
-    background: #fffefa;
-    box-shadow: 0 8px 24px rgba(36,26,17,.045);
+    background: var(--p-paper);
+    box-shadow: 0 12px 28px rgba(36,26,17,.05);
 }
 
-.peserta-table-heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 23px 25px;
-    border-bottom: 1px solid #e7dece;
-    background: #f8f2e6;
+.participant-panel-header {
+    padding: 25px 26px 20px;
+    border-bottom: 1px solid var(--p-line);
 }
 
-.peserta-table-heading h2 {
-    margin: 0 0 5px;
-    color: #302319;
-    font-size: 18px;
+.participant-panel-header h2 {
+    margin: 0 0 7px;
+    color: var(--p-ink);
+    font-size: 21px;
     font-weight: 900;
 }
 
-.peserta-table-heading p {
+.participant-panel-header p {
     margin: 0;
-    color: #6e6254;
+    color: var(--p-muted);
     font-size: 12px;
     line-height: 1.7;
 }
 
-.peserta-count {
-    flex: 0 0 auto;
-    padding: 7px 11px;
-    border-radius: 999px;
-    background: #f0dfb7;
-    color: #674719;
+.participant-toolbar {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) 220px auto;
+    align-items: end;
+    gap: 12px;
+    padding: 20px 26px;
+    border-bottom: 1px solid var(--p-line);
+    background: #fcf9f1;
+}
+
+.participant-field label {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--p-text);
     font-size: 11px;
     font-weight: 900;
 }
 
-.peserta-table-wrap {
+.participant-field input,
+.participant-field select {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 44px;
+    padding: 11px 13px;
+    border: 1px solid #d9cebc;
+    border-radius: 10px;
+    outline: none;
+    color: var(--p-text);
+    background: #fffdf8;
+    font: inherit;
+    font-size: 12px;
+}
+
+.participant-field input:focus,
+.participant-field select:focus {
+    border-color: var(--p-gold);
+    box-shadow: 0 0 0 3px rgba(220,165,46,.14);
+}
+
+.participant-reset {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 11px 16px;
+    border: 1px solid var(--p-brown);
+    border-radius: 10px;
+    color: #fffdf8;
+    background: var(--p-brown);
+    font-size: 12px;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .2s ease;
+}
+
+.participant-reset:hover {
+    color: #fffdf8;
+    background: var(--p-ink);
+}
+
+.participant-results {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px 26px;
+    color: var(--p-muted);
+    font-size: 12px;
+}
+
+.participant-results strong { color: var(--p-ink); }
+
+.participant-table-wrap {
     overflow-x: auto;
     width: 100%;
 }
 
-.peserta-table {
+.participant-table {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
 }
 
-.peserta-table th {
-    padding: 15px 18px;
-    background: #fffaf0;
-    color: #70562f;
+.participant-table th {
+    padding: 14px 18px;
+    color: #f7edda;
+    background: var(--p-brown);
     font-size: 10px;
     font-weight: 900;
-    letter-spacing: .7px;
+    letter-spacing: .6px;
     text-transform: uppercase;
     white-space: nowrap;
 }
 
-.peserta-table td {
-    padding: 16px 18px;
-    border-top: 1px solid #eee5d7;
-    color: #4b4033;
+.participant-table td {
+    padding: 15px 18px;
+    border-bottom: 1px solid #eee6d9;
+    color: var(--p-text);
     font-size: 12px;
-    line-height: 1.7;
     vertical-align: middle;
 }
 
-.peserta-table tbody tr:hover {
-    background: #fcf7ec;
-}
+.participant-table tbody tr:nth-child(even) { background: #fcf9f2; }
+.participant-table tbody tr:hover { background: #f7edda; }
+.participant-table tbody tr:last-child td { border-bottom: 0; }
 
-.peserta-number {
-    width: 55px;
-    color: #8a7c69 !important;
+.participant-number {
+    color: var(--p-muted);
     font-weight: 800;
 }
 
-.peserta-name {
-    color: #302319 !important;
+.participant-name {
+    color: var(--p-ink);
     font-weight: 900;
 }
 
-.peserta-nim {
-    color: #6e6254;
-    white-space: nowrap;
+.participant-nim {
+    color: var(--p-muted);
+    font-size: 11px;
+    overflow-wrap: anywhere;
 }
 
-.peserta-group {
+.participant-group {
     display: inline-flex;
-    align-items: center;
     padding: 5px 9px;
-    border: 1px solid #e7d6b1;
-    border-radius: 8px;
-    background: #f8f0dd;
-    color: #70501f;
+    border: 1px solid #e8d6aa;
+    border-radius: 7px;
+    color: #79531c;
+    background: #f7edda;
     font-size: 10px;
-    font-weight: 800;
+    font-weight: 900;
 }
 
-.peserta-role {
-    color: #6e6254;
-}
-
-.peserta-status {
+.participant-status {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 5px 9px;
+    padding: 6px 10px;
     border-radius: 999px;
     font-size: 10px;
     font-weight: 900;
     white-space: nowrap;
 }
 
-.peserta-status::before {
+.participant-status::before {
     content: "";
     width: 6px;
     height: 6px;
@@ -276,76 +310,85 @@ Informasi peserta Praktikum Perencanaan Tambang berdasarkan kelompok dan status 
     background: currentColor;
 }
 
-.peserta-status.is-active {
-    background: #e6f2e7;
-    color: #28633b;
+.participant-status.is-active {
+    color: #237348;
+    background: #e5f4e9;
 }
 
-.peserta-status.is-inactive {
-    background: #f8e9df;
-    color: #9a4e2c;
+.participant-status.is-gugur {
+    color: #b54738;
+    background: #fbe9e5;
 }
 
-.peserta-empty {
-    padding: 45px 20px !important;
+.participant-status.is-other {
+    color: #75502d;
+    background: #f5e8c9;
+}
+
+.participant-empty {
+    padding: 40px 20px !important;
+    color: var(--p-muted) !important;
     text-align: center;
-    color: #796e60 !important;
-}
-
-.peserta-empty strong {
-    display: block;
-    margin-bottom: 5px;
-    color: #302319;
-    font-size: 15px;
-}
-
-.peserta-note {
-    margin-top: 17px;
-    padding: 15px 18px;
-    border-left: 3px solid #dca52e;
-    border-radius: 0 10px 10px 0;
-    background: #f8f2e6;
-    color: #6e6254;
-    font-size: 11px;
     line-height: 1.8;
 }
 
-@media (max-width: 900px) {
-    .peserta-stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+.participant-empty strong {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--p-ink);
+    font-size: 14px;
 }
 
-@media (max-width: 600px) {
-    .peserta-container {
-        width: calc(100% - 28px);
+.participant-hidden { display: none !important; }
+
+@media (max-width: 850px) {
+    .participant-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .participant-toolbar {
+        grid-template-columns: 1fr 1fr;
     }
 
-    .peserta-page-header {
-        padding: 40px 0 44px;
-        margin-bottom: 25px;
+    .participant-toolbar .participant-search-field {
+        grid-column: 1 / -1;
     }
 
-    .peserta-page-header p {
-        font-size: 13px;
+    .participant-reset { width: 100%; }
+}
+
+@media (max-width: 520px) {
+    .participant-page { padding-top: 22px; }
+
+    .participant-container { width: calc(100% - 24px); }
+
+    .participant-hero {
+        padding: 27px 22px;
+        border-radius: 17px;
     }
 
-    .peserta-stat {
+    .participant-hero h1 { font-size: 29px; }
+    .participant-hero p { font-size: 12px; }
+
+    .participant-stats { gap: 10px; }
+
+    .participant-stat { padding: 16px; }
+
+    .participant-stat-value { font-size: 27px; }
+
+    .participant-panel { border-radius: 14px; }
+
+    .participant-panel-header { padding: 21px 17px; }
+
+    .participant-toolbar {
+        grid-template-columns: 1fr;
         padding: 17px;
     }
 
-    .peserta-stat-value {
-        font-size: 27px;
-    }
+    .participant-toolbar .participant-search-field { grid-column: auto; }
 
-    .peserta-table-heading {
-        align-items: flex-start;
-        flex-direction: column;
-        padding: 20px;
-    }
+    .participant-results { padding: 13px 17px; }
 
-    .peserta-table th,
-    .peserta-table td {
+    .participant-table th,
+    .participant-table td {
         padding: 13px 14px;
     }
 }
@@ -353,140 +396,230 @@ Informasi peserta Praktikum Perencanaan Tambang berdasarkan kelompok dan status 
 {% endblock %}
 
 {% block content %}
-<div class="peserta-page">
+<div class="participant-page">
+    <div class="participant-container">
 
-    <header class="peserta-page-header">
-        <div class="peserta-container">
-            <nav class="peserta-breadcrumb" aria-label="Breadcrumb">
-                <a href="{% url 'praktikum:home' %}">Beranda</a>
-                <span aria-hidden="true">/</span>
-                <span>Informasi Peserta</span>
-            </nav>
+        <div class="participant-breadcrumb">
+            <a href="{% url 'praktikum:home' %}">Beranda</a>
+            <span aria-hidden="true"> / </span>
+            <span>Informasi Peserta</span>
+        </div>
 
-            <div class="peserta-eyebrow">Data Praktikum</div>
+        <header class="participant-hero">
+            <div class="participant-eyebrow">Data dan Administrasi Praktikum</div>
             <h1>Informasi Peserta</h1>
             <p>
-                Informasi peserta yang terdaftar dalam Praktikum
-                Perencanaan Tambang, termasuk kelompok dan status
-                keikutsertaan berdasarkan data yang dipublikasikan.
+                Lihat daftar peserta Praktikum Perencanaan Tambang,
+                cari nama peserta, dan saring data berdasarkan status keaktifan.
             </p>
-        </div>
-    </header>
+        </header>
 
-    <main class="peserta-container">
-
-        <section class="peserta-stats" aria-label="Ringkasan peserta">
-
-            <article class="peserta-stat">
-                <div class="peserta-stat-label">Total Peserta Terdaftar</div>
-                <div class="peserta-stat-value">{{ total_peserta|default:0 }}</div>
+        <section class="participant-stats" aria-label="Ringkasan peserta">
+            <article class="participant-stat">
+                <div class="participant-stat-label">Total Peserta</div>
+                <div class="participant-stat-value">{{ total_peserta|default:0 }}</div>
             </article>
 
-            <article class="peserta-stat active">
-                <div class="peserta-stat-label">Peserta Berstatus Aktif</div>
-                <div class="peserta-stat-value">{{ total_aktif|default:0 }}</div>
+            <article class="participant-stat active">
+                <div class="participant-stat-label">Peserta Aktif</div>
+                <div class="participant-stat-value">{{ total_aktif|default:0 }}</div>
             </article>
 
-            <article class="peserta-stat inactive">
-                <div class="peserta-stat-label">Peserta Berstatus Gugur</div>
-                <div class="peserta-stat-value">{{ total_gugur|default:0 }}</div>
+            <article class="participant-stat inactive">
+                <div class="participant-stat-label">Peserta Gugur</div>
+                <div class="participant-stat-value">{{ total_gugur|default:0 }}</div>
             </article>
 
-            <article class="peserta-stat">
-                <div class="peserta-stat-label">Kelompok Terdaftar</div>
-                <div class="peserta-stat-value">{{ total_kelompok|default:0 }}</div>
+            <article class="participant-stat">
+                <div class="participant-stat-label">Total Kelompok</div>
+                <div class="participant-stat-value">{{ total_kelompok|default:0 }}</div>
             </article>
-
         </section>
 
-        <section class="peserta-table-panel">
-
-            <div class="peserta-table-heading">
-                <div>
-                    <h2>Daftar Peserta Praktikum</h2>
-                    <p>Daftar peserta yang ditampilkan berdasarkan data portal.</p>
-                </div>
-
-                <span class="peserta-count">
-                    {{ total_peserta|default:0 }} peserta
-                </span>
+        <section class="participant-panel">
+            <div class="participant-panel-header">
+                <h2>Daftar Peserta Praktikum</h2>
+                <p>Gunakan pencarian nama atau filter status untuk menemukan peserta.</p>
             </div>
 
-            <div class="peserta-table-wrap">
-                <table class="peserta-table">
+            <div class="participant-toolbar">
+                <div class="participant-field participant-search-field">
+                    <label for="participantSearch">Cari Nama atau NIM</label>
+                    <input
+                        type="search"
+                        id="participantSearch"
+                        placeholder="Ketik nama atau NIM peserta..."
+                        autocomplete="off"
+                    >
+                </div>
+
+                <div class="participant-field">
+                    <label for="participantStatus">Filter Status</label>
+                    <select id="participantStatus">
+                        <option value="semua">Semua Peserta</option>
+                        <option value="aktif">Aktif</option>
+                        <option value="gugur">Gugur</option>
+                    </select>
+                </div>
+
+                <button type="button" class="participant-reset" id="participantReset">
+                    Reset Filter
+                </button>
+            </div>
+
+            <div class="participant-results" aria-live="polite">
+                <span>Hasil pencarian: <strong id="participantVisibleCount">0</strong> peserta</span>
+                <span>Jumlah keseluruhan: <strong>{{ peserta_list|length }}</strong> peserta</span>
+            </div>
+
+            <div class="participant-table-wrap">
+                <table class="participant-table">
                     <thead>
                         <tr>
                             <th>No.</th>
                             <th>Nama Peserta</th>
                             <th>NIM</th>
                             <th>Kelompok</th>
-                            <th>Peran</th>
+                            <th>Jabatan</th>
                             <th>Status</th>
                         </tr>
                     </thead>
 
-                    <tbody>
-                        {% for orang in peserta_list %}
-                        <tr>
-                            <td class="peserta-number">{{ forloop.counter }}</td>
+                    <tbody id="participantTableBody">
+                        {% for peserta in peserta_list %}
+                        <tr
+                            class="participant-row"
+                            data-search="{{ peserta.nama|default:''|lower }} {{ peserta.nim|default:''|lower }}"
+                            data-status="{{ peserta.status_kemajuan|default:''|lower }}"
+                        >
+                            <td class="participant-number">{{ forloop.counter }}</td>
 
-                            <td class="peserta-name">
-                                {{ orang.nama }}
-                            </td>
-
-                            <td class="peserta-nim">
-                                {% if orang.nim %}
-                                    {{ orang.nim }}
-                                {% else %}
-                                    —
-                                {% endif %}
+                            <td>
+                                <span class="participant-name">{{ peserta.nama|default:"—" }}</span>
                             </td>
 
                             <td>
-                                {% if orang.kelompok %}
-                                    <span class="peserta-group">
-                                        {{ orang.kelompok.nama }}
+                                <span class="participant-nim">{{ peserta.nim|default:"—" }}</span>
+                            </td>
+
+                            <td>
+                                {% if peserta.kelompok %}
+                                    <span class="participant-group">
+                                        {{ peserta.kelompok }}
                                     </span>
                                 {% else %}
                                     —
                                 {% endif %}
                             </td>
 
-                            <td class="peserta-role">
-                                {{ orang.get_jabatan_display|default:orang.jabatan }}
+                            <td>
+                                {% if peserta.get_jabatan_display %}
+                                    {{ peserta.get_jabatan_display }}
+                                {% elif peserta.jabatan %}
+                                    {{ peserta.jabatan }}
+                                {% else %}
+                                    —
+                                {% endif %}
                             </td>
 
                             <td>
-                                {% if orang.status_kemajuan == "aktif" %}
-                                    <span class="peserta-status is-active">Aktif</span>
-                                {% elif orang.status_kemajuan == "gugur" %}
-                                    <span class="peserta-status is-inactive">Gugur</span>
-                                {% else %}
-                                    <span class="peserta-status">{{ orang.get_status_kemajuan_display|default:orang.status_kemajuan }}</span>
-                                {% endif %}
+                                {% with status_label=peserta.get_status_kemajuan_display|default:peserta.status_kemajuan %}
+                                    {% if peserta.status_kemajuan|lower == "aktif" %}
+                                        <span class="participant-status is-active">{{ status_label|default:"Aktif" }}</span>
+                                    {% elif peserta.status_kemajuan|lower == "gugur" %}
+                                        <span class="participant-status is-gugur">{{ status_label|default:"Gugur" }}</span>
+                                    {% else %}
+                                        <span class="participant-status is-other">{{ status_label|default:"Belum ditentukan" }}</span>
+                                    {% endif %}
+                                {% endwith %}
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="6" class="peserta-empty">
-                                <strong>Belum Ada Data Peserta</strong>
-                                Informasi peserta akan ditampilkan setelah data tersedia.
+                            <td colspan="6" class="participant-empty">
+                                <strong>Belum ada data peserta</strong>
+                                Data peserta akan ditampilkan setelah tersedia.
                             </td>
                         </tr>
                         {% endfor %}
+
+                        <tr id="participantNoResults" class="participant-hidden">
+                            <td colspan="6" class="participant-empty">
+                                <strong>Peserta tidak ditemukan</strong>
+                                Coba gunakan nama, NIM, atau status yang berbeda.
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-
         </section>
-
-        <aside class="peserta-note">
-            <strong>Catatan:</strong>
-            Informasi pada halaman ini berasal dari data yang dipublikasikan
-            oleh pengelola praktikum. Pastikan data peserta dan statusnya
-            diperiksa secara berkala.
-        </aside>
-
-    </main>
+    </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("participantSearch");
+    const statusSelect = document.getElementById("participantStatus");
+    const resetButton = document.getElementById("participantReset");
+    const rows = Array.from(document.querySelectorAll(".participant-row"));
+    const visibleCount = document.getElementById("participantVisibleCount");
+    const noResults = document.getElementById("participantNoResults");
+
+    function normalize(value) {
+        return (value || "")
+            .toString()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim();
+    }
+
+    function applyFilters() {
+        const query = normalize(searchInput.value);
+        const selectedStatus = normalize(statusSelect.value);
+        let count = 0;
+
+        rows.forEach(function (row) {
+            const searchText = normalize(row.dataset.search);
+            const rawStatus = normalize(row.dataset.status);
+
+            const matchesSearch = !query || searchText.includes(query);
+
+            // Data status disimpan sebagai nilai model, umumnya "aktif" atau "gugur".
+            const matchesStatus =
+                selectedStatus === "semua" ||
+                rawStatus === selectedStatus;
+
+            const showRow = matchesSearch && matchesStatus;
+
+            row.classList.toggle("participant-hidden", !showRow);
+
+            if (showRow) {
+                count++;
+            }
+        });
+
+        visibleCount.textContent = count;
+
+        if (noResults) {
+            noResults.classList.toggle(
+                "participant-hidden",
+                count !== 0 || rows.length === 0
+            );
+        }
+    }
+
+    searchInput.addEventListener("input", applyFilters);
+    statusSelect.addEventListener("change", applyFilters);
+
+    resetButton.addEventListener("click", function () {
+        searchInput.value = "";
+        statusSelect.value = "semua";
+        applyFilters();
+        searchInput.focus();
+    });
+
+    applyFilters();
+});
+</script>
 {% endblock %}
