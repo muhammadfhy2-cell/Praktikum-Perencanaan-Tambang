@@ -228,11 +228,13 @@ def personel(request):
         aktif=True
     ).order_by("jabatan", "urutan", "nama")
 
-    # Seluruh Penanggung Jawab Praktikum.
-    penanggung_jawab_list = staff_list.filter(
+   # Ambil SELURUH penanggung jawab praktikum.
+    # Tidak menggunakan .first() agar semua data ditampilkan.
+    penanggung_jawab = staff_list.filter(
         jabatan__in=[
             "penanggung_jawab",
             "penanggung_jawab_praktikum",
+            "penanggung jawab",
             "penanggung jawab praktikum",
         ]
     ).order_by("urutan", "nama")
@@ -255,14 +257,13 @@ def personel(request):
         ]
     ).order_by("urutan", "nama")
 
-    context = {
+     context = {
         "setting": setting,
         "staff": staff_list,
         "staff_list": staff_list,
         "personel": staff_list,
         "personel_list": staff_list,
-        "penanggung_jawab": penanggung_jawab_list,
-        "penanggung_jawab_list": penanggung_jawab_list,
+        "penanggung_jawab": penanggung_jawab,
         "koordinator": koordinator,
         "asisten": asisten_list,
         "asisten_list": asisten_list,
