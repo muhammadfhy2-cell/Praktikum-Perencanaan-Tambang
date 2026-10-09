@@ -1,3 +1,5 @@
+from django.utils import timezone
+from django.utils.dateparse import parse_date, parse_time
 from pathlib import Path
 
 from django.contrib import messages
@@ -1072,3 +1074,186 @@ def download_file_kelompok(request, file_id):
     )
 
     return _kirim_file(file_obj.file)
+
+
+# ============================================================
+# DAILY MOM - BUAT CATATAN RAPAT / DISKUSI KELOMPOK
+# ============================================================
+
+@require_POST
+def buat_daily_mom(request):
+    kelompok_obj = get_kelompok_login(request)
+
+    if not kelompok_obj:
+        messages.warning(request, "Silakan login terlebih dahulu.")
+        return redirect("praktikum:login_kelompok")
+
+    judul = request.POST.get("judul", "").strip()
+    tanggal_input = request.POST.get("tanggal", "").strip()
+    acara_id = request.POST.get("acara", "").strip()
+    isi = request.POST.get("isi", "").strip()
+    keputusan = request.POST.get("keputusan", "").strip()
+    tindak_lanjut = request.POST.get("tindak_lanjut", "").strip()
+    peserta_id = request.POST.get("peserta", "").strip()
+
+    tanggal = parse_date(tanggal_input) if tanggal_input else None
+
+    if not judul or not tanggal or not acara_id or not isi:
+        messages.error(
+            request,
+            "Judul, tanggal, acara, dan isi Daily MOM wajib diisi.",
+        )
+        return redirect("praktikum:dashboard_kelompok")
+
+    acara_obj = get_object_or_404(Acara, pk=acara_id)
+
+    peserta_obj = None
+    if peserta_id:
+        peserta_obj = get_object_or_404(
+            Peserta,
+            pk=peserta_id,
+            kelompok=kelompok_obj,
+            aktif=True,
+            status_kemajuan=ACTIVE_STATUS,
+        )
+
+    DailyMOM.objects.create(
+        tanggal=tanggal,
+        kelompok=kelompok_obj,
+        acara=acara_obj,
+        judul=judul,
+        dibuat_oleh=peserta_obj,
+        isi=isi,
+        keputusan=keputusan,
+        tindak_lanjut=tindak_lanjut,
+    )
+
+    messages.success(request, "Daily MOM berhasil disimpan.")
+    return redirect("praktikum:dashboard_kelompok")
+
+
+# ============================================================
+# KONSULTASI - PENGAJUAN OLEH KELOMPOK
+# ============================================================
+
+@require_POST
+def ajukan_konsultasi(request):
+    kelompok_obj = get_kelompok_login(request)
+
+    if not kelompok_obj:
+        messages.warning(request, "Silakan login terlebih dahulu.")
+        return redirect("praktikum:login_kelompok")
+
+    topik = request.POST.get("topik", "").strip()
+    pertanyaan = request.POST.get("pertanyaan", "").strip()
+    peserta_id = request.POST.get("peserta", "").strip()
+    tujuan_id = request.POST.get("tujuan", "").strip()
+    acara_id = request.POST.get("acara", "").strip()
+
+    tanggal_input = request.POST.get("tanggal_konsultasi", "").strip()
+    mulai_input = request.POST.get("waktu_mulai", "").strip()
+    selesai_input = request.POST.get("waktu_selesai", "").strip()
+    lokasi = request.POST.get("lokasi", "").strip()
+
+    tanggal = parse_date(tanggal_input) if tanggal_input else None
+    waktu_mulai = parse_time(mulai_input) if mulai_input else None
+    waktu_selesai = parse_time(selesai_input) if selesai_input else None
+
+    if not topik or not pertanyaan:
+        messages.error(
+            request,
+            "Topik dan pertanyaan konsultasi wajib diisi.",
+        )
+        return redirect("praktikum:dashboard_kelompok")
+
+    peserta_obj = None
+    if peserta_id:
+        peserta_obj = get_object_or_404(
+            Peserta,
+            pk=peserta_id,
+            kelompok=kelompok_obj,
+            aktif=True,
+            status_kemajuan=ACTIVE_STATUS,
+        )
+
+    tujuan_obj = None
+    if tujuan_id:
+        tujuan_obj = get_object_or_404(
+            Staff,
+            pk=tujuan_id,
+            aktif=True,
+        )
+
+    acara_obj = None
+    if acara_id:
+        acara_obj = get_object_or_404(Acara, pk=acara_id)
+
+    if waktu_mulai and waktu_selesai and waktu_selesai <= waktu_mulai:
+        messages.error(
+            request,
+            "Waktu selesai harus lebih akhir daripada waktu mulai.",
+        )
+        return redirect("praktikum:dashboard_kelompok")
+
+    Konsultasi.objects.create(
+        topik=topik,
+        kelompok=kelompok_obj,
+        peserta=peserta_obj,
+        tujuan=tujuan_obj,
+        acara=acara_obj,
+        tanggal_konsultasi=tanggal,
+        waktu_mulai=waktu_mulai,
+        waktu_selesai=waktu_selesai,
+        lokasi=lokasi,
+        pertanyaan=pertanyaan,
+    )
+
+    messages.success(
+        request,
+        "Pengajuan konsultasi berhasil dikirim.",
+    )
+    return redirect("praktikum:dashboard_kelompok")
+
+
+# ============================================================
+# KONSULTASI - JAWABAN ADMIN
+# ============================================================
+
+@require_POST
+def jawab_konsultasi(request, konsultasi_id):
+    if not _pastikan_admin(request):
+        return HttpResponseForbidden(
+            "Hanya admin yang dapat menjawab konsultasi."
+        )
+
+    konsultasi_obj = get_object_or_404(
+        Konsultasi,
+        pk=konsultasi_id,
+    )
+
+    jawaban = request.POST.get("jawaban", "").strip()
+    status = request.POST.get("status", "dijawab").strip()
+
+    status_valid = {"dijawab", "selesai"}
+
+    if not jawaban:
+        messages.error(request, "Jawaban konsultasi belum diisi.")
+        return redirect("admin:index")
+
+    if status not in status_valid:
+        status = "dijawab"
+
+    konsultasi_obj.jawaban = jawaban
+    konsultasi_obj.status = status
+    konsultasi_obj.dijawab_at = timezone.now()
+    konsultasi_obj.save(
+        update_fields=[
+            "jawaban",
+            "status",
+            "dijawab_at",
+            "updated_at",
+        ]
+    )
+
+    messages.success(request, "Jawaban konsultasi berhasil disimpan.")
+    return redirect("admin:index")
