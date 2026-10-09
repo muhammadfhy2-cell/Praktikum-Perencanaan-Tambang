@@ -183,6 +183,7 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     transform: translateY(-2px);
 }
 
+/* Tombol emas */
 .home-btn-primary {
     background: linear-gradient(135deg, #ffdc81, var(--home-gold));
     color: #21170b;
@@ -197,6 +198,7 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     filter: brightness(1.03);
 }
 
+/* Tombol transparan dengan teks putih */
 .home-btn-secondary {
     border-color: rgba(255,253,248,.28);
     background: rgba(255,253,248,.055);
@@ -207,6 +209,51 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
 .home-btn-secondary:focus-visible {
     color: #fffaf1;
     background: rgba(255,253,248,.12);
+}
+
+/* Teks dan ikon putih untuk tombol tertentu */
+.home-page .home-btn-white,
+.home-page .home-btn-white:visited {
+    background: rgba(255,255,255,.055);
+    border-color: rgba(255,255,255,.42);
+    color: #ffffff !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,.12);
+}
+
+.home-page .home-btn-white span {
+    color: #ffffff !important;
+}
+
+.home-page .home-btn-white:hover,
+.home-page .home-btn-white:focus-visible {
+    background: rgba(255,255,255,.14);
+    border-color: #ffffff;
+    color: #ffffff !important;
+}
+
+/* Tombol login kelompok */
+.home-page .home-btn-login {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ffe7a2 0%, #e8b84d 52%, #c88b25 100%);
+    border-color: #f3d17c;
+    color: #26190b !important;
+    box-shadow:
+        0 8px 24px rgba(220,165,46,.2),
+        inset 0 1px 0 rgba(255,255,255,.45);
+}
+
+.home-page .home-btn-login span {
+    color: #26190b !important;
+}
+
+.home-page .home-btn-login:hover,
+.home-page .home-btn-login:focus-visible {
+    background: linear-gradient(135deg, #fff0bf, #ffd56d);
+    border-color: #fff0bf;
+    color: #26190b !important;
+    filter: brightness(1.04);
+    box-shadow: 0 12px 28px rgba(220,165,46,.28);
 }
 
 /* VISUAL TAMBANG */
@@ -225,14 +272,15 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     justify-content: center;
     width: 255px;
     height: 255px;
-    border: 1px solid rgba(255,201,74,.42);
+    border: 1px solid rgba(255,201,74,.55);
     border-radius: 50%;
     background:
-        radial-gradient(circle, rgba(255,201,74,.1), transparent 67%),
+        radial-gradient(circle, rgba(255,201,74,.16), transparent 67%),
         rgba(20,15,10,.3);
     box-shadow:
-        0 0 0 18px rgba(255,201,74,.025),
-        0 0 0 38px rgba(255,201,74,.02);
+        0 0 0 18px rgba(255,201,74,.035),
+        0 0 0 38px rgba(255,201,74,.025),
+        0 0 35px rgba(255,201,74,.08);
 }
 
 .mine-emblem-inner {
@@ -241,12 +289,19 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     align-items: center;
     text-align: center;
     gap: 12px;
+    position: relative;
+    z-index: 2;
 }
 
 .mine-emblem-icon {
-    font-size: 76px;
+    font-size: 82px;
     line-height: 1;
-    filter: drop-shadow(0 8px 14px rgba(0,0,0,.2));
+    color: #ffe6a0;
+    filter:
+        brightness(1.35)
+        drop-shadow(0 0 8px rgba(255,213,109,.6))
+        drop-shadow(0 8px 14px rgba(0,0,0,.35));
+    text-shadow: 0 0 18px rgba(255,215,117,.4);
 }
 
 .mine-emblem-label {
@@ -261,30 +316,98 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     font-size: 17px;
     font-weight: 900;
     letter-spacing: .8px;
+    white-space: nowrap;
 }
 
 .mine-floating-label {
     position: absolute;
+    z-index: 3;
     padding: 10px 13px;
-    border: 1px solid rgba(255,201,74,.3);
+    border: 1px solid rgba(255,201,74,.4);
     border-radius: 10px;
-    background: rgba(29,22,15,.95);
-    color: #f7edda;
+    background: rgba(29,22,15,.97);
+    color: #fff3dc;
     font-size: 10px;
     font-weight: 800;
     letter-spacing: .5px;
-    box-shadow: 0 8px 24px rgba(0,0,0,.15);
+    white-space: nowrap;
+    box-shadow: 0 8px 24px rgba(0,0,0,.2);
     backdrop-filter: blur(8px);
 }
 
 .mine-floating-label.one {
-    top: 27px;
-    right: -5px;
+    top: 8px;
+    right: -38px;
 }
 
 .mine-floating-label.two {
-    bottom: 34px;
-    left: -12px;
+    bottom: -32px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* DOSEN PENGAMPU */
+.home-lecturer {
+    padding: 25px 0;
+    background: #29221b;
+    border-bottom: 1px solid #493927;
+}
+
+.home-lecturer-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 23px 28px;
+    border: 1px solid #59452e;
+    border-radius: 17px;
+    background:
+        radial-gradient(ellipse at 100% 0%, rgba(255,201,74,.08), transparent 45%),
+        linear-gradient(135deg, #33291f, #211b15);
+    box-shadow: 0 10px 28px rgba(0,0,0,.12);
+}
+
+.home-lecturer-icon {
+    display: grid;
+    place-items: center;
+    width: 55px;
+    height: 55px;
+    flex: 0 0 55px;
+    border: 1px solid rgba(255,215,117,.3);
+    border-radius: 15px;
+    background: #493821;
+    color: #ffda7a;
+    font-size: 27px;
+}
+
+.home-lecturer-label {
+    margin: 0 0 5px;
+    color: #e7b953;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.home-lecturer-name {
+    margin: 0 0 5px;
+    color: #fff5e4;
+    font-size: clamp(19px, 3vw, 26px);
+    font-weight: 900;
+    line-height: 1.35;
+}
+
+.home-lecturer-caption {
+    margin: 0;
+    color: #c9bba8;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.home-lecturer-empty {
+    margin: 0;
+    color: #c9bba8;
+    font-size: 13px;
+    line-height: 1.7;
 }
 
 /* CONTAINER DAN SECTION */
@@ -334,6 +457,15 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     color: var(--home-muted);
     font-size: 13px;
     line-height: 1.8;
+}
+
+/* Judul dan deskripsi pengumuman lebih terang */
+.home-announcements .home-section-heading h2 {
+    color: #ffffff;
+}
+
+.home-announcements .home-section-heading p {
+    color: #e2d7c7;
 }
 
 .home-text-link {
@@ -754,6 +886,10 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     .home-about-grid {
         gap: 30px;
     }
+
+    .mine-floating-label.one {
+        right: -20px;
+    }
 }
 
 @media (max-width: 720px) {
@@ -808,6 +944,30 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
 
     .home-cta {
         padding-bottom: 52px;
+    }
+
+    .home-cta-action {
+        width: 100%;
+    }
+
+    .home-cta-action .home-btn {
+        width: 100%;
+    }
+
+    .home-lecturer {
+        padding: 20px 0;
+    }
+
+    .home-lecturer-card {
+        padding: 20px;
+        gap: 14px;
+    }
+
+    .home-lecturer-icon {
+        width: 47px;
+        height: 47px;
+        flex-basis: 47px;
+        font-size: 23px;
     }
 }
 
@@ -876,6 +1036,15 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
     .home-cta-panel {
         padding: 25px 20px;
     }
+
+    .home-lecturer-card {
+        align-items: flex-start;
+        padding: 17px;
+    }
+
+    .home-lecturer-name {
+        font-size: 19px;
+    }
 }
 
 /* AKSESIBILITAS */
@@ -927,7 +1096,7 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
 
                 <div class="home-hero-actions">
                     <a href="{% url 'praktikum:materi' %}"
-                       class="home-btn home-btn-primary">
+                       class="home-btn home-btn-white">
                         <span aria-hidden="true">▤</span>
                         Jelajahi Materi
                         <span aria-hidden="true">→</span>
@@ -937,6 +1106,13 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
                        class="home-btn home-btn-secondary">
                         <span aria-hidden="true">◷</span>
                         Lihat Jadwal
+                    </a>
+
+                    <a href="{% url 'praktikum:login_kelompok' %}"
+                       class="home-btn home-btn-login">
+                        <span aria-hidden="true">♙</span>
+                        Login Kelompok
+                        <span aria-hidden="true">→</span>
                     </a>
                 </div>
             </div>
@@ -948,8 +1124,41 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
                         <div class="mine-emblem-label">MINING EDUCATION</div>
                         <div class="mine-emblem-title">PLAN · DESIGN · MINE</div>
                     </div>
-                    <div class="mine-floating-label one">OPEN PIT PLANNING</div>
-                    <div class="mine-floating-label two">LEARN · ANALYZE · DESIGN</div>
+
+                    <div class="mine-floating-label one">
+                        OPEN PIT PLANNING
+                    </div>
+
+                    <div class="mine-floating-label two">
+                        LEARN · ANALYZE · DESIGN
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DOSEN PENGAMPU -->
+    <section class="home-lecturer">
+        <div class="home-container">
+            <div class="home-lecturer-card">
+                <div class="home-lecturer-icon" aria-hidden="true">♙</div>
+
+                <div>
+                    <p class="home-lecturer-label">Dosen Pengampu</p>
+
+                    {% if setting.dosen_pengampu %}
+                        <h2 class="home-lecturer-name">
+                            {{ setting.dosen_pengampu }}
+                        </h2>
+
+                        <p class="home-lecturer-caption">
+                            Praktikum Perencanaan Tambang
+                        </p>
+                    {% else %}
+                        <p class="home-lecturer-empty">
+                            Informasi dosen pengampu belum ditambahkan oleh administrator.
+                        </p>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -1051,7 +1260,7 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
                     </p>
 
                     <a href="{% url 'praktikum:informasi_peserta' %}"
-                       class="home-btn home-btn-primary">
+                       class="home-btn home-btn-white">
                         Informasi Peserta
                         <span aria-hidden="true">→</span>
                     </a>
@@ -1150,7 +1359,7 @@ jadwal, materi, kelompok, tata tertib, dan pengumuman praktikum.
 
                 <div class="home-cta-action">
                     <a href="{% url 'praktikum:tugas_pendahuluan' %}"
-                       class="home-btn home-btn-primary">
+                       class="home-btn home-btn-white">
                         Tugas Pendahuluan
                         <span aria-hidden="true">→</span>
                     </a>
