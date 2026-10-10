@@ -1,6 +1,9 @@
+
 {% extends "praktikum/base.html" %}
 
 {% block title %}Tugas Pendahuluan | Praktikum Perencanaan Tambang{% endblock %}
+
+{% block meta_description %}Daftar tugas pendahuluan dan berkas soal untuk Praktikum Perencanaan Tambang.{% endblock %}
 
 {% block content %}
 
@@ -21,55 +24,54 @@
         <div class="assignment-grid">
 
             {% for tugas in tugas_list %}
+                <article class="assignment-card">
 
-            <article class="assignment-card">
-
-                <div class="assignment-top">
-                    <div class="assignment-icon">📝</div>
-
-                    <span class="badge badge-green">
-                        Aktif
-                    </span>
-                </div>
-
-                <h2>{{ tugas.judul }}</h2>
-
-                {% if tugas.acara %}
-                    <div class="assignment-event">
-                        📅 {{ tugas.acara.nama }}
+                    <div class="assignment-top">
+                        <div class="assignment-icon">📝</div>
+                        <span class="badge badge-green">Aktif</span>
                     </div>
-                {% endif %}
 
-                {% if tugas.deadline %}
-                    <div class="deadline">
-                        ⏰ Deadline:
-                        <strong>{{ tugas.deadline|date:"d M Y H:i" }}</strong>
-                    </div>
-                {% endif %}
+                    <h2>{{ tugas.judul }}</h2>
 
-                {% if tugas.soal %}
-                    <div class="assignment-description">
-                        {{ tugas.soal|linebreaks }}
-                    </div>
-                {% endif %}
+                    {% if tugas.acara %}
+                        <div class="assignment-event">
+                            📅 {{ tugas.acara.nama }}
+                        </div>
+                    {% endif %}
 
-                {% if tugas.file %}
-                    <a href="{{ tugas.file.url }}"
-                       target="_blank"
-                       class="btn">
-                        ⬇ Download Soal
-                    </a>
-                {% endif %}
+                    {% if tugas.deadline %}
+                        <div class="deadline">
+                            ⏰ Deadline:
+                            <strong>{{ tugas.deadline|date:"d M Y H:i" }}</strong>
+                        </div>
+                    {% endif %}
 
-            </article>
+                    {% if tugas.soal %}
+                        <div class="assignment-description">
+                            {{ tugas.soal|linebreaks }}
+                        </div>
+                    {% endif %}
 
+                    {% if tugas.file %}
+                        <a
+                            href="{% url 'praktikum:download_tugas_pendahuluan' tugas.id %}"
+                            class="btn"
+                        >
+                            ⬇ Download Soal
+                        </a>
+                    {% else %}
+                        <p class="assignment-no-file">
+                            Berkas soal belum tersedia.
+                        </p>
+                    {% endif %}
+
+                </article>
             {% empty %}
-
-            <div class="empty">
-                <div class="empty-icon">📝</div>
-                Belum ada tugas pendahuluan aktif.
-            </div>
-
+                <div class="empty">
+                    <div class="empty-icon">📝</div>
+                    <h3>Belum Ada Tugas Pendahuluan</h3>
+                    <p>Belum ada tugas pendahuluan aktif saat ini.</p>
+                </div>
             {% endfor %}
 
         </div>
@@ -80,11 +82,12 @@
 <style>
     .assignment-grid {
         display: grid;
-        grid-template-columns: repeat(2,1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 20px;
     }
 
     .assignment-card {
+        min-width: 0;
         background: white;
         border: 1px solid #dfe5df;
         border-radius: 20px;
@@ -112,6 +115,7 @@
         color: #173c2b;
         font-size: 20px;
         margin: 18px 0 8px;
+        overflow-wrap: anywhere;
     }
 
     .assignment-event {
@@ -135,9 +139,16 @@
         border-top: 1px solid #edf0ed;
         color: #606a63;
         font-size: 13px;
+        overflow-wrap: anywhere;
     }
 
-    @media(max-width:700px) {
+    .assignment-no-file {
+        margin-top: 14px;
+        color: #7b6c54;
+        font-size: 12px;
+    }
+
+    @media (max-width: 700px) {
         .assignment-grid {
             grid-template-columns: 1fr;
         }
