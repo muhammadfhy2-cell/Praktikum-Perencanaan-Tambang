@@ -394,10 +394,10 @@ Kumpulan format dan dokumen resmi untuk mendukung kegiatan Praktikum Perencanaan
                 </div>
                 {% endif %}
 
+
                 {% if dokumen.file %}
                 <a class="format-download"
-                   href="{{ dokumen.file.url }}"
-                   download>
+                   href="{% url 'praktikum:download_format_dokumen' dokumen.id %}">
                     <span aria-hidden="true">↓</span>
                     Unduh Dokumen
                 </a>
@@ -406,6 +406,7 @@ Kumpulan format dan dokumen resmi untuk mendukung kegiatan Praktikum Perencanaan
                     Berkas belum tersedia.
                 </span>
                 {% endif %}
+
 
             </article>
             {% empty %}
