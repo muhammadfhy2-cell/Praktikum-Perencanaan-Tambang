@@ -263,6 +263,7 @@ def home(request):
     return render(request, "praktikum/home.html", context)
 
 
+
 # ============================================================
 # PERSONEL
 # ============================================================
@@ -276,9 +277,12 @@ def personel(request):
         .order_by("jabatan", "urutan", "nama")
     )
 
-    penanggung_jawab = staff_list.filter(
-        jabatan="penanggung_jawab"
-    ).first()
+    # Semua kategori menggunakan QuerySet agar konsisten
+    penanggung_jawab = (
+        staff_list
+        .filter(jabatan="penanggung_jawab")
+        .order_by("urutan", "nama")
+    )
 
     koordinator = (
         staff_list
@@ -304,8 +308,11 @@ def personel(request):
         "asisten_list": asisten_list,
     }
 
-    return render(request, "praktikum/personel.html", context)
-
+    return render(
+        request,
+        "praktikum/personel.html",
+        context,
+    )
 
 # ============================================================
 # KELOMPOK
