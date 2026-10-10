@@ -22,11 +22,18 @@ urlpatterns = [
     path("absensi/", views.absensi, name="absensi"),
     path("pengumuman/", views.pengumuman, name="pengumuman"),
     path("tata-tertib/", views.tata_tertib, name="tata_tertib"),
+
     path(
         "tugas-pendahuluan/",
         views.tugas_pendahuluan,
         name="tugas_pendahuluan",
     ),
+    path(
+        "tugas-pendahuluan/<int:tugas_id>/download/",
+        views.download_tugas_pendahuluan,
+        name="download_tugas_pendahuluan",
+    ),
+
     path(
         "informasi-peserta/",
         views.informasi_peserta,
