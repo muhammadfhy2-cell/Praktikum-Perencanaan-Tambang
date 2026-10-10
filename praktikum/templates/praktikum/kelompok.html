@@ -3,7 +3,7 @@
 
 {% block title %}Kelompok Praktikum | Praktikum Perencanaan Tambang{% endblock %}
 
-{% block meta_description %}Daftar kelompok praktikum, anggota aktif, mentor pembimbing, dan informasi kelompok Praktikum Perencanaan Tambang.{% endblock %}
+{% block meta_description %}Daftar kelompok praktikum, anggota aktif, mentor pembimbing, Daily MOM, dan pengumuman laporan Praktikum Perencanaan Tambang.{% endblock %}
 
 {% block content %}
 
@@ -12,8 +12,8 @@
         <span class="eyebrow">Team Directory</span>
         <h1>Kelompok Praktikum</h1>
         <p>
-            Kenali kelompok praktikum, anggota, dan asisten pembimbing
-            yang mendukung kegiatan Praktikum Perencanaan Tambang.
+            Kenali kelompok praktikum, anggota, asisten pembimbing,
+            dan informasi kegiatan setiap kelompok.
         </p>
         <div class="breadcrumb">
             <a href="{% url 'praktikum:home' %}">Beranda</a>
@@ -28,6 +28,7 @@
 
         {% if kelompok_list %}
             <div class="kelompok-list">
+
                 {% for kelompok in kelompok_list %}
                     <article class="kelompok-card">
 
@@ -47,12 +48,20 @@
                             </div>
 
                             <div class="kelompok-heading">
-                                <span class="badge badge-gold">Kelompok Praktikum</span>
+                                <span class="badge badge-gold">
+                                    Kelompok Praktikum
+                                </span>
+
                                 <h2>{{ kelompok.nama }}</h2>
+
                                 <div class="kelompok-summary">
-                                    <span>♙ {{ kelompok.jumlah_anggota }} anggota</span>
+                                    <span>
+                                        ♙ {{ kelompok.jumlah_anggota }} anggota
+                                    </span>
                                     <span class="summary-separator">·</span>
-                                    <span>⛏ {{ kelompok.mentor.count }} mentor</span>
+                                    <span>
+                                        ⛏ {{ kelompok.mentor.count }} mentor
+                                    </span>
                                 </div>
                             </div>
 
@@ -62,6 +71,7 @@
                         </header>
 
                         <div class="kelompok-card-body">
+
                             <div class="kelompok-info-grid">
 
                                 <!-- MENTOR -->
@@ -118,10 +128,15 @@
                                                             </span>
                                                             <span class="kelompok-person-detail">
                                                                 <strong>{{ peserta.nama }}</strong>
+
                                                                 {% if peserta.jabatan == "ketua" %}
-                                                                    <span class="badge badge-gold">Ketua Kelompok</span>
+                                                                    <span class="badge badge-gold">
+                                                                        Ketua Kelompok
+                                                                    </span>
                                                                 {% else %}
-                                                                    <span class="kelompok-member-label">Anggota</span>
+                                                                    <span class="kelompok-member-label">
+                                                                        Anggota
+                                                                    </span>
                                                                 {% endif %}
                                                             </span>
                                                         </li>
@@ -138,6 +153,7 @@
 
                             </div>
 
+                            <!-- CATATAN KELOMPOK -->
                             {% if kelompok.catatan %}
                                 <section class="kelompok-note">
                                     <span class="kelompok-note-icon" aria-hidden="true">◆</span>
@@ -147,16 +163,141 @@
                                     </div>
                                 </section>
                             {% endif %}
-                        </div>
 
+                            <!-- DAILY MOM -->
+                            <section class="publik-section">
+                                <div class="publik-section-heading">
+                                    <span class="publik-section-icon">▤</span>
+                                    <div>
+                                        <h3>Daily MOM</h3>
+                                        <p>Catatan kegiatan harian yang diunggah kelompok.</p>
+                                    </div>
+                                </div>
+
+                                {% if kelompok.daily_mom_publik %}
+                                    <div class="publik-list">
+                                        {% for mom in kelompok.daily_mom_publik %}
+                                            <article class="publik-item">
+                                                <div class="publik-item-icon">▤</div>
+                                                <div class="publik-item-content">
+                                                    <strong>
+                                                        {{ mom.acara.nama|default:"Kegiatan praktikum" }}
+                                                    </strong>
+                                                    <p>
+                                                        Tanggal kegiatan:
+                                                        {{ mom.tanggal|date:"d M Y" }}
+                                                    </p>
+                                                    <p>
+                                                        Diunggah oleh:
+                                                        {{ mom.dibuat_oleh|default:"Kelompok" }}
+                                                    </p>
+                                                </div>
+                                            </article>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <p class="publik-empty">
+                                        Belum ada Daily MOM yang diunggah.
+                                    </p>
+                                {% endif %}
+                            </section>
+
+                            <!-- PENGUMUMAN LAPORAN MINGGUAN -->
+                            <section class="publik-section">
+                                <div class="publik-section-heading">
+                                    <span class="publik-section-icon">◷</span>
+                                    <div>
+                                        <h3>Pengumuman Laporan Mingguan</h3>
+                                        <p>
+                                            Informasi laporan mingguan yang telah
+                                            disetujui admin.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {% if kelompok.laporan_mingguan_publik %}
+                                    <div class="publik-list">
+                                        {% for laporan in kelompok.laporan_mingguan_publik %}
+                                            <article class="publik-item">
+                                                <div class="publik-item-icon">✓</div>
+                                                <div class="publik-item-content">
+                                                    <strong>{{ laporan.judul }}</strong>
+
+                                                    {% if laporan.acara %}
+                                                        <p>
+                                                            Acara: {{ laporan.acara.nama }}
+                                                        </p>
+                                                    {% endif %}
+
+                                                    <p>
+                                                        Diunggah:
+                                                        {{ laporan.uploaded_at|date:"d M Y" }}
+                                                    </p>
+
+                                                    <span class="status-disetujui">
+                                                        Disetujui Admin
+                                                    </span>
+                                                </div>
+                                            </article>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <p class="publik-empty">
+                                        Belum ada pengumuman laporan mingguan.
+                                    </p>
+                                {% endif %}
+                            </section>
+
+                            <!-- PENGUMUMAN LAPORAN LENGKAP -->
+                            <section class="publik-section">
+                                <div class="publik-section-heading">
+                                    <span class="publik-section-icon">▣</span>
+                                    <div>
+                                        <h3>Pengumuman Laporan Lengkap</h3>
+                                        <p>
+                                            Informasi laporan lengkap yang telah
+                                            disetujui admin.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {% if kelompok.laporan_lengkap_publik %}
+                                    <div class="publik-list">
+                                        {% for laporan in kelompok.laporan_lengkap_publik %}
+                                            <article class="publik-item">
+                                                <div class="publik-item-icon">✓</div>
+                                                <div class="publik-item-content">
+                                                    <strong>{{ laporan.judul }}</strong>
+                                                    <p>
+                                                        Diunggah:
+                                                        {{ laporan.uploaded_at|date:"d M Y" }}
+                                                    </p>
+                                                    <span class="status-disetujui">
+                                                        Disetujui Admin
+                                                    </span>
+                                                </div>
+                                            </article>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <p class="publik-empty">
+                                        Belum ada pengumuman laporan lengkap.
+                                    </p>
+                                {% endif %}
+                            </section>
+
+                        </div>
                     </article>
                 {% endfor %}
+
             </div>
         {% else %}
             <div class="empty">
                 <div class="empty-icon">⛏</div>
                 <h3>Data Kelompok Belum Tersedia</h3>
-                <p>Informasi kelompok akan ditampilkan setelah data tersedia.</p>
+                <p>
+                    Informasi kelompok akan ditampilkan setelah data tersedia.
+                </p>
             </div>
         {% endif %}
 
@@ -434,6 +575,101 @@
         overflow-wrap: anywhere;
     }
 
+    .publik-section {
+        margin-top: 22px;
+        padding: 20px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #fffefa;
+    }
+
+    .publik-section-heading {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .publik-section-heading h3 {
+        color: var(--ink);
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 22px;
+    }
+
+    .publik-section-heading p {
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 11px;
+    }
+
+    .publik-section-icon,
+    .publik-item-icon {
+        display: grid;
+        place-items: center;
+        width: 39px;
+        height: 39px;
+        flex: 0 0 39px;
+        border-radius: 12px;
+        background: #fbf0d5;
+        color: var(--earth);
+        font-size: 19px;
+        font-weight: 800;
+    }
+
+    .publik-list {
+        display: grid;
+    }
+
+    .publik-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 15px 0;
+        border-bottom: 1px solid #f0e9de;
+    }
+
+    .publik-item:last-child {
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+
+    .publik-item-content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+        min-width: 0;
+    }
+
+    .publik-item-content strong {
+        color: var(--text);
+        font-size: 13px;
+        overflow-wrap: anywhere;
+    }
+
+    .publik-item-content p {
+        color: var(--muted);
+        font-size: 11px;
+        overflow-wrap: anywhere;
+    }
+
+    .status-disetujui {
+        display: inline-block;
+        padding: 4px 9px;
+        border-radius: 999px;
+        background: #e7f4e9;
+        color: #24643a;
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    .publik-empty {
+        padding: 17px 0 2px;
+        color: var(--muted);
+        font-size: 12px;
+    }
+
     .empty h3 {
         color: var(--ink);
         font-family: "Barlow Condensed", sans-serif;
@@ -481,7 +717,8 @@
             padding: 15px;
         }
 
-        .kelompok-info-panel {
+        .kelompok-info-panel,
+        .publik-section {
             padding: 16px;
         }
     }
