@@ -1,4 +1,4 @@
-
+from collections import defaultdict
 from pathlib import Path
 
 from django.contrib import messages
@@ -301,10 +301,11 @@ def personel(request):
 # KELOMPOK - INFORMASI PUBLIK
 # ============================================================
 
+
 def kelompok(request):
     setting = get_setting()
 
-    kelompok_list = (
+    kelompok_list = list(
         Kelompok.objects
         .filter(aktif=True)
         .prefetch_related(
@@ -325,39 +326,65 @@ def kelompok(request):
         .order_by("id")
     )
 
-    # Daily MOM kelompok aktif untuk ditampilkan pada halaman publik.
+    kelompok_ids = [item.id for item in kelompok_list]
+
     daily_mom_publik = (
         DailyMOM.objects
-        .filter(kelompok__aktif=True)
+        .filter(kelompok_id__in=kelompok_ids)
         .select_related("kelompok", "acara", "dibuat_oleh")
         .order_by("-tanggal", "-id")
     )
 
-    # Publik hanya memperoleh metadata laporan yang telah disetujui.
-    # Jangan menyediakan tautan unduhan atau konten file laporan.
     laporan_mingguan_publik = (
         LaporanMingguan.objects
-        .filter(kelompok__aktif=True, status="acc")
+        .filter(
+            kelompok_id__in=kelompok_ids,
+            status="acc",
+        )
         .select_related("kelompok", "peserta", "acara")
-        .order_by("kelompok__nama", "-uploaded_at", "-id")
+        .order_by("-uploaded_at", "-id")
     )
 
     laporan_lengkap_publik = (
         LaporanLengkap.objects
-        .filter(kelompok__aktif=True, status="acc")
+        .filter(
+            kelompok_id__in=kelompok_ids,
+            status="acc",
+        )
         .select_related("kelompok")
-        .order_by("kelompok__nama", "-uploaded_at", "-id")
+        .order_by("-uploaded_at", "-id")
     )
 
-    return render(request, "praktikum/kelompok.html", {
-        "setting": setting,
-        "kelompok": kelompok_list,
-        "kelompok_list": kelompok_list,
-        "daily_mom_publik": daily_mom_publik,
-        "laporan_mingguan_publik": laporan_mingguan_publik,
-        "laporan_lengkap_publik": laporan_lengkap_publik,
-    })
+    mom_per_kelompok = defaultdict(list)
+    mingguan_per_kelompok = defaultdict(list)
+    lengkap_per_kelompok = defaultdict(list)
 
+    for mom in daily_mom_publik:
+        mom_per_kelompok[mom.kelompok_id].append(mom)
+
+    for laporan in laporan_mingguan_publik:
+        mingguan_per_kelompok[laporan.kelompok_id].append(laporan)
+
+    for laporan in laporan_lengkap_publik:
+        lengkap_per_kelompok[laporan.kelompok_id].append(laporan)
+
+    for item in kelompok_list:
+        item.daily_mom_publik = mom_per_kelompok[item.id]
+        item.laporan_mingguan_publik = mingguan_per_kelompok[item.id]
+        item.laporan_lengkap_publik = lengkap_per_kelompok[item.id]
+
+    return render(
+        request,
+        "praktikum/kelompok.html",
+        {
+            "setting": setting,
+            "kelompok": kelompok_list,
+            "kelompok_list": kelompok_list,
+            "daily_mom_publik": daily_mom_publik,
+            "laporan_mingguan_publik": laporan_mingguan_publik,
+            "laporan_lengkap_publik": laporan_lengkap_publik,
+        },
+    )
 
 # ============================================================
 # JADWAL
