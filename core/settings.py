@@ -1,16 +1,16 @@
+
 """
 Django settings for Praktikum Perencanaan Tambang.
 
 Production-ready configuration:
 - Local development
-- Velixir deployment
-- SQLite fallback
+- Velixir deployment with persistent volume
+- SQLite fallback on persistent storage
 - PostgreSQL via DATABASE_URL
 - WhiteNoise static files
-- Media files
-- Django authentication
-- Django Admin
-- CSRF protection for production domain
+- Persistent media files
+- Django authentication and admin
+- CSRF protection
 """
 
 from pathlib import Path
@@ -43,15 +43,26 @@ SECRET_KEY = os.getenv(
     "django-insecure-praktikum-perencanaan-tambang-development-key",
 )
 
-DEBUG = os.getenv(
-    "DEBUG",
-    "False",
-).strip().lower() in {
+DEBUG = os.getenv("DEBUG", "False").strip().lower() in {
     "1",
     "true",
     "yes",
     "on",
 }
+
+
+# ============================================================
+# PERSISTENT STORAGE
+# ============================================================
+# Lokal: gunakan direktori proyek.
+# Velixir: atur PERSISTENT_DATA_DIR=/data pada Environment.
+
+PERSISTENT_DATA_DIR = Path(
+    os.getenv("PERSISTENT_DATA_DIR", str(BASE_DIR))
+).expanduser()
+
+# Pastikan direktori tersedia sebelum database/media digunakan.
+PERSISTENT_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # ============================================================
@@ -65,10 +76,7 @@ DEFAULT_ALLOWED_HOSTS = [
     "praktikumperencanaantambang-eu.velixir.run",
 ]
 
-ENV_ALLOWED_HOSTS = os.getenv(
-    "ALLOWED_HOSTS",
-    "",
-).strip()
+ENV_ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").strip()
 
 if ENV_ALLOWED_HOSTS:
     ALLOWED_HOSTS = [
@@ -77,11 +85,9 @@ if ENV_ALLOWED_HOSTS:
         if host.strip()
     ]
 
-    # Pastikan domain utama tetap diizinkan.
     for host in DEFAULT_ALLOWED_HOSTS:
         if host not in ALLOWED_HOSTS:
             ALLOWED_HOSTS.append(host)
-
 else:
     ALLOWED_HOSTS = DEFAULT_ALLOWED_HOSTS
 
@@ -101,21 +107,16 @@ ENV_CSRF_TRUSTED_ORIGINS = os.getenv(
 ).strip()
 
 if ENV_CSRF_TRUSTED_ORIGINS:
-
     CSRF_TRUSTED_ORIGINS = [
         origin.strip()
         for origin in ENV_CSRF_TRUSTED_ORIGINS.split(",")
         if origin.strip()
     ]
 
-    # Pastikan domain produksi tetap dipercaya
-    # meskipun environment variable di Velixir berbeda.
     for origin in DEFAULT_CSRF_TRUSTED_ORIGINS:
         if origin not in CSRF_TRUSTED_ORIGINS:
             CSRF_TRUSTED_ORIGINS.append(origin)
-
 else:
-
     CSRF_TRUSTED_ORIGINS = DEFAULT_CSRF_TRUSTED_ORIGINS
 
 
@@ -130,7 +131,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     "praktikum",
 ]
 
@@ -141,19 +141,12 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-
     "whitenoise.middleware.WhiteNoiseMiddleware",
-
     "django.contrib.sessions.middleware.SessionMiddleware",
-
     "django.middleware.common.CommonMiddleware",
-
     "django.middleware.csrf.CsrfViewMiddleware",
-
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-
     "django.contrib.messages.middleware.MessageMiddleware",
-
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -172,19 +165,12 @@ ROOT_URLCONF = "core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-
-        "DIRS": [
-            BASE_DIR / "templates",
-        ],
-
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
-
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
-
                 "django.contrib.auth.context_processors.auth",
-
                 "django.contrib.messages.context_processors.messages",
             ],
         },
@@ -203,13 +189,9 @@ WSGI_APPLICATION = "core.wsgi.application"
 # DATABASE
 # ============================================================
 
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "",
-).strip()
+DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 
 if DATABASE_URL:
-
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
@@ -220,22 +202,18 @@ if DATABASE_URL:
                     "DATABASE_SSL_REQUIRE",
                     "false",
                 ).strip().lower()
-                in {
-                    "1",
-                    "true",
-                    "yes",
-                    "on",
-                }
+                in {"1", "true", "yes", "on"}
             ),
         )
     }
-
 else:
-
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
+            "NAME": PERSISTENT_DATA_DIR / "db.sqlite3",
+            "OPTIONS": {
+                "timeout": 20,
+            },
         }
     }
 
@@ -266,6 +244,12 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": (
             "django.contrib.auth.password_validation."
+            "CommonPasswordValidator"
+        ),
+    },
+    {
+        "NAME": (
+            "django.contrib.auth.password_validation."
             "NumericPasswordValidator"
         ),
     },
@@ -277,11 +261,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # ============================================================
 
 LANGUAGE_CODE = "id"
-
 TIME_ZONE = "Asia/Makassar"
 
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -290,12 +272,14 @@ USE_TZ = True
 # ============================================================
 
 STATIC_URL = "/static/"
-
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+# Hanya daftarkan folder static jika tersedia.
+STATICFILES_DIRS = (
+    [BASE_DIR / "static"]
+    if (BASE_DIR / "static").is_dir()
+    else []
+)
 
 
 # ============================================================
@@ -304,15 +288,11 @@ STATICFILES_DIRS = [
 
 STORAGES = {
     "default": {
-        "BACKEND": (
-            "django.core.files.storage.FileSystemStorage"
-        ),
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
-
     "staticfiles": {
         "BACKEND": (
-            "whitenoise.storage."
-            "CompressedStaticFilesStorage"
+            "whitenoise.storage.CompressedStaticFilesStorage"
         ),
     },
 }
@@ -323,8 +303,7 @@ STORAGES = {
 # ============================================================
 
 MEDIA_URL = "/media/"
-
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = PERSISTENT_DATA_DIR / "media"
 
 
 # ============================================================
@@ -339,9 +318,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ============================================================
 
 LOGIN_URL = "/login/"
-
 LOGIN_REDIRECT_URL = "/dashboard/kelompok/"
-
 LOGOUT_REDIRECT_URL = "/login/"
 
 
@@ -350,13 +327,9 @@ LOGOUT_REDIRECT_URL = "/login/"
 # ============================================================
 
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 7
-
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
-
 SESSION_SAVE_EVERY_REQUEST = True
-
 SESSION_COOKIE_HTTPONLY = True
-
 SESSION_COOKIE_SAMESITE = "Lax"
 
 
@@ -365,7 +338,6 @@ SESSION_COOKIE_SAMESITE = "Lax"
 # ============================================================
 
 CSRF_COOKIE_HTTPONLY = False
-
 CSRF_COOKIE_SAMESITE = "Lax"
 
 
@@ -374,20 +346,14 @@ CSRF_COOKIE_SAMESITE = "Lax"
 # ============================================================
 
 if not DEBUG:
-
-    # Velixir menggunakan reverse proxy.
-    # Django perlu mengetahui bahwa koneksi asli menggunakan HTTPS.
     SECURE_PROXY_SSL_HEADER = (
         "HTTP_X_FORWARDED_PROTO",
         "https",
     )
 
     SESSION_COOKIE_SECURE = True
-
     CSRF_COOKIE_SECURE = True
-
     SECURE_CONTENT_TYPE_NOSNIFF = True
-
     SECURE_REFERRER_POLICY = "same-origin"
 
 
@@ -396,8 +362,7 @@ if not DEBUG:
 # ============================================================
 
 MESSAGE_STORAGE = (
-    "django.contrib.messages.storage.session."
-    "SessionStorage"
+    "django.contrib.messages.storage.session.SessionStorage"
 )
 
 
@@ -407,42 +372,35 @@ MESSAGE_STORAGE = (
 
 LOGGING = {
     "version": 1,
-
     "disable_existing_loggers": False,
-
     "formatters": {
         "django": {
             "format": "[{asctime}] {levelname} {name}: {message}",
             "style": "{",
         },
     },
-
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
             "formatter": "django",
         },
     },
-
     "loggers": {
         "django": {
             "handlers": ["console"],
             "level": "ERROR",
             "propagate": False,
         },
-
         "django.request": {
             "handlers": ["console"],
             "level": "ERROR",
             "propagate": False,
         },
-
         "django.server": {
             "handlers": ["console"],
             "level": "ERROR",
             "propagate": False,
         },
-
         "praktikum": {
             "handlers": ["console"],
             "level": "ERROR",
